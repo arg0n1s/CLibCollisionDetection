@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLibCollisionDetection", "CLibCollisionDetection\CLibCollisionDetection.vcxproj", "{ACE545FC-717F-4D06-BA38-B63B4746CD25}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VTKVisulizationModule", "VTKVisulizationModule\VTKVisulizationModule.vcxproj", "{7BA12987-AF77-4AC6-83FE-975409427872}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollisionDetectionModule", "CollisionDetectionModule\CollisionDetectionModule.vcxproj", "{56058152-5039-49CA-A53E-1D1B0A3E2AD3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimulationObjectsModule", "SimulationObjectsModule\SimulationObjectsModule.vcxproj", "{B4EFAFA5-0D7D-482F-94B8-946BB963B983}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,38 @@ Global
 		{ACE545FC-717F-4D06-BA38-B63B4746CD25}.Release|x64.Build.0 = Release|x64
 		{ACE545FC-717F-4D06-BA38-B63B4746CD25}.Release|x86.ActiveCfg = Release|Win32
 		{ACE545FC-717F-4D06-BA38-B63B4746CD25}.Release|x86.Build.0 = Release|Win32
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Debug|x64.ActiveCfg = Debug|x64
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Debug|x64.Build.0 = Debug|x64
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Debug|x86.ActiveCfg = Debug|Win32
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Debug|x86.Build.0 = Debug|Win32
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Release|x64.ActiveCfg = Release|x64
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Release|x64.Build.0 = Release|x64
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Release|x86.ActiveCfg = Release|Win32
+		{7BA12987-AF77-4AC6-83FE-975409427872}.Release|x86.Build.0 = Release|Win32
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Debug|x64.ActiveCfg = Debug|x64
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Debug|x64.Build.0 = Debug|x64
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Debug|x86.ActiveCfg = Debug|Win32
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Debug|x86.Build.0 = Debug|Win32
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Release|x64.ActiveCfg = Release|x64
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Release|x64.Build.0 = Release|x64
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Release|x86.ActiveCfg = Release|Win32
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3}.Release|x86.Build.0 = Release|Win32
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Debug|x64.ActiveCfg = Debug|x64
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Debug|x64.Build.0 = Debug|x64
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Debug|x86.ActiveCfg = Debug|Win32
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Debug|x86.Build.0 = Debug|Win32
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Release|x64.ActiveCfg = Release|x64
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Release|x64.Build.0 = Release|x64
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Release|x86.ActiveCfg = Release|Win32
+		{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}.Release|x86.Build.0 = Release|Win32
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Debug|x64.ActiveCfg = Debug|x64
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Debug|x64.Build.0 = Debug|x64
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Debug|x86.ActiveCfg = Debug|Win32
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Debug|x86.Build.0 = Debug|Win32
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Release|x64.ActiveCfg = Release|x64
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Release|x64.Build.0 = Release|x64
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Release|x86.ActiveCfg = Release|Win32
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
