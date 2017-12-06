@@ -89,8 +89,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;SIMULATIONOBJECTSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,8 +120,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;SIMULATIONOBJECTSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,17 +150,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Agent.h" />
-    <ClInclude Include="include\Molecule.h" />
+    <ClInclude Include="include\AgentCluster.h" />
     <ClInclude Include="include\SimulationContainer.h" />
     <ClInclude Include="include\SimulationObject.h" />
+    <ClInclude Include="include\SimulationObjectFactory.h" />
     <ClInclude Include="include\Site.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\Agent.cpp" />
-    <ClCompile Include="src\Molecule.cpp" />
+    <ClCompile Include="src\AgentCluster.cpp" />
     <ClCompile Include="src\SimulationContainer.cpp" />
     <ClCompile Include="src\SimulationObject.cpp" />
+    <ClCompile Include="src\SimulationObjectFactory.cpp" />
     <ClCompile Include="src\Site.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

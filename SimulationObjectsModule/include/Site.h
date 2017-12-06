@@ -1,5 +1,6 @@
 #pragma once
 #include "SimulationObject.h"
+#include "SimulationObjectFactory.h"
 
 class Site :
 	public SimulationObject, public SimulationObjectFactory<Site, SimulationObject>
@@ -7,9 +8,17 @@ class Site :
 public:
 	~Site();
 
-	virtual void method1() {};
-	static SimObjPtr CreateInternal() { return SimObjPtr(new Site()); }
+	virtual void method1() {}
+	static SimObjPtr CreateInternal(SimObjPtr owner);
+
+	bool isConnected() const;
+	void connect(SimObjPtr otherSite);
+	SimObjPtr getOwnerAgent();
+
 protected:
-	Site();
+	Site(SimObjPtr owner);
+	bool connected;
+	SimObjPtr ownerAgent;
+	SimObjPtr otherSite;
 };
 
