@@ -1,7 +1,21 @@
 #pragma once
+#include <memory>
+#include <string>
+namespace simobj {
+	namespace specs {
+		class AgentSpecification;
+		class SiteSpecification;
+	}
+	using std::string;
+	using specs::AgentSpecification;
+	using specs::SiteSpecification;
+	using std::shared_ptr;
 
-template <class TClass, class TInterface>
-class SimulationObjectFactory {
-public:
-	static std::shared_ptr<TInterface> Create() { return TClass::CreateInternal(); }
-};
+	template <typename TClass, typename TInterface>
+	class SimulationObjectFactory {
+	public:
+		static shared_ptr<TInterface> create(const unsigned long& id, const string& type);
+		static shared_ptr<TInterface> create(const unsigned long& id, const AgentSpecification& agentSpec);
+		
+	};
+}

@@ -2,20 +2,26 @@
 
 #include <unordered_map>
 #include <memory>
+#include "../include/MetaSpecification.h"
 
-class SimulationObject;
+namespace simobj {
 
-using SimObjPtr = std::shared_ptr<SimulationObject>;
-using std::string;
-using unordered_map = std::unordered_map<string, SimObjPtr>;
+	class SimulationObject;
 
-class SimulationContainer
-{
-public:
-	SimulationContainer(const unsigned int numOfAgents);
-	void addAgent(const string& id);
-	void addAgentCluster(const string& id);
-private:
-	unordered_map agents;
-	unordered_map clusters;
-};
+	using SimObjPtr = std::shared_ptr<SimulationObject>;
+	using std::string;
+	using unordered_map = std::unordered_map<unsigned long, SimObjPtr>;
+	using specs::MetaSpecification;
+
+	class SimulationContainer
+	{
+	public:
+		SimulationContainer(const MetaSpecification& metaSpecs);
+		void addAgent(const unsigned long& id, const string& type);
+		void addAgentCluster(const unsigned long& id, const string& type);
+	private:
+		unordered_map agents;
+		unordered_map clusters;
+		MetaSpecification metaSpecs;
+	};
+}

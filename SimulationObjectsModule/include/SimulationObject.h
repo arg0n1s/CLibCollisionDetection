@@ -5,30 +5,36 @@
 #include <Eigen\Core>
 #include <Eigen\Geometry>
 
-using std::string;
-using Eigen::Vector3d;
-using Quaternion = Eigen::Quaternion<double>;
+namespace simobj {
 
-class SimulationObject {
-public:
-	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+	using std::string;
+	using Eigen::Vector3d;
+	using Quaternion = Eigen::Quaternion<double>;
 
-	typedef std::shared_ptr<SimulationObject> SimObjPtr;
+	class SimulationObject {
+	public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-	virtual void method1() = 0;
+			typedef std::shared_ptr<SimulationObject> SimObjPtr;
 
-	const string& getType() const;
-	const string& getId() const;
-	const Quaternion& getOrientation() const;
-	const Vector3d& getPosition() const;
+		virtual void method1() = 0;
 
-protected:
-	string type;
-	string id;
-	Vector3d position;
-	Quaternion orientation;
+		const string& getType() const;
+		const unsigned long& getId() const;
+		const Quaternion& getOrientation() const;
+		const Vector3d& getPosition() const;
 
-	SimulationObject();
-	virtual ~SimulationObject();
-	
-};
+		void setOrientation(const Quaternion& orientation);
+		void setPosition(const Vector3d& position);
+
+	protected:
+		string type;
+		unsigned long id;
+		Vector3d position;
+		Quaternion orientation;
+
+		SimulationObject(const unsigned long& id, const string& type);
+		virtual ~SimulationObject();
+
+	};
+}

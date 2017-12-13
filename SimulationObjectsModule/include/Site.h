@@ -2,23 +2,27 @@
 #include "SimulationObject.h"
 #include "SimulationObjectFactory.h"
 
-class Site :
-	public SimulationObject, public SimulationObjectFactory<Site, SimulationObject>
-{
-public:
-	~Site();
+namespace simobj {
 
-	virtual void method1() {}
-	static SimObjPtr CreateInternal(SimObjPtr owner);
+	class Site :
+		public SimulationObject, public SimulationObjectFactory<Site, SimulationObject>
+	{
+	public:
+		~Site();
 
-	bool isConnected() const;
-	void connect(SimObjPtr otherSite);
-	SimObjPtr getOwnerAgent();
+		virtual void method1() {}
+		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
-protected:
-	Site(SimObjPtr owner);
-	bool connected;
-	SimObjPtr ownerAgent;
-	SimObjPtr otherSite;
-};
+		void setOwner(SimObjPtr owner);
+		bool isConnected() const;
+		void connect(SimObjPtr otherSite);
+		SimObjPtr getOwnerAgent();
+
+	protected:
+		Site(const unsigned long& id, const string& type);
+		bool connected;
+		SimObjPtr ownerAgent;
+		SimObjPtr otherSite;
+	};
+}
 

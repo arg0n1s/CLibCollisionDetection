@@ -3,17 +3,21 @@
 #include "..\include\Agent.h"
 #include "..\include\AgentCluster.h"
 
+namespace simobj {
 
-SimulationContainer::SimulationContainer(const unsigned int numOfAgents)
-{
-	agents = std::unordered_map<std::string, SimulationObject::SimObjPtr>(numOfAgents);
-	clusters = std::unordered_map<std::string, SimulationObject::SimObjPtr>();
-}
+	SimulationContainer::SimulationContainer(const MetaSpecification& metaSpecs)
+	{
+		agents = std::unordered_map<unsigned long, SimulationObject::SimObjPtr>();
+		clusters = std::unordered_map<unsigned long, SimulationObject::SimObjPtr>();
+		this->metaSpecs = metaSpecs;
+	}
 
-void SimulationContainer::addAgent(const std::string& id) {
-	agents.insert(std::make_pair(id, Agent::Create()));
-}
+	void SimulationContainer::addAgent(const unsigned long& id, const string& type) {
+		if (!metaSpecs.isAgentInSpecs(type)) return;
+		agents.insert(std::make_pair(id, Agent::create(id, metaSpecs.getAgentSpecification(type))));
+	}
 
-void SimulationContainer::addAgentCluster(const std::string& id) {
-	clusters.insert(std::make_pair(id, AgentCluster::Create()));
+	void SimulationContainer::addAgentCluster(const unsigned long& id, const string& type) {
+		clusters.insert(std::make_pair(id, AgentCluster::create(id, type)));
+	}
 }

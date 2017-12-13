@@ -1,36 +1,41 @@
 #include "..\include\Site.h"
 #include "..\include\Agent.h"
 
-using SimObjPtr = SimulationObject::SimObjPtr;
+namespace simobj {
 
-Site::Site(SimObjPtr owner)
-{
-	ownerAgent = std::static_pointer_cast<Agent>(owner);
-	connected = false;
-	otherSite = std::shared_ptr<Site>();
-}
+	using SimObjPtr = SimulationObject::SimObjPtr;
+
+	Site::Site(const unsigned long& id, const string& type) : SimulationObject(id, type)
+	{
+		ownerAgent = std::shared_ptr<Agent>();
+		connected = false;
+		otherSite = std::shared_ptr<Site>();
+	}
 
 
-Site::~Site()
-{
-}
+	Site::~Site()
+	{
+	}
 
-SimObjPtr Site::CreateInternal(SimObjPtr owner) { 
-	return SimObjPtr( new Site(owner) );
-	//return std::make_shared<Site>(Site(owner));
-	//return std::shared_ptr<Site>(new Site(owner));
-}
+	SimObjPtr Site::createInternal(const unsigned long& id, const string& type) {
+		return SimObjPtr(new Site(id, type));
+	}
 
-bool Site::isConnected() const {
-	return connected;
-}
+	void Site::setOwner(SimObjPtr owner) {
+		this->ownerAgent = std::static_pointer_cast<Agent>(owner);
+	}
 
-void Site::connect(SimObjPtr otherSite) {
-	this->otherSite = std::static_pointer_cast<Site>(otherSite);
-	connected = true;
-}
+	bool Site::isConnected() const {
+		return connected;
+	}
 
-SimObjPtr Site::getOwnerAgent() {
-	return ownerAgent;
+	void Site::connect(SimObjPtr otherSite) {
+		this->otherSite = std::static_pointer_cast<Site>(otherSite);
+		connected = true;
+	}
+
+	SimObjPtr Site::getOwnerAgent() {
+		return ownerAgent;
+	}
 }
 

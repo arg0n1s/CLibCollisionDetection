@@ -1,36 +1,34 @@
 #include "..\include\AgentCluster.h"
 #include "..\include\Agent.h"
 
-using SimObjPtr = SimulationObject::SimObjPtr;
-using std::string;
-using unordered_map = std::unordered_map<string, SimObjPtr>;
+namespace simobj {
+	using SimObjPtr = SimulationObject::SimObjPtr;
+	using std::string;
+	using unordered_map = std::unordered_map<unsigned long, SimObjPtr>;
 
-AgentCluster::AgentCluster()
-{
-	std::cout << "Creating AgentCluster" << std::endl;
-	agents = unordered_map();
-}
+	AgentCluster::AgentCluster(const unsigned long& id, const string& type) : SimulationObject(id, type)
+	{
+		agents = unordered_map();
+	}
 
 
-AgentCluster::~AgentCluster()
-{
-	std::cout << "Destroying AgentCluster" << std::endl;
-}
+	AgentCluster::~AgentCluster()
+	{
+	}
 
-SimObjPtr AgentCluster::CreateInternal() { 
-	//return std::make_shared<AgentCluster>(AgentCluster());
-	return SimObjPtr(new AgentCluster());
-	//return std::shared_ptr<AgentCluster>(new AgentCluster());
-}
+	SimObjPtr AgentCluster::createInternal(const unsigned long& id, const string& type) {
+		return SimObjPtr(new AgentCluster(id, type));
+	}
 
-void AgentCluster::insertAgent(const string& id, SimObjPtr agent) {
-	agents.insert(std::make_pair(id, std::static_pointer_cast<Agent>(agent)));
-}
+	void AgentCluster::insertAgent(SimObjPtr agent) {
+		agents.insert(std::make_pair(agent->getId(), std::static_pointer_cast<Agent>(agent)));
+	}
 
-SimObjPtr AgentCluster::getAgent(const string& id) {
-	return agents[id];
-}
+	SimObjPtr AgentCluster::getAgent(const unsigned long& id) {
+		return agents[id];
+	}
 
-bool AgentCluster::isAgentInCluster(const string& id) {
-	return agents.find(id) != agents.end();
+	bool AgentCluster::isAgentInCluster(const unsigned long& id) {
+		return agents.find(id) != agents.end();
+	}
 }

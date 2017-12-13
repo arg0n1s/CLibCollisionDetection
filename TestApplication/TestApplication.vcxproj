@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

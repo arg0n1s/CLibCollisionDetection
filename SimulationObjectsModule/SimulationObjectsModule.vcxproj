@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="include\Agent.h" />
     <ClInclude Include="include\AgentCluster.h" />
+    <ClInclude Include="include\MetaSpecification.h" />
+    <ClInclude Include="include\Shape.h" />
     <ClInclude Include="include\SimulationContainer.h" />
     <ClInclude Include="include\SimulationObject.h" />
     <ClInclude Include="include\SimulationObjectFactory.h" />
@@ -160,6 +162,8 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\Agent.cpp" />
     <ClCompile Include="src\AgentCluster.cpp" />
+    <ClCompile Include="src\MetaSpecification.cpp" />
+    <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\SimulationContainer.cpp" />
     <ClCompile Include="src\SimulationObject.cpp" />
     <ClCompile Include="src\SimulationObjectFactory.cpp" />
