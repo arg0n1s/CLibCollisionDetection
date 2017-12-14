@@ -100,7 +100,7 @@ namespace simobj {
 			return shared_ptr<Shape>(Ellipsoid::create(rx, ry, rz));
 		}
 
-		ShapePtr ShapeFactory::create(const ShapeType& shapeType, const double& a, const double& b, const double& c) {
+		ShapePtr ShapeFactory::createInternal(const ShapeType& shapeType, const double& a, const double& b, const double& c) {
 			switch (shapeType) {
 			case ShapeType::Ellipsoid: return createEllipsoid(a, b, c);
 				break;
@@ -108,7 +108,7 @@ namespace simobj {
 			}
 		}
 
-		ShapePtr ShapeFactory::create(const ShapeType& shapeType, const double& a, const double& b) {
+		ShapePtr ShapeFactory::createInternal(const ShapeType& shapeType, const double& a, const double& b) {
 			switch (shapeType) {
 			case ShapeType::Cylinder: return createCylinder(a, b);
 				break;
@@ -116,7 +116,7 @@ namespace simobj {
 			}
 		}
 
-		ShapePtr ShapeFactory::create(const ShapeType& shapeType, const double& a) {
+		ShapePtr ShapeFactory::createInternal(const ShapeType& shapeType, const double& a) {
 			switch (shapeType) {
 			case ShapeType::Sphere: return createSphere(a);
 				break;

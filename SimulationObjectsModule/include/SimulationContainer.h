@@ -16,6 +16,7 @@ namespace simobj {
 	class SimulationContainer
 	{
 	public:
+		SimulationContainer();
 		SimulationContainer(const MetaSpecification& metaSpecs);
 		void addAgent(const unsigned long& id, const string& type);
 		void addAgentCluster(const unsigned long& id, const string& type);

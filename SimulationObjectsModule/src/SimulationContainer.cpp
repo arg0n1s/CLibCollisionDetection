@@ -5,6 +5,12 @@
 
 namespace simobj {
 
+	SimulationContainer::SimulationContainer() {
+		agents = std::unordered_map<unsigned long, SimulationObject::SimObjPtr>();
+		clusters = std::unordered_map<unsigned long, SimulationObject::SimObjPtr>();
+		metaSpecs = MetaSpecification();
+	}
+
 	SimulationContainer::SimulationContainer(const MetaSpecification& metaSpecs)
 	{
 		agents = std::unordered_map<unsigned long, SimulationObject::SimObjPtr>();

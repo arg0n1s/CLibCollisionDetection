@@ -1,0 +1,57 @@
+#pragma once
+
+#include <SimulationContainer.h>
+#include <MetaSpecification.h>
+#include <string>
+#include <vector>
+
+#ifdef CLIBCOLLISIONDETECTION_EXPORTS
+#define CLIB_COLLISION_DETECTION_API __declspec(dllexport) 
+#else
+#define CLIB_COLLISION_DETECTION_API __declspec(dllimport) 
+#endif
+
+namespace simobj {
+	namespace shapes {
+		class Shape;
+	}
+}
+
+namespace clib
+{
+
+	using simobj::SimulationContainer;
+	using simobj::specs::MetaSpecification;
+	using simobj::specs::AgentSpecification;
+	using simobj::specs::SiteSpecification;
+	using SiteSpecArray = std::vector<SiteSpecification>;
+	using AgentSpecArray = std::vector<AgentSpecification>;
+	using std::string;
+	using ShapePtr = std::shared_ptr<simobj::shapes::Shape>;
+
+	class CLibCollisionController
+	{
+	public:
+
+		static CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const string& type, const double& x, const double& y, const double& z);
+
+		template<typename... Args>
+		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const unsigned int shapeType, Args... args);
+
+		static CLIB_COLLISION_DETECTION_API AgentSpecification createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs);
+
+		static CLIB_COLLISION_DETECTION_API MetaSpecification createMetaSpecification(AgentSpecArray agentSpecs);
+
+		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs);
+
+		CLIB_COLLISION_DETECTION_API void createAgent(const unsigned long& id, const string& type);
+
+		CLIB_COLLISION_DETECTION_API string toString();
+
+
+	private:
+		MetaSpecification metaSpecs;
+		SimulationContainer simContainer;
+
+	};
+}

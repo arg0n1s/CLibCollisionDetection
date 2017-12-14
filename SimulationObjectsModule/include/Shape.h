@@ -89,17 +89,17 @@ namespace simobj {
 
 			static ShapePtr createEllipsoid(const double& rx, const double& ry, const double& rz);
 
-			static ShapePtr create(const ShapeType& shapeType, const double& a, const double& b, const double& c);
+			static ShapePtr createInternal(const ShapeType& shapeType, const double& a, const double& b, const double& c);
 
-			static ShapePtr create(const ShapeType& shapeType, const double& a, const double& b);
+			static ShapePtr createInternal(const ShapeType& shapeType, const double& a, const double& b);
 
-			static ShapePtr create(const ShapeType& shapeType, const double& a);
+			static ShapePtr createInternal(const ShapeType& shapeType, const double& a);
 
 		public:
 			template<typename... Args>
 			static ShapePtr create(const ShapeType& shapeType, Args... args)
 			{
-				return create(shapeType, args...);
+				return createInternal(shapeType, args...);
 			}
 		};
 
