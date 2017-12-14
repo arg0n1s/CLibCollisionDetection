@@ -1,5 +1,6 @@
 #include "..\include\AgentCluster.h"
 #include "..\include\Agent.h"
+#include <sstream>
 
 namespace simobj {
 	using SimObjPtr = SimulationObject::SimObjPtr;
@@ -14,6 +15,20 @@ namespace simobj {
 
 	AgentCluster::~AgentCluster()
 	{
+	}
+
+	string AgentCluster::toString() const {
+		std::stringstream ss;
+		ss << "Agent Cluster: [" << " Type: " << type << ", ID: " << id << ",\n";
+		ss << "\t x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
+		ss << "\t qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
+
+		ss << "\t attached agents: \n";
+		for (auto agent : agents) {
+			ss << agent.second->toString();
+		}
+		ss << "] \n";
+		return ss.str();
 	}
 
 	SimObjPtr AgentCluster::createInternal(const unsigned long& id, const string& type) {

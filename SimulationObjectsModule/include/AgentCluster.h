@@ -16,7 +16,7 @@ namespace simobj {
 	public:
 		~AgentCluster();
 
-		virtual void method1() {};
+		virtual string toString() const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void insertAgent(SimObjPtr agent);

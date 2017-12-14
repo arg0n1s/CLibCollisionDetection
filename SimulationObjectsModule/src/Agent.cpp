@@ -1,6 +1,7 @@
 #include "..\include\Agent.h"
 #include "..\include\Shape.h"
 #include "..\include\Site.h"
+#include <sstream>
 
 namespace simobj {
 
@@ -14,6 +15,24 @@ namespace simobj {
 
 	Agent::~Agent()
 	{
+	}
+
+	string Agent::toString() const {
+		std::stringstream ss;
+		ss << "** Agent: [" << " Type: " << type << ", ID: " << id << ",\n";
+		ss << "\t +++ Position: x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
+		ss << "\t +++ Orienation: qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
+		ss << "\t +++ Shape: " << shape->toString() << ", \n";
+		ss << "\t +++ belongs to a cluster: " << ((belongsToCluster) ? "true" : "false") << ", \n";
+		if (belongsToCluster) {
+			ss << "\t +++ Cluster info : connected to cluster-id: " << cluster->getId() << ", cluster-type: " << cluster->getType() << ", \n";
+		}
+		ss << "\t +++ Attached sites: \n";
+		for (auto site : sites) {
+			ss << site.second->toString();
+		}
+		ss << "] ** \n";
+		return ss.str();
 	}
 
 	SimObjPtr Agent::createInternal(const unsigned long& id, const string& type) {

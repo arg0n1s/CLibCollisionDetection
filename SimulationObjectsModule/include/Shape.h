@@ -1,40 +1,55 @@
 #pragma once
 
 #include <string>
-#include <sstream>
+#include <memory>
 
 namespace simobj {
 	namespace shapes {
 
-		typedef struct {
+		using std::string;
+
+		namespace types {
+			enum ShapeType {
+				Sphere, Cylinder, Ellipsoid
+			};
+
+			static const string TypeNames[] = { "Sphere", "Cylinder", "Ellipsoid" };
+		}
+		typedef types::ShapeType ShapeType;
+
+		class BoundingBox {
+		public:
 			double x, y, z;
 			double width, height, length;
-
-			inline const std::string toString() const {
-				std::stringstream ss;
-				ss << "Origin: [" << x << ", " << y << ", " << z << "]\n";
-				ss << "BBox: [ Width: " << width << ", Height: " << height << ", Length: " << length << " ]\n";
-				return ss.str();
-			}
-		}BoundingBox;
+			BoundingBox() {};
+			BoundingBox(const double& width, const double& height, const double& length, const double& x=0.0, const double& y=0.0, const double& z=0.0);
+			const string toString() const;
+		};
 
 
 		class Shape {
 		protected:
-			virtual void calcBoundingBox() = 0;
-			inline Shape() {};
 			BoundingBox boundingBox;
+			string typeName;
+			ShapeType type;
 
+			virtual void calcBoundingBox() = 0;
+			Shape(const ShapeType& type);
+			
 		public:
 			inline virtual ~Shape() {};
 			inline const BoundingBox& getBoundingBox() const { return boundingBox; };
+			const ShapeType& getType() const { return type; };
+			const virtual string toString() const = 0;
 		
 		};
 
 		class Sphere : public Shape {
 		public:
-			Sphere(const double& radius);
+			static Sphere* create(const double& radius);
+			const virtual string toString() const;
 		protected:
+			Sphere(const double& radius);
 			double radius;
 		private:
 			virtual void calcBoundingBox();
@@ -42,8 +57,10 @@ namespace simobj {
 
 		class Cylinder : public Shape {
 		public:
-			Cylinder(const double& radius, const double& length);
+			static Cylinder* create(const double& radius, const double& length);
+			const virtual string toString() const;
 		protected:
+			Cylinder(const double& radius, const double& length);
 			double radius, length;
 		private:
 			virtual void calcBoundingBox();
@@ -51,11 +68,39 @@ namespace simobj {
 
 		class Ellipsoid : public Shape {
 		public:
-			Ellipsoid(const double& rx, const double& ry, const double& rz);
+			static Ellipsoid* create(const double& rx, const double& ry, const double& rz);
+			const virtual string toString() const;
 		protected:
+			Ellipsoid(const double& rx, const double& ry, const double& rz);
 			double rx, ry, rz;
 		private:
 			virtual void calcBoundingBox();
+		};
+
+		using std::shared_ptr;
+		using ShapePtr = shared_ptr<Shape>;
+
+		class ShapeFactory {
+		private:
+
+			static ShapePtr createSphere(const double& radius);
+
+			static ShapePtr createCylinder(const double& radius, const double& length);
+
+			static ShapePtr createEllipsoid(const double& rx, const double& ry, const double& rz);
+
+			static ShapePtr create(const ShapeType& shapeType, const double& a, const double& b, const double& c);
+
+			static ShapePtr create(const ShapeType& shapeType, const double& a, const double& b);
+
+			static ShapePtr create(const ShapeType& shapeType, const double& a);
+
+		public:
+			template<typename... Args>
+			static ShapePtr create(const ShapeType& shapeType, Args... args)
+			{
+				return create(shapeType, args...);
+			}
 		};
 
 	}

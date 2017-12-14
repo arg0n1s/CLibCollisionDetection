@@ -10,10 +10,11 @@ namespace simobj {
 	public:
 		~Site();
 
-		virtual void method1() {}
+		virtual string toString() const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void setOwner(SimObjPtr owner);
+		SimObjPtr getOwner();
 		bool isConnected() const;
 		void connect(SimObjPtr otherSite);
 		SimObjPtr getOwnerAgent();

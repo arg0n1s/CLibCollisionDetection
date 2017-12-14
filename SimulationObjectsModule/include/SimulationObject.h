@@ -17,7 +17,7 @@ namespace simobj {
 
 			typedef std::shared_ptr<SimulationObject> SimObjPtr;
 
-		virtual void method1() = 0;
+		virtual string toString() const = 0;
 
 		const string& getType() const;
 		const unsigned long& getId() const;

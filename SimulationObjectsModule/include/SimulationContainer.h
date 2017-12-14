@@ -19,6 +19,8 @@ namespace simobj {
 		SimulationContainer(const MetaSpecification& metaSpecs);
 		void addAgent(const unsigned long& id, const string& type);
 		void addAgentCluster(const unsigned long& id, const string& type);
+
+		string toString() const;
 	private:
 		unordered_map agents;
 		unordered_map clusters;

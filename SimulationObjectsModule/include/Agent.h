@@ -21,7 +21,7 @@ namespace simobj {
 	public:
 		~Agent();
 
-		virtual void method1() {};
+		virtual string toString() const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void addSite(SimObjPtr site);
