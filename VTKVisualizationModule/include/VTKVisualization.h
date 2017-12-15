@@ -1,22 +1,29 @@
 #pragma once
 
-#include <vtk-8.0\vtkSmartPointer.h>
-#include <vtk-8.0\vtkRenderer.h>
-#include <vtk-8.0\vtkRenderWindow.h>
-#include <vtk-8.0\vtkRenderWindowInteractor.h>
+#include <memory>
+#include <Eigen\Core>
+#include <Eigen\Dense>
+#include <Eigen\Geometry>
 
-/*
-#include <vtk-8.0\vtkCylinderSource.h>
-#include <vtk-8.0\vtkSphereSource.h>
-#include <vtk-8.0\vtkPolyDataMapper.h>
-#include <vtk-8.0\vtkActor.h>
+#ifdef VTKVISULIZATIONMODULE_EXPORTS
+#define VTK_VISUALIZATION_API __declspec(dllexport) 
+#else
+#define VTK_VISUALIZATION_API __declspec(dllimport) 
+#endif
 
-#include <vtk-8.0\vtkVertexGlyphFilter.h>
-#include <vtk-8.0\vtkProperty.h>
-#include <vtk-8.0\vtkAxesActor.h>
-#include <vtk-8.0\vtkTransform.h>
-#include <vtk-8.0\vtkPointData.h>
-*/
+template <typename T>
+class vtkSmartPointer;
+
+class vtkRenderer;
+class vtkRenderWindow;
+class vtkRenderWindowInteractor;
+
+namespace simobj {
+	class SimulationObject;
+	namespace shapes {
+		class Shape;
+	}
+}
 
 namespace vis {
 
@@ -25,20 +32,48 @@ namespace vis {
 #define InsertNextTupleValue InsertNextTypedTuple
 #endif
 
+	using simobj::SimulationObject;
+	using simobj::shapes::Shape;
+	using std::shared_ptr;
+	using SimObjPtr = shared_ptr<SimulationObject>;
+	using ShapePtr = shared_ptr<Shape>;
+	using RenderPtr = shared_ptr<vtkSmartPointer<vtkRenderer> >;
+	using RenderWindowPtr = shared_ptr<vtkSmartPointer<vtkRenderWindow> >;
+	using RenderWindowInteractorPtr = shared_ptr<vtkSmartPointer<vtkRenderWindowInteractor> >;
+
+	using Eigen::Vector3d;
+	using Quaternion = Eigen::Quaternion<double>;
+
 	class VTKVisualization {
 	public:
-		VTKVisualization();
+		VTK_VISUALIZATION_API VTKVisualization();
+		VTK_VISUALIZATION_API void display();
+		VTK_VISUALIZATION_API void renderAgent(SimObjPtr agent);
+		VTK_VISUALIZATION_API void renderAgentCluster(SimObjPtr cluster);
 	private:
+		/*
 		vtkSmartPointer<vtkRenderer> renderer;
 		vtkSmartPointer<vtkRenderWindow> renderWindow;
 		vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
+		*/
+		RenderPtr renderer;
+		RenderWindowPtr renderWindow;
+		RenderWindowInteractorPtr renderWindowInteractor;
 
 		void createRenderer();
-
 		void createRenderWindow();
-
 		void createRenderWindowInteractor();
 
+		void renderShape(SimObjPtr agent, SimObjPtr site);
+		void renderAgentAxis(SimObjPtr agent);
+		void renderAgentBBox(SimObjPtr agent);
+
+		void renderShape(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);
+		void renderSphere(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);
+		void renderCylinder(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);
+		void renderEllipsoid(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);
+
+		static void fromQuatToEuler(const Quaternion& quat, double& r, double& p, double& y);
 	};
 
 

@@ -27,6 +27,14 @@ namespace simobj {
 		clusters.insert(std::make_pair(id, AgentCluster::create(id, type)));
 	}
 
+	SimObjPtr SimulationContainer::getAgent(const unsigned long& id) {
+		return agents.at(id);
+	}
+
+	SimObjPtr SimulationContainer::getAgentCluster(const unsigned long& id) {
+		return clusters.at(id);
+	}
+
 	string SimulationContainer::toString() const {
 		std::stringstream ss;
 		ss << "Simulation Object Container: [ \n";

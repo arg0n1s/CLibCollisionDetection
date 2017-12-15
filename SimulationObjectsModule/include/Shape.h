@@ -48,6 +48,7 @@ namespace simobj {
 		public:
 			static Sphere* create(const double& radius);
 			const virtual string toString() const;
+			inline const double& getRadius() const { return radius; };
 		protected:
 			Sphere(const double& radius);
 			double radius;
@@ -59,6 +60,8 @@ namespace simobj {
 		public:
 			static Cylinder* create(const double& radius, const double& length);
 			const virtual string toString() const;
+			const double& getRadius() const { return radius; };
+			const double& getLength() const { return length; };
 		protected:
 			Cylinder(const double& radius, const double& length);
 			double radius, length;
@@ -70,6 +73,9 @@ namespace simobj {
 		public:
 			static Ellipsoid* create(const double& rx, const double& ry, const double& rz);
 			const virtual string toString() const;
+			const double& getRadiusX() const { return rx; };
+			const double& getRadiusY() const { return ry; };
+			const double& getRadiusZ() const { return rz; };
 		protected:
 			Ellipsoid(const double& rx, const double& ry, const double& rz);
 			double rx, ry, rz;

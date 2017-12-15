@@ -75,12 +75,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,13 +111,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;CLIBCOLLISIONDETECTION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SimulationObjectsModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SimulationObjectsModule.lib;VTKVisualizationModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,7 +153,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;CLIBCOLLISIONDETECTION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,7 +161,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SimulationObjectsModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SimulationObjectsModule.lib;VTKVisualizationModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

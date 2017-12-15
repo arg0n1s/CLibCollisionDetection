@@ -41,10 +41,16 @@ namespace clib {
 
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController(const MetaSpecification& metaSpecs) : metaSpecs(metaSpecs) {
 		simContainer = SimulationContainer(metaSpecs);
+		vtkVis = VTKVisualization();
 	}
 
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::createAgent(const unsigned long& id, const string& type) {
 		simContainer.addAgent(id, type);
+	}
+
+	CLIB_COLLISION_DETECTION_API void CLibCollisionController::displayAgent(const unsigned long& id) {
+		vtkVis.renderAgent(simContainer.getAgent(id));
+		vtkVis.display();
 	}
 
 	CLIB_COLLISION_DETECTION_API string CLibCollisionController::toString() {

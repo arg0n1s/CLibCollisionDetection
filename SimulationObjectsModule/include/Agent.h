@@ -29,8 +29,12 @@ namespace simobj {
 		void setAgentCluster(SimObjPtr cluster);
 		void setShape(ShapePtr shape);
 
+		SimObjPtr getSite(const unsigned long& id);
+		const SitesMap& getAllSites() const;
 		ShapePtr getShape();
 		SimObjPtr getAgentCluster();
+
+		Vector3d getConvertedPosition(const Vector3d& position) const;
 
 		bool isInAnyCluster() const;
 		bool isAgentCluster(SimObjPtr cluster) const;

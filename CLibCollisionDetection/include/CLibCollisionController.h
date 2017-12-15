@@ -4,6 +4,7 @@
 #include <MetaSpecification.h>
 #include <string>
 #include <vector>
+#include <VTKVisualization.h>
 
 #ifdef CLIBCOLLISIONDETECTION_EXPORTS
 #define CLIB_COLLISION_DETECTION_API __declspec(dllexport) 
@@ -20,6 +21,7 @@ namespace simobj {
 namespace clib
 {
 
+	using vis::VTKVisualization;
 	using simobj::SimulationContainer;
 	using simobj::specs::MetaSpecification;
 	using simobj::specs::AgentSpecification;
@@ -46,12 +48,14 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API void createAgent(const unsigned long& id, const string& type);
 
+		CLIB_COLLISION_DETECTION_API void displayAgent(const unsigned long& id);
+
 		CLIB_COLLISION_DETECTION_API string toString();
 
 
 	private:
 		MetaSpecification metaSpecs;
 		SimulationContainer simContainer;
-
+		VTKVisualization vtkVis;
 	};
 }

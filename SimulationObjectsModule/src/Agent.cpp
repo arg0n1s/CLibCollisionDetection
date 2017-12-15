@@ -53,12 +53,24 @@ namespace simobj {
 		this->shape = shape;
 	}
 
+	SimObjPtr Agent::getSite(const unsigned long& id) {
+		return sites.at(id);
+	}
+
+	const SitesMap& Agent::getAllSites() const {
+		return sites;
+	}
+
 	ShapePtr Agent::getShape() {
 		return shape;
 	}
 
 	SimObjPtr Agent::getAgentCluster() {
 		return cluster;
+	}
+
+	Vector3d Agent::getConvertedPosition(const Vector3d& position) const {
+		return orientation*position + this->position;
 	}
 
 	bool Agent::isInAnyCluster() const {

@@ -1,4 +1,29 @@
+#include <vtk-8.0\vtkAutoInit.h>
+
+VTK_MODULE_INIT(vtkRenderingOpenGL2); VTK_MODULE_INIT(vtkInteractionStyle); VTK_MODULE_INIT(vtkRenderingFreeType); VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+
 #include "..\include\VTKVisualization.h"
+
+#include <vtk-8.0\vtkSmartPointer.h>
+#include <vtk-8.0\vtkRenderer.h>
+#include <vtk-8.0\vtkRenderWindow.h>
+#include <vtk-8.0\vtkRenderWindowInteractor.h>
+
+#include <vtk-8.0\vtkCubeSource.h>
+#include <vtk-8.0\vtkSphereSource.h>
+#include <vtk-8.0\vtkCylinderSource.h>
+#include <vtk-8.0\vtkParametricEllipsoid.h>
+#include <vtk-8.0\vtkParametricFunctionSource.h>
+#include <vtk-8.0\vtkAxesActor.h>
+
+#include <vtk-8.0\vtkPolyDataMapper.h>
+#include <vtk-8.0\vtkActor.h>
+#include <vtk-8.0\vtkProperty.h>
+#include <vtk-8.0\vtkTransform.h>
+
+#include <Agent.h>
+#include <Site.h>
+#include <Shape.h>
 
 namespace vis {
 
@@ -7,30 +32,275 @@ namespace vis {
 #define InsertNextTupleValue InsertNextTypedTuple
 #endif
 
-	VTKVisualization::VTKVisualization() {
+	using simobj::Agent;
+	using simobj::Site;
+	using simobj::SimObjPtr;
+	using simobj::ShapePtr;
+	using simobj::shapes::ShapeType;
+	using simobj::shapes::Sphere;
+	using simobj::shapes::Cylinder;
+	using simobj::shapes::Ellipsoid;
+
+	VTK_VISUALIZATION_API VTKVisualization::VTKVisualization() {
 		createRenderer();
 		createRenderWindow();
 		createRenderWindowInteractor();
 	}
 
+	VTK_VISUALIZATION_API void VTKVisualization::display() {
+		(*renderWindow)->Render();
+		(*renderWindowInteractor)->Start();
+		//(*renderer)->Clear();
+		createRenderer();
+		createRenderWindow();
+		createRenderWindowInteractor();
+	}
+
+	VTK_VISUALIZATION_API void VTKVisualization::renderAgent(SimObjPtr agent) {
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		renderShape(agtPtr->getPosition(), agtPtr->getOrientation(), agtPtr->getShape());
+		for (auto site : agtPtr->getAllSites()) {
+			shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site.second);
+			renderShape(agent, stPtr);
+		}
+		renderAgentBBox(agtPtr);
+		renderAgentAxis(agtPtr);
+	}
+
+	VTK_VISUALIZATION_API void renderAgentCluster(SimObjPtr cluster) {
+
+	}
+
+	void VTKVisualization::renderAgentBBox(SimObjPtr agent) {
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		const Quaternion& orientation = agtPtr->getOrientation();
+		const Vector3d& position = agtPtr->getPosition();
+		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
+		vtkSmartPointer<vtkCubeSource> box = vtkSmartPointer<vtkCubeSource>::New();
+		box->SetXLength(bbx.width);
+		box->SetYLength(bbx.height);
+		box->SetZLength(bbx.length);
+
+		vtkSmartPointer<vtkPolyDataMapper> boxMapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		boxMapper->SetInputConnection(box->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
+		boxActor->SetMapper(boxMapper);
+		// color is for now hard coded, this can be changed in the future 
+		boxActor->GetProperty()->SetColor(0.2, 0.0, 0.2);
+		vtkSmartPointer<vtkTransform> transform =
+			vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(position.x(), position.y(), position.z());
+		double r, p, y;
+		fromQuatToEuler(orientation, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+		boxActor->SetUserTransform(transform);
+		boxActor->GetProperty()->SetRepresentationToWireframe();
+		(*renderer)->AddActor(boxActor);
+	}
+
+	void VTKVisualization::renderShape(SimObjPtr agent, SimObjPtr site) {
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site);
+		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
+		// for now scaling is hard coded, can be changed in the future
+		double radius = std::max(std::max(bbx.width, bbx.height), bbx.length)/10.0;
+
+		vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
+		sphere->SetRadius(radius);
+
+		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		sphereMapper->SetInputConnection(sphere->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
+		sphereActor->SetMapper(sphereMapper);
+		// color is for now hard coded, this can be changed in the future 
+		sphereActor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+		Vector3d position = agtPtr->getConvertedPosition(stPtr->getPosition());
+		sphereActor->SetPosition(position.x(), position.y(), position.z());
+		(*renderer)->AddActor(sphereActor);
+
+	}
+
+	void VTKVisualization::renderAgentAxis(SimObjPtr agent)
+	{
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		const Quaternion& orientation = agtPtr->getOrientation();
+		const Vector3d& origin = agtPtr->getPosition();
+
+		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
+		// for now scaling is hard coded, can be changed in the future
+		double radius = std::max(std::max(bbx.width, bbx.height), bbx.length)*3;
+
+		vtkSmartPointer<vtkAxesActor> axes =
+			vtkSmartPointer<vtkAxesActor>::New();
+		axes->SetDragable(0);
+		axes->SetTotalLength(radius, radius, radius);
+		vtkSmartPointer<vtkTransform> transform =
+			vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(origin.x(), origin.y(), origin.z());
+		double r, p, y;
+		fromQuatToEuler(orientation, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+		axes->SetUserTransform(transform);
+		(*renderer)->AddActor(axes);
+	}
+
+	void VTKVisualization::renderShape(const Vector3d& position, const Quaternion& orientation, ShapePtr shape) {
+		switch (shape->getType()) {
+			case ShapeType::Sphere: {
+				renderSphere(position, orientation, shape);
+				break;
+			}
+			case ShapeType::Cylinder: {
+				renderCylinder(position, orientation, shape);
+				break;
+			}
+			case ShapeType::Ellipsoid: {
+				renderEllipsoid(position, orientation, shape);
+				break;
+			}
+			default: return;
+
+		}
+	}
+
+	void VTKVisualization::renderSphere(const Vector3d& position, const Quaternion& orientation, ShapePtr shape) {
+		shared_ptr<Sphere> sphPtr = std::static_pointer_cast<Sphere>(shape);
+
+		vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
+		sphere->SetRadius(sphPtr->getRadius());
+
+		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		sphereMapper->SetInputConnection(sphere->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
+		sphereActor->SetMapper(sphereMapper);
+		// color is for now hard coded, this can be changed in the future 
+		sphereActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+
+		vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(position.x(), position.y(), position.z());
+		double r, p, y;
+		fromQuatToEuler(orientation, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+		sphereActor->SetUserTransform(transform);
+
+		(*renderer)->AddActor(sphereActor);
+	}
+
+	void VTKVisualization::renderCylinder(const Vector3d& position, const Quaternion& orientation, ShapePtr shape) {
+		shared_ptr<Cylinder> cylPtr = std::static_pointer_cast<Cylinder>(shape);
+		vtkSmartPointer<vtkCylinderSource> cylinder = vtkSmartPointer<vtkCylinderSource>::New();
+		// resolution is for now hard cored, this can be changed in the future
+		cylinder->SetResolution(51);
+		cylinder->SetHeight(cylPtr->getLength());
+		cylinder->SetRadius(cylPtr->getRadius());
+
+		vtkSmartPointer<vtkPolyDataMapper> cylinderMapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		cylinderMapper->SetInputConnection(cylinder->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> cylinderActor = vtkSmartPointer<vtkActor>::New();
+		cylinderActor->SetMapper(cylinderMapper);
+		// color is for now hard coded, this can be changed in the future 
+		cylinderActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+
+		vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(position.x(), position.y(), position.z());
+
+		Vector3d v1(0, 1, 0);
+		Vector3d v2(0, 0, 1);
+		Quaternion correction = Quaternion::FromTwoVectors(v1, v2);
+
+		double r, p, y;
+		fromQuatToEuler(correction, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+
+		fromQuatToEuler(orientation, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+
+		cylinderActor->SetUserTransform(transform);
+		
+		(*renderer)->AddActor(cylinderActor);
+	}
+
+	void VTKVisualization::renderEllipsoid(const Vector3d& position, const Quaternion& orientation, ShapePtr shape) {
+		shared_ptr<Ellipsoid> ellPtr = std::static_pointer_cast<Ellipsoid>(shape);
+
+		vtkSmartPointer<vtkParametricEllipsoid> ellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
+		ellipsoid->SetXRadius(ellPtr->getRadiusX());
+		ellipsoid->SetYRadius(ellPtr->getRadiusY());
+		ellipsoid->SetZRadius(ellPtr->getRadiusZ());
+
+		vtkSmartPointer<vtkParametricFunctionSource> ellipsoidSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
+		ellipsoidSource->SetParametricFunction(ellipsoid);
+		ellipsoidSource->SetUResolution(51);
+		ellipsoidSource->SetVResolution(51);
+		ellipsoidSource->SetWResolution(51);
+		ellipsoidSource->Update();
+
+		vtkSmartPointer<vtkPolyDataMapper> ellipsoidMapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		ellipsoidMapper->SetInputConnection(ellipsoidSource->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> ellipsoidActor = vtkSmartPointer<vtkActor>::New();
+		ellipsoidActor->SetMapper(ellipsoidMapper);
+		// color is for now hard coded, this can be changed in the future 
+		ellipsoidActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+
+		vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(position.x(), position.y(), position.z());
+		double r, p, y;
+		fromQuatToEuler(orientation, r, p, y);
+		transform->RotateX(r);
+		transform->RotateY(p);
+		transform->RotateZ(y);
+		ellipsoidActor->SetUserTransform(transform);
+
+		(*renderer)->AddActor(ellipsoidActor);
+	}
+
 	void VTKVisualization::createRenderer()
 	{
-		renderer = vtkSmartPointer<vtkRenderer>::New();
-		renderer->SetBackground(0.2, 0.2, 0.2);
+		renderer = std::make_shared<vtkSmartPointer<vtkRenderer> >(vtkSmartPointer<vtkRenderer>::New());
+		// background color is for now hard coded, this can be changed in the future 
+		(*renderer)->SetBackground(0.2, 0.2, 0.2);
 	}
 
 	void VTKVisualization::createRenderWindow()
 	{
-		renderWindow =
-			vtkSmartPointer<vtkRenderWindow>::New();
-		renderWindow->AddRenderer(renderer);
+		renderWindow = std::make_shared<vtkSmartPointer<vtkRenderWindow> >(vtkSmartPointer<vtkRenderWindow>::New());
+		(*renderWindow)->AddRenderer(*renderer);
 	}
 
 	void VTKVisualization::createRenderWindowInteractor()
 	{
-		renderWindowInteractor =
-			vtkSmartPointer<vtkRenderWindowInteractor>::New();
-		renderWindowInteractor->SetRenderWindow(renderWindow);
+		renderWindowInteractor = std::make_shared<vtkSmartPointer<vtkRenderWindowInteractor> >(vtkSmartPointer<vtkRenderWindowInteractor>::New());
+		(*renderWindowInteractor)->SetRenderWindow(*renderWindow);
+	}
+
+	void VTKVisualization::fromQuatToEuler(const Quaternion& quat, double& r, double& p, double& y) {
+		double *eulerAngles = quat.toRotationMatrix().eulerAngles(0, 1, 2).data();
+		eulerAngles[0] *= 180.0 / M_PI;
+		eulerAngles[1] *= 180.0 / M_PI;
+		eulerAngles[2] *= 180.0 / M_PI;
+		r = eulerAngles[0];
+		p = eulerAngles[1];
+		y = eulerAngles[2];
 	}
 
 
