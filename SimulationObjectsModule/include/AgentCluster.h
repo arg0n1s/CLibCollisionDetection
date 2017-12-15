@@ -21,7 +21,11 @@ namespace simobj {
 
 		void insertAgent(SimObjPtr agent);
 		SimObjPtr getAgent(const unsigned long& id);
+		const unordered_map& getAllAgents() const;
 		bool isAgentInCluster(const unsigned long& id);
+
+		Vector3d getConvertedPosition(const Vector3d& position) const;
+		Quaternion getConvertedOrientation(const Quaternion& orientation) const;
 
 	protected:
 		AgentCluster(const unsigned long& id, const string& type);

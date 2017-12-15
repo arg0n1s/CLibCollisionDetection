@@ -64,8 +64,14 @@ namespace vis {
 		void createRenderWindow();
 		void createRenderWindowInteractor();
 
-		void renderShape(SimObjPtr agent, SimObjPtr site);
+		void renderAgent(SimObjPtr cluster, SimObjPtr agent);
+		void renderSite(SimObjPtr cluster, SimObjPtr agent, SimObjPtr site);
+		void renderSite(SimObjPtr agent, SimObjPtr site);
+
+		void renderClusterAxis(SimObjPtr cluster);
+		void renderAgentAxis(SimObjPtr cluster, SimObjPtr agent);
 		void renderAgentAxis(SimObjPtr agent);
+		void renderAgentBBox(SimObjPtr cluster, SimObjPtr agent);
 		void renderAgentBBox(SimObjPtr agent);
 
 		void renderShape(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);

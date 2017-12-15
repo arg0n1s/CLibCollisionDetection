@@ -69,6 +69,10 @@ namespace simobj {
 		return cluster;
 	}
 
+	void Agent::rotateAgent(const Quaternion& rotation) {
+		orientation = orientation*rotation;
+	}
+
 	Vector3d Agent::getConvertedPosition(const Vector3d& position) const {
 		return orientation*position + this->position;
 	}

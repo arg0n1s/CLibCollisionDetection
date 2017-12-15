@@ -43,6 +43,18 @@ namespace simobj {
 		return agents[id];
 	}
 
+	const unordered_map& AgentCluster::getAllAgents() const {
+		return agents;
+	}
+
+	Vector3d AgentCluster::getConvertedPosition(const Vector3d& position) const {
+		return orientation*position + this->position;
+	}
+
+	Quaternion AgentCluster::getConvertedOrientation(const Quaternion& orientation) const {
+		return orientation*this->orientation;
+	}
+
 	bool AgentCluster::isAgentInCluster(const unsigned long& id) {
 		return agents.find(id) != agents.end();
 	}

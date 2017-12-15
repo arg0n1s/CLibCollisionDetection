@@ -34,6 +34,7 @@ namespace simobj {
 		ShapePtr getShape();
 		SimObjPtr getAgentCluster();
 
+		void rotateAgent(const Quaternion& rotation);
 		Vector3d getConvertedPosition(const Vector3d& position) const;
 
 		bool isInAnyCluster() const;
