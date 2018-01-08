@@ -40,7 +40,8 @@ namespace simobj {
 			siteSpecs.push_back(siteSpec);
 		}
 
-		SiteSpecification::SiteSpecification(const unsigned long& id, const string& type, const Vector3d& position) : id(id), type(type), position(position) {};
+		SiteSpecification::SiteSpecification(const unsigned long& id, const string& type, const Vector3d& coordinates, const CoordinateType& cType) : 
+			id(id), type(type), coordinates(coordinates), cType(cType) {};
 
 		const unsigned long& SiteSpecification::getId() const {
 			return id;
@@ -48,8 +49,12 @@ namespace simobj {
 		const string& SiteSpecification::getType() const {
 			return type;
 		}
-		const Vector3d& SiteSpecification::getPosition() const {
-			return position;
+		const Vector3d& SiteSpecification::getCoordinates() const {
+			return coordinates;
+		}
+
+		const CoordinateType& SiteSpecification::getCoordinateType() const {
+			return cType;
 		}
 
 	}

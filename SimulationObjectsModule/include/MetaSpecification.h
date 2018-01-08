@@ -14,15 +14,26 @@ namespace simobj {
 	
 	namespace specs {
 
+		using std::string;
+
+		namespace types {
+			enum CoordinateType {
+				KarthesianAbsolute, KarthesianPointerToHull, ParametricAbsolute, ParametricPointerToHull
+			};
+
+		}
+		typedef types::CoordinateType CoordinateType;
+
 		class AgentSpecification;
 		class SiteSpecification;
 
-		using std::string;
+		
 		using AgentSpecsMap = std::unordered_map<string, AgentSpecification>;
 		using SiteSpecsArray = std::vector<SiteSpecification>;
 		using Eigen::Vector3d;
 		using simobj::shapes::Shape;
 		using ShapePtr = std::shared_ptr<Shape>;
+		using types::CoordinateType;
 
 		class MetaSpecification {
 		public:
@@ -52,15 +63,17 @@ namespace simobj {
 
 		class SiteSpecification {
 		public:
-			SiteSpecification(const unsigned long& id, const string& type, const Vector3d& position);
+			SiteSpecification(const unsigned long& id, const string& type, const Vector3d& coordinates, const CoordinateType& cType);
 
 			const unsigned long& getId() const;
 			const string& getType() const;
-			const Vector3d& getPosition() const;
+			const Vector3d& getCoordinates() const;
+			const CoordinateType& getCoordinateType() const;
 		private:
 			unsigned long id;
 			string type;
-			Vector3d position;
+			Vector3d coordinates;
+			CoordinateType cType;
 		};
 	}
 }

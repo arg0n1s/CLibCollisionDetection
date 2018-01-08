@@ -22,8 +22,8 @@ namespace clib {
 	using simobj::Site;
 	using simobj::AgentCluster;
 
-	CLIB_COLLISION_DETECTION_API SiteSpecification CLibCollisionController::createSiteSpecification(const unsigned long& id, const string& type, const double& x, const double& y, const double& z) {
-		return SiteSpecification(id, type, Vector3d(x,y,z));
+	CLIB_COLLISION_DETECTION_API SiteSpecification CLibCollisionController::createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType) {
+		return SiteSpecification(id, "default", Vector3d(c1,c2,c3), cType);
 	}
 
 	template<typename... Args>

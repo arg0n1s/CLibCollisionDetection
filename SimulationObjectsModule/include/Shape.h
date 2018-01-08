@@ -2,11 +2,14 @@
 
 #include <string>
 #include <memory>
+#include <Eigen\Core>
+#include <Eigen\Dense>
 
 namespace simobj {
 	namespace shapes {
 
 		using std::string;
+		using Eigen::Vector3d;
 
 		namespace types {
 			enum ShapeType {
@@ -38,6 +41,12 @@ namespace simobj {
 			
 		public:
 			inline virtual ~Shape() {};
+
+			virtual Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth) = 0;
+			virtual Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param) = 0;
+			virtual Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer) = 0;
+			virtual Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer) = 0;
+
 			inline const BoundingBox& getBoundingBox() const { return boundingBox; };
 			const ShapeType& getType() const { return type; };
 			const virtual string toString() const = 0;
@@ -47,6 +56,14 @@ namespace simobj {
 		class Sphere : public Shape {
 		public:
 			static Sphere* create(const double& radius);
+
+			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			// parameters are: radius, theta, phi
+			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			// parameters are: radius(ignored), theta, phi
+			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+
 			const virtual string toString() const;
 			inline const double& getRadius() const { return radius; };
 		protected:
@@ -59,6 +76,14 @@ namespace simobj {
 		class Cylinder : public Shape {
 		public:
 			static Cylinder* create(const double& radius, const double& length);
+
+			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			// parameters are: radius, phi, z
+			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			// parameters are: radius(ignored), phi, z
+			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+
 			const virtual string toString() const;
 			const double& getRadius() const { return radius; };
 			const double& getLength() const { return length; };
@@ -72,6 +97,14 @@ namespace simobj {
 		class Ellipsoid : public Shape {
 		public:
 			static Ellipsoid* create(const double& rx, const double& ry, const double& rz);
+			// output parameters are: radius(ignored), theta, phi
+			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			// input parameters are: radius(ignored), theta, phi
+			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			// input parameters are: radius(ignored), theta, phi
+			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+
 			const virtual string toString() const;
 			const double& getRadiusX() const { return rx; };
 			const double& getRadiusY() const { return ry; };

@@ -31,6 +31,35 @@ namespace simobj {
 			return new Sphere(radius);
 		}
 
+		Vector3d Sphere::karthesianToParametrizedCoordinates(const Vector3d& karth) {
+			double r, theta, phi;
+			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y() + karth.z()*karth.z());
+			if (r = 0.0) throw std::runtime_error("Division by zero error while converting from karth. to spherical coordinates!");
+			theta = std::acos(karth.z() / r);
+			phi = std::atan2(karth.y(), karth.x());
+			return Vector3d(r, theta, phi);
+		}
+
+		Vector3d Sphere::parametrizedToKarthesianCoordinates(const Vector3d& param) {
+			double x, y, z;
+			x = param.x() * std::sin(param.y()) * std::cos(param.z());
+			y = param.x() * std::sin(param.y()) * std::sin(param.z());
+			z = param.x() * std::cos(param.y());
+			return Vector3d(x, y, z);
+		}
+
+		Vector3d Sphere::hullIntersectionFromKarthPointer(const Vector3d& karthPointer) {
+			Vector3d param = karthesianToParametrizedCoordinates(karthPointer);
+			param.x() = radius;
+			return parametrizedToKarthesianCoordinates(param);
+		}
+
+		Vector3d Sphere::hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer) {
+			Vector3d param = paramPointer;
+			param.x() = radius;
+			return parametrizedToKarthesianCoordinates(param);
+		}
+
 		const string Sphere::toString() const {
 			std::stringstream ss;
 			ss << "Shape [ Type: "<<typeName<< ", \n";
@@ -53,6 +82,35 @@ namespace simobj {
 			return new Cylinder(radius, length);
 		}
 
+		Vector3d Cylinder::karthesianToParametrizedCoordinates(const Vector3d& karth) {
+			double r, phi, z;
+			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y());
+			if (r = 0.0) throw std::runtime_error("Division by zero error while converting from karth. to cylindrical coordinates!");
+			phi = std::atan2(karth.y(), karth.x());
+			z = karth.z();
+			return Vector3d(r, phi, z);
+		}
+
+		Vector3d Cylinder::parametrizedToKarthesianCoordinates(const Vector3d& param) {
+			double x, y, z;
+			x = param.x() * std::cos(param.y());
+			y = param.x() * std::sin(param.y());
+			z = param.z();
+			return Vector3d(x, y, z);
+		}
+
+		Vector3d Cylinder::hullIntersectionFromKarthPointer(const Vector3d& karthPointer) {
+			Vector3d param = karthesianToParametrizedCoordinates(karthPointer);
+			param.x() = radius;
+			return parametrizedToKarthesianCoordinates(param);
+		}
+
+		Vector3d Cylinder::hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer) {
+			Vector3d param = paramPointer;
+			param.x() = radius;
+			return parametrizedToKarthesianCoordinates(param);
+		}
+
 		const string Cylinder::toString() const {
 			std::stringstream ss;
 			ss << "Shape [ Type: " << typeName << ", \n";
@@ -73,6 +131,30 @@ namespace simobj {
 
 		Ellipsoid* Ellipsoid::create(const double& rx, const double& ry, const double& rz) {
 			return new Ellipsoid(rx, ry, rz);
+		}
+
+		Vector3d Ellipsoid::karthesianToParametrizedCoordinates(const Vector3d& karth) {
+			double theta, phi;
+			theta = std::acos(karth.z() / 1.0);
+			phi = std::atan2(karth.y(), karth.x());
+			return Vector3d(1, theta, phi);
+		}
+
+		Vector3d Ellipsoid::parametrizedToKarthesianCoordinates(const Vector3d& param) {
+			double x, y, z;
+			x = rx * std::sin(param.y()) * std::cos(param.z());
+			y = ry * std::sin(param.y()) * std::sin(param.z());
+			z = rz * std::cos(param.y());
+			return Vector3d(x, y, z);
+		}
+
+		Vector3d Ellipsoid::hullIntersectionFromKarthPointer(const Vector3d& karthPointer) {
+			Vector3d param = karthesianToParametrizedCoordinates(karthPointer);
+			return parametrizedToKarthesianCoordinates(param);
+		}
+
+		Vector3d Ellipsoid::hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer) {
+			return parametrizedToKarthesianCoordinates(paramPointer);
 		}
 
 		const string Ellipsoid::toString() const {

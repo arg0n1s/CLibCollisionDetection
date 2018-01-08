@@ -26,6 +26,7 @@ namespace clib
 	using simobj::specs::MetaSpecification;
 	using simobj::specs::AgentSpecification;
 	using simobj::specs::SiteSpecification;
+	using simobj::specs::CoordinateType;
 	using SiteSpecArray = std::vector<SiteSpecification>;
 	using AgentSpecArray = std::vector<AgentSpecification>;
 	using std::string;
@@ -35,7 +36,7 @@ namespace clib
 	{
 	public:
 
-		static CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const string& type, const double& x, const double& y, const double& z);
+		static CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType);
 
 		template<typename... Args>
 		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const unsigned int shapeType, Args... args);
