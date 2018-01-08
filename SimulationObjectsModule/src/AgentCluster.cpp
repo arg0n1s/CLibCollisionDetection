@@ -31,15 +31,25 @@ namespace simobj {
 		return ss.str();
 	}
 
+	const Vector3d AgentCluster::getPosition(const ReferenceFrame& frame) const {
+		return position;
+	}
+
+	const Quaternion AgentCluster::getOrientation(const ReferenceFrame& frame) const {
+		return orientation;
+	}
+
 	SimObjPtr AgentCluster::createInternal(const unsigned long& id, const string& type) {
 		return SimObjPtr(new AgentCluster(id, type));
 	}
 
 	void AgentCluster::insertAgent(SimObjPtr agent) {
+		if (isAgentInCluster(agent->getId())) throw std::runtime_error("Agent with given ID already exist within this cluster.");
 		agents.insert(std::make_pair(agent->getId(), std::static_pointer_cast<Agent>(agent)));
 	}
 
 	SimObjPtr AgentCluster::getAgent(const unsigned long& id) {
+		if (!isAgentInCluster(id)) throw std::runtime_error("Agent with given ID does not exist within this cluster.");
 		return agents[id];
 	}
 
@@ -47,15 +57,7 @@ namespace simobj {
 		return agents;
 	}
 
-	Vector3d AgentCluster::getConvertedPosition(const Vector3d& position) const {
-		return orientation*position + this->position;
-	}
-
-	Quaternion AgentCluster::getConvertedOrientation(const Quaternion& orientation) const {
-		return orientation*this->orientation;
-	}
-
-	bool AgentCluster::isAgentInCluster(const unsigned long& id) {
+	const bool AgentCluster::isAgentInCluster(const unsigned long& id) const {
 		return agents.find(id) != agents.end();
 	}
 }

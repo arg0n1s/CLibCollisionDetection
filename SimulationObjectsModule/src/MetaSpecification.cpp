@@ -9,10 +9,12 @@ namespace simobj {
 			agentSpecs = AgentSpecsMap();
 		}
 		void MetaSpecification::addAgentSpecification(const AgentSpecification& agentSpec) {
+			if (isAgentInSpecs(agentSpec.getType())) throw std::runtime_error("AgentSpec with given type already present withing Map of AgentSpecs!");
 			agentSpecs.insert(std::make_pair(agentSpec.getType(), agentSpec));
 		}
 
 		const AgentSpecification& MetaSpecification::getAgentSpecification(const string& type) const {
+			if (!isAgentInSpecs(type)) throw std::runtime_error("AgentSpec with given type not present withing Map of AgentSpecs!");
 			return agentSpecs.at(type);
 		}
 

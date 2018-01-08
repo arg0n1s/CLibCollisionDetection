@@ -11,6 +11,14 @@ namespace simobj {
 	using Eigen::Vector3d;
 	using Quaternion = Eigen::Quaternion<double>;
 
+	namespace frames {
+		enum ReferenceFrame {
+			Local, Global
+		};
+
+	}
+	typedef frames::ReferenceFrame ReferenceFrame;
+
 	class SimulationObject {
 	public:
 		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -18,11 +26,13 @@ namespace simobj {
 			typedef std::shared_ptr<SimulationObject> SimObjPtr;
 
 		virtual string toString() const = 0;
+		virtual const Vector3d getPosition(const ReferenceFrame& frame) const = 0;
+		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const = 0;
 
 		const string& getType() const;
 		const unsigned long& getId() const;
-		const Quaternion& getOrientation() const;
-		const Vector3d& getPosition() const;
+		virtual const Quaternion& getOrientation() const;
+		virtual const Vector3d& getPosition() const;
 
 		void setOrientation(const Quaternion& orientation);
 		void setPosition(const Vector3d& position);

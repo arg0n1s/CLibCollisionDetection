@@ -21,6 +21,7 @@ namespace clib {
 	using simobj::Agent;
 	using simobj::Site;
 	using simobj::AgentCluster;
+	using simobj::ReferenceFrame;
 
 	CLIB_COLLISION_DETECTION_API SiteSpecification CLibCollisionController::createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType) {
 		return SiteSpecification(id, "default", Vector3d(c1,c2,c3), cType);
@@ -68,10 +69,12 @@ namespace clib {
 		shared_ptr<Site> site2 = std::static_pointer_cast<Site>(agent2->getSite(st2));
 
 		Vector3d agentOrigin1, agentOrigin2, siteOrigin1, siteOrigin2, s1ToO1, s2ToO2, O1ToS1, O2toS2;
-		agentOrigin1 = agent1->getPosition();
-		agentOrigin2 = agent2->getPosition();
-		siteOrigin1 = agent1->getConvertedPosition(site1->getPosition());
-		siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
+		agentOrigin1 = agent1->getPosition(ReferenceFrame::Global);
+		agentOrigin2 = agent2->getPosition(ReferenceFrame::Global);
+		//siteOrigin1 = agent1->getConvertedPosition(site1->getPosition());
+		//siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
+		siteOrigin1 = site1->getPosition(ReferenceFrame::Global);
+		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
 
 		std::cout << "Site1: " << siteOrigin1 << std::endl;
 		std::cout << "Site2: " << siteOrigin2 << std::endl;
@@ -84,14 +87,15 @@ namespace clib {
 
 		Quaternion rot = Quaternion::FromTwoVectors(O2toS2, s1ToO1);
 		agent2->rotateAgent(rot);
-		siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
+		//siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
+		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
 		std::cout << "Site2: " << siteOrigin2 << std::endl;
 
 		s2ToO2 = agentOrigin2 - siteOrigin2;
 		O1ToS1 = siteOrigin1 - agentOrigin1;
 		agent2->setPosition(agentOrigin1 + O1ToS1 + s2ToO2);
 
-		std::cout << "Agent2: " << agent2->getPosition() << std::endl;
+		std::cout << "Agent2: " << agent2->getPosition(ReferenceFrame::Global) << std::endl;
 
 		simContainer.addAgentCluster(clusterCounter, "default");
 		

@@ -16,9 +16,10 @@ namespace simobj {
 	}
 	template <typename TClass, typename TInterface>
 	shared_ptr<TInterface> SimulationObjectFactory<TClass, TInterface>::create(const unsigned long& id, const AgentSpecification& agentSpec) {
-		shared_ptr<Agent> agent = std::static_pointer_cast<Agent>(Agent::createInternal(id, agentSpec.getType()));
 		ShapePtr shape = agentSpec.getShape();
+		shared_ptr<Agent> agent = std::static_pointer_cast<Agent>(Agent::createInternal(id, agentSpec.getType()));
 		agent->setShape(shape);
+
 		for (SiteSpecification siteSpec : agentSpec.getSiteSpecifications()) {
 			shared_ptr<Site> site = std::static_pointer_cast<Site>(Site::createInternal(siteSpec.getId(), siteSpec.getType()));
 			site->setOwner(agent);

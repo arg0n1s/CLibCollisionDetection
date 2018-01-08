@@ -57,12 +57,12 @@ namespace simobj {
 		public:
 			static Sphere* create(const double& radius);
 
-			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			virtual Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
 			// parameters are: radius, theta, phi
-			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
-			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			virtual Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			virtual Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
 			// parameters are: radius(ignored), theta, phi
-			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+			virtual Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
 
 			const virtual string toString() const;
 			inline const double& getRadius() const { return radius; };
@@ -77,12 +77,12 @@ namespace simobj {
 		public:
 			static Cylinder* create(const double& radius, const double& length);
 
-			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			virtual Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
 			// parameters are: radius, phi, z
-			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
-			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			virtual Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			virtual Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
 			// parameters are: radius(ignored), phi, z
-			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+			virtual Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
 
 			const virtual string toString() const;
 			const double& getRadius() const { return radius; };
@@ -98,12 +98,12 @@ namespace simobj {
 		public:
 			static Ellipsoid* create(const double& rx, const double& ry, const double& rz);
 			// output parameters are: radius(ignored), theta, phi
-			Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
+			virtual Vector3d karthesianToParametrizedCoordinates(const Vector3d& karth);
 			// input parameters are: radius(ignored), theta, phi
-			Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
-			Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
+			virtual Vector3d parametrizedToKarthesianCoordinates(const Vector3d& param);
+			virtual Vector3d hullIntersectionFromKarthPointer(const Vector3d& karthPointer);
 			// input parameters are: radius(ignored), theta, phi
-			Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
+			virtual Vector3d hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer);
 
 			const virtual string toString() const;
 			const double& getRadiusX() const { return rx; };

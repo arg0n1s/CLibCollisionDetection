@@ -17,15 +17,14 @@ namespace simobj {
 		~AgentCluster();
 
 		virtual string toString() const;
+		virtual const Vector3d getPosition(const ReferenceFrame& frame) const;
+		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void insertAgent(SimObjPtr agent);
 		SimObjPtr getAgent(const unsigned long& id);
 		const unordered_map& getAllAgents() const;
-		bool isAgentInCluster(const unsigned long& id);
-
-		Vector3d getConvertedPosition(const Vector3d& position) const;
-		Quaternion getConvertedOrientation(const Quaternion& orientation) const;
+		const bool isAgentInCluster(const unsigned long& id) const;
 
 	protected:
 		AgentCluster(const unsigned long& id, const string& type);

@@ -9,6 +9,7 @@ namespace simobj {
 	{
 		sites = SitesMap();
 		belongsToCluster = false;
+		hasShape = false;
 		cluster = SimObjPtr();
 		shape = ShapePtr();
 	}
@@ -22,7 +23,9 @@ namespace simobj {
 		ss << "** Agent: [" << " Type: " << type << ", ID: " << id << ",\n";
 		ss << "\t +++ Position: x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
 		ss << "\t +++ Orienation: qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
-		ss << "\t +++ Shape: " << shape->toString() << ", \n";
+		if (hasShape) {
+			ss << "\t +++ Shape: " << shape->toString() << ", \n";
+		}
 		ss << "\t +++ belongs to a cluster: " << ((belongsToCluster) ? "true" : "false") << ", \n";
 		if (belongsToCluster) {
 			ss << "\t +++ Cluster info : connected to cluster-id: " << cluster->getId() << ", cluster-type: " << cluster->getType() << ", \n";
@@ -33,6 +36,48 @@ namespace simobj {
 		}
 		ss << "] ** \n";
 		return ss.str();
+	}
+
+	const Vector3d Agent::getPosition(const ReferenceFrame& frame) const {
+		switch (frame) {
+			case ReferenceFrame::Local : {
+				return position;
+				break;
+			}
+			case ReferenceFrame::Global: {
+				if (belongsToCluster) {
+					return cluster->getPosition() + cluster->getOrientation()*position;
+				}
+				else {
+					return position;
+				}
+				break;
+			}
+			default: {
+				throw std::runtime_error("Given reference frame does not exist or is unsupported!");
+			}
+		}
+	}
+
+	const Quaternion Agent::getOrientation(const ReferenceFrame& frame) const {
+		switch (frame) {
+		case ReferenceFrame::Local: {
+			return orientation;
+			break;
+		}
+		case ReferenceFrame::Global: {
+			if (belongsToCluster) {
+				return cluster->getOrientation()*orientation;
+			}
+			else {
+				return orientation;
+			}
+			break;
+		}
+		default: {
+			throw std::runtime_error("Given reference frame does not exist or is unsupported!");
+		}
+		}
 	}
 
 	SimObjPtr Agent::createInternal(const unsigned long& id, const string& type) {
@@ -51,6 +96,7 @@ namespace simobj {
 
 	void Agent::setShape(ShapePtr shape) {
 		this->shape = shape;
+		hasShape = true;
 	}
 
 	SimObjPtr Agent::getSite(const unsigned long& id) {
@@ -62,6 +108,7 @@ namespace simobj {
 	}
 
 	ShapePtr Agent::getShape() {
+		if (!hasShape) throw std::runtime_error("This agent does not posses any defined shape!");
 		return shape;
 	}
 
@@ -71,10 +118,6 @@ namespace simobj {
 
 	void Agent::rotateAgent(const Quaternion& rotation) {
 		orientation = orientation*rotation;
-	}
-
-	Vector3d Agent::getConvertedPosition(const Vector3d& position) const {
-		return orientation*position + this->position;
 	}
 
 	bool Agent::isInAnyCluster() const {

@@ -34,7 +34,7 @@ namespace simobj {
 		Vector3d Sphere::karthesianToParametrizedCoordinates(const Vector3d& karth) {
 			double r, theta, phi;
 			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y() + karth.z()*karth.z());
-			if (r = 0.0) throw std::runtime_error("Division by zero error while converting from karth. to spherical coordinates!");
+			if (r = 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to spherical coordinates!");
 			theta = std::acos(karth.z() / r);
 			phi = std::atan2(karth.y(), karth.x());
 			return Vector3d(r, theta, phi);
@@ -85,7 +85,7 @@ namespace simobj {
 		Vector3d Cylinder::karthesianToParametrizedCoordinates(const Vector3d& karth) {
 			double r, phi, z;
 			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y());
-			if (r = 0.0) throw std::runtime_error("Division by zero error while converting from karth. to cylindrical coordinates!");
+			if (r = 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to cylindrical coordinates!");
 			phi = std::atan2(karth.y(), karth.x());
 			z = karth.z();
 			return Vector3d(r, phi, z);
@@ -186,7 +186,7 @@ namespace simobj {
 			switch (shapeType) {
 			case ShapeType::Ellipsoid: return createEllipsoid(a, b, c);
 				break;
-			default: return nullptr;
+			default: throw std::runtime_error("Unknown or unsupported ShapeType for the 3 given arguments of type const double&");
 			}
 		}
 
@@ -194,7 +194,7 @@ namespace simobj {
 			switch (shapeType) {
 			case ShapeType::Cylinder: return createCylinder(a, b);
 				break;
-			default: return nullptr;
+			default: throw std::runtime_error("Unknown or unsupported ShapeType for the 2 given arguments of type const double&");
 			}
 		}
 
@@ -202,7 +202,7 @@ namespace simobj {
 			switch (shapeType) {
 			case ShapeType::Sphere: return createSphere(a);
 				break;
-			default: return nullptr;
+			default: throw std::runtime_error("Unknown or unsupported ShapeType for the given argument of type const double&");
 			}
 		}
 

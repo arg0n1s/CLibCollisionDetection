@@ -24,6 +24,9 @@ namespace simobj {
 		SimObjPtr getAgent(const unsigned long& id);
 		SimObjPtr getAgentCluster(const unsigned long& id);
 
+		const bool isAgentInContainer(const unsigned long& id) const;
+		const bool isAgentClusterInContainer(const unsigned long& id) const;
+
 		string toString() const;
 	private:
 		unordered_map agents;

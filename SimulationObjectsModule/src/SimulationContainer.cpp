@@ -19,20 +19,31 @@ namespace simobj {
 	}
 
 	void SimulationContainer::addAgent(const unsigned long& id, const string& type) {
-		if (!metaSpecs.isAgentInSpecs(type)) return;
+		if (isAgentInContainer(id)) throw std::runtime_error("Agent with given ID already present within SimulationContainer!");
 		agents.insert(std::make_pair(id, Agent::create(id, metaSpecs.getAgentSpecification(type))));
 	}
 
 	void SimulationContainer::addAgentCluster(const unsigned long& id, const string& type) {
+		if (isAgentClusterInContainer(id)) throw std::runtime_error("AgentCluster with given ID already present within SimulationContainer!");
 		clusters.insert(std::make_pair(id, AgentCluster::create(id, type)));
 	}
 
 	SimObjPtr SimulationContainer::getAgent(const unsigned long& id) {
+		if (!isAgentInContainer(id)) throw std::runtime_error("Agent with given ID not present within SimulationContainer!");
 		return agents.at(id);
 	}
 
 	SimObjPtr SimulationContainer::getAgentCluster(const unsigned long& id) {
+		if (!isAgentClusterInContainer(id)) throw std::runtime_error("AgentCluster with given ID not present within SimulationContainer!");
 		return clusters.at(id);
+	}
+
+	const bool SimulationContainer::isAgentInContainer(const unsigned long& id) const {
+		return agents.find(id) != agents.end();
+	}
+
+	const bool SimulationContainer::isAgentClusterInContainer(const unsigned long& id) const {
+		return clusters.find(id) != clusters.end();
 	}
 
 	string SimulationContainer::toString() const {

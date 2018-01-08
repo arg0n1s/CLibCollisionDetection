@@ -22,6 +22,8 @@ namespace simobj {
 		~Agent();
 
 		virtual string toString() const;
+		virtual const Vector3d getPosition(const ReferenceFrame& frame) const;
+		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void addSite(SimObjPtr site);
@@ -35,7 +37,6 @@ namespace simobj {
 		SimObjPtr getAgentCluster();
 
 		void rotateAgent(const Quaternion& rotation);
-		Vector3d getConvertedPosition(const Vector3d& position) const;
 
 		bool isInAnyCluster() const;
 		bool isAgentCluster(SimObjPtr cluster) const;
@@ -45,5 +46,6 @@ namespace simobj {
 		ShapePtr shape;
 		SimObjPtr cluster;
 		bool belongsToCluster;
+		bool hasShape;
 	};
 }
