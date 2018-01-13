@@ -13,6 +13,7 @@ namespace simobj {
 	using shapes::Shape;
 	using ShapePtr = std::shared_ptr<Shape>;
 	using SimObjPtr = SimulationObject::SimObjPtr;
+	using SimObjWeakPtr = SimulationObject::SimObjWeakPtr;
 	using SitesMap = std::unordered_map<unsigned long, SimObjPtr>;
 
 	class Agent :
@@ -28,13 +29,13 @@ namespace simobj {
 
 		void addSite(SimObjPtr site);
 
-		void setAgentCluster(SimObjPtr cluster);
+		void setAgentCluster(SimObjWeakPtr cluster);
 		void setShape(ShapePtr shape);
 
 		SimObjPtr getSite(const unsigned long& id);
 		const SitesMap& getAllSites() const;
 		ShapePtr getShape();
-		SimObjPtr getAgentCluster();
+		SimObjWeakPtr getAgentCluster();
 
 		void rotateAgent(const Quaternion& rotation);
 
@@ -44,7 +45,7 @@ namespace simobj {
 		Agent(const unsigned long& id, const string& type);
 		SitesMap sites;
 		ShapePtr shape;
-		SimObjPtr cluster;
+		SimObjWeakPtr cluster;
 		bool belongsToCluster;
 		bool hasShape;
 	};

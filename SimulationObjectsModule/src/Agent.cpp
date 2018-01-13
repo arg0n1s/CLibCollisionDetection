@@ -10,7 +10,7 @@ namespace simobj {
 		sites = SitesMap();
 		belongsToCluster = false;
 		hasShape = false;
-		cluster = SimObjPtr();
+		cluster = SimObjWeakPtr();
 		shape = ShapePtr();
 	}
 
@@ -28,7 +28,7 @@ namespace simobj {
 		}
 		ss << "\t +++ belongs to a cluster: " << ((belongsToCluster) ? "true" : "false") << ", \n";
 		if (belongsToCluster) {
-			ss << "\t +++ Cluster info : connected to cluster-id: " << cluster->getId() << ", cluster-type: " << cluster->getType() << ", \n";
+			ss << "\t +++ Cluster info : connected to cluster-id: " << cluster.lock()->getId() << ", cluster-type: " << cluster.lock()->getType() << ", \n";
 		}
 		ss << "\t +++ Attached sites: \n";
 		for (auto site : sites) {
@@ -46,7 +46,7 @@ namespace simobj {
 			}
 			case ReferenceFrame::Global: {
 				if (belongsToCluster) {
-					return cluster->getPosition() + cluster->getOrientation()*position;
+					return cluster.lock()->getPosition() + cluster.lock()->getOrientation()*position;
 				}
 				else {
 					return position;
@@ -67,7 +67,7 @@ namespace simobj {
 		}
 		case ReferenceFrame::Global: {
 			if (belongsToCluster) {
-				return cluster->getOrientation()*orientation;
+				return cluster.lock()->getOrientation()*orientation;
 			}
 			else {
 				return orientation;
@@ -89,7 +89,7 @@ namespace simobj {
 		sites.insert(std::make_pair(s->getId(), s));
 	}
 
-	void Agent::setAgentCluster(SimObjPtr cluster) {
+	void Agent::setAgentCluster(SimObjWeakPtr cluster) {
 		this->cluster = cluster;
 		belongsToCluster = true;
 	}
@@ -112,7 +112,7 @@ namespace simobj {
 		return shape;
 	}
 
-	SimObjPtr Agent::getAgentCluster() {
+	SimObjWeakPtr Agent::getAgentCluster() {
 		return cluster;
 	}
 
@@ -125,6 +125,6 @@ namespace simobj {
 	}
 
 	bool Agent::isAgentCluster(SimObjPtr cluster) const {
-		return this->cluster->getId() == cluster->getId();
+		return this->cluster.lock()->getId() == cluster->getId();
 	}
 }

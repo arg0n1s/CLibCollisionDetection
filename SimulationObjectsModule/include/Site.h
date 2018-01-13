@@ -16,7 +16,7 @@ namespace simobj {
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		void setOwner(SimObjPtr owner);
-		SimObjPtr getOwner();
+		SimObjWeakPtr getOwner();
 		bool isConnected() const;
 		void connect(SimObjPtr otherSite);
 
@@ -24,8 +24,8 @@ namespace simobj {
 		Site(const unsigned long& id, const string& type);
 		bool connected;
 		bool hasOwner;
-		SimObjPtr ownerAgent;
-		SimObjPtr otherSite;
+		SimObjWeakPtr ownerAgent;
+		SimObjWeakPtr otherSite;
 	};
 }
 

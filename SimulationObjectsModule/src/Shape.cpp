@@ -1,5 +1,6 @@
 #include "../include/Shape.h"
 #include <sstream>
+#include <iostream>
 
 namespace simobj {
 	namespace shapes {
@@ -34,7 +35,7 @@ namespace simobj {
 		Vector3d Sphere::karthesianToParametrizedCoordinates(const Vector3d& karth) {
 			double r, theta, phi;
 			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y() + karth.z()*karth.z());
-			if (r = 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to spherical coordinates!");
+			if (r == 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to spherical coordinates!");
 			theta = std::acos(karth.z() / r);
 			phi = std::atan2(karth.y(), karth.x());
 			return Vector3d(r, theta, phi);
@@ -85,7 +86,7 @@ namespace simobj {
 		Vector3d Cylinder::karthesianToParametrizedCoordinates(const Vector3d& karth) {
 			double r, phi, z;
 			r = std::sqrt(karth.x()*karth.x() + karth.y()*karth.y());
-			if (r = 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to cylindrical coordinates!");
+			if (r == 0.0) throw std::runtime_error("Division by zero error (Radius == 0.0) while converting from karth. to cylindrical coordinates!");
 			phi = std::atan2(karth.y(), karth.x());
 			z = karth.z();
 			return Vector3d(r, phi, z);
@@ -100,15 +101,31 @@ namespace simobj {
 		}
 
 		Vector3d Cylinder::hullIntersectionFromKarthPointer(const Vector3d& karthPointer) {
-			Vector3d param = karthesianToParametrizedCoordinates(karthPointer);
-			param.x() = radius;
+			Vector3d kPn = karthPointer.normalized();
+			if (kPn.x() == 0.0 && kPn.y() == 0.0) return Vector3d(0, 0, length*( (kPn.z() >= 0.0 )? 0.5:-0.5));
+			Vector3d param = karthesianToParametrizedCoordinates(kPn);
+			if (kPn.z() == 0.0) {
+				param.z() = 0;
+				param.x() = radius;
+				return parametrizedToKarthesianCoordinates(param);
+			}
+			double z = radius * (param.z() / param.x());
+			if (std::fabs(z) > length / 2) {
+				param.x() = std::fabs(length*((z >= 0.0) ? 0.5 : -0.5) / (param.z() / param.x()) );
+				param.z() = length*((z >= 0.0) ? 0.5 : -0.5);
+			}
+			else {
+				param.x() = radius;
+				param.z() = z;
+			}
+
 			return parametrizedToKarthesianCoordinates(param);
 		}
 
 		Vector3d Cylinder::hullIntersectionFromParametrizedPointer(const Vector3d& paramPointer) {
-			Vector3d param = paramPointer;
-			param.x() = radius;
-			return parametrizedToKarthesianCoordinates(param);
+			//Vector3d param = paramPointer;
+			//param.x() = radius;
+			return hullIntersectionFromKarthPointer(parametrizedToKarthesianCoordinates(paramPointer));
 		}
 
 		const string Cylinder::toString() const {

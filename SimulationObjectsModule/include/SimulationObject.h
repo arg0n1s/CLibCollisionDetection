@@ -23,7 +23,10 @@ namespace simobj {
 	public:
 		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-			typedef std::shared_ptr<SimulationObject> SimObjPtr;
+		typedef std::shared_ptr<SimulationObject> SimObjPtr;
+		typedef std::shared_ptr<const SimulationObject> SimObjConstPtr;
+		typedef std::weak_ptr<SimulationObject> SimObjWeakPtr;
+		typedef std::unique_ptr<SimulationObject> SimObjUniquePtr;
 
 		virtual string toString() const = 0;
 		virtual const Vector3d getPosition(const ReferenceFrame& frame) const = 0;
@@ -31,8 +34,8 @@ namespace simobj {
 
 		const string& getType() const;
 		const unsigned long& getId() const;
-		virtual const Quaternion& getOrientation() const;
-		virtual const Vector3d& getPosition() const;
+		const Quaternion& getOrientation() const;
+		const Vector3d& getPosition() const;
 
 		void setOrientation(const Quaternion& orientation);
 		void setPosition(const Vector3d& position);

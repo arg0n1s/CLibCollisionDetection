@@ -58,8 +58,19 @@ namespace clib {
 		clusterCounter = 0;
 	}
 
-	CLIB_COLLISION_DETECTION_API void CLibCollisionController::createAgent(const unsigned long& id, const string& type) {
-		simContainer.addAgent(id, type);
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::createAgent(const unsigned long& id, const string& type) {
+		try {
+			simContainer.addAgent(id, type);
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	CLIB_COLLISION_DETECTION_API SimObjPtr CLibCollisionController::getAgent(const unsigned long& id) {
+		return simContainer.getAgent(id);
 	}
 
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2) {
@@ -107,9 +118,17 @@ namespace clib {
 		clusterCounter++;
 	}
 
-	CLIB_COLLISION_DETECTION_API void CLibCollisionController::displayAgent(const unsigned long& id) {
-		vtkVis.renderAgent(simContainer.getAgent(id));
-		vtkVis.display();
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgent(const unsigned long& id) {
+		try {
+			vtkVis.renderAgent(simContainer.getAgent(id));
+			vtkVis.display();
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+		
 	}
 
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::displayAgentCluster(const unsigned long& id) {

@@ -5,12 +5,13 @@
 namespace simobj {
 
 	using SimObjPtr = SimulationObject::SimObjPtr;
+	using SimObjWeakPtr = SimulationObject::SimObjWeakPtr;
 
 	Site::Site(const unsigned long& id, const string& type) : SimulationObject(id, type)
 	{
-		ownerAgent = std::shared_ptr<Agent>();
+		ownerAgent = SimObjWeakPtr();
 		connected = false;
-		otherSite = std::shared_ptr<Site>();
+		otherSite = SimObjWeakPtr();
 		hasOwner = false;
 	}
 
@@ -25,12 +26,12 @@ namespace simobj {
 		ss << "\t x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
 		ss << "\t connected: " << ((connected) ? "true" : "false") << ", \n";
 		if (hasOwner) {
-			ss << "\t owner-id: " << ownerAgent->getId() << ", owner-type: " << ownerAgent->getType() << ", \n";
+			ss << "\t owner-id: " << ownerAgent.lock()->getId() << ", owner-type: " << ownerAgent.lock()->getType() << ", \n";
 		}
 		if (connected) {
-			shared_ptr<Site> other = std::static_pointer_cast<Site>(otherSite);
+			shared_ptr<Site> other = std::static_pointer_cast<Site>(otherSite.lock());
 			ss << "\t connected to site-id: " << other->getId() << ", site-type: " << other->getType() << ", \n";
-			ss << "\t connected to agent-id: " << other->getOwner()->getId() << " agent-type: " << other->getOwner()->getId() << ", \n";
+			ss << "\t connected to agent-id: " << other->getOwner().lock()->getId() << " agent-type: " << other->getOwner().lock()->getId() << ", \n";
 		}
 		ss << "] \n";
 		return ss.str();
@@ -44,7 +45,7 @@ namespace simobj {
 		}
 		case ReferenceFrame::Global: {
 			if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent! \n No known reference frame found.");
-			return ownerAgent->getPosition(frame) + ownerAgent->getOrientation()*position;
+			return ownerAgent.lock()->getPosition(frame) + ownerAgent.lock()->getOrientation()*position;
 			break;
 		}
 		default: {
@@ -60,7 +61,7 @@ namespace simobj {
 		}
 		case ReferenceFrame::Global: {
 			if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent! \n No known reference frame found.");
-			return ownerAgent->getOrientation(frame) * orientation;
+			return ownerAgent.lock()->getOrientation(frame) * orientation;
 			break;
 		}
 		default: {
@@ -78,7 +79,7 @@ namespace simobj {
 		hasOwner = true;
 	}
 
-	SimObjPtr Site::getOwner() {
+	SimObjWeakPtr Site::getOwner() {
 		if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent!");
 		return ownerAgent;
 	}
