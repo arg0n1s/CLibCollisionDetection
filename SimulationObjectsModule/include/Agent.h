@@ -39,6 +39,7 @@ namespace simobj {
 
 		void rotateAgent(const Quaternion& rotation);
 
+		bool isSiteAtAgent(const unsigned long& id) const;
 		bool isInAnyCluster() const;
 		bool isAgentCluster(SimObjPtr cluster) const;
 	protected:

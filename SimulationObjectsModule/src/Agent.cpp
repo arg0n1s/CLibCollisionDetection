@@ -86,6 +86,7 @@ namespace simobj {
 
 	void Agent::addSite(SimObjPtr site) {
 		SimObjPtr s = std::static_pointer_cast<Site>(site);
+		if (isSiteAtAgent(s->getId())) throw std::runtime_error("Site with given ID already present at this Agent!");
 		sites.insert(std::make_pair(s->getId(), s));
 	}
 
@@ -100,6 +101,7 @@ namespace simobj {
 	}
 
 	SimObjPtr Agent::getSite(const unsigned long& id) {
+		if (!isSiteAtAgent(id)) throw std::runtime_error("Site with given ID not present at this Agent!");
 		return sites.at(id);
 	}
 
@@ -126,5 +128,9 @@ namespace simobj {
 
 	bool Agent::isAgentCluster(SimObjPtr cluster) const {
 		return this->cluster.lock()->getId() == cluster->getId();
+	}
+
+	bool Agent::isSiteAtAgent(const unsigned long& id) const {
+		return sites.find(id) != sites.end();
 	}
 }

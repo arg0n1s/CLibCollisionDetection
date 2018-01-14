@@ -29,6 +29,7 @@ namespace simobj {
 
 		
 		using AgentSpecsMap = std::unordered_map<string, AgentSpecification>;
+		using SiteSpecsMap = std::unordered_map<unsigned long, SiteSpecification>;
 		using SiteSpecsArray = std::vector<SiteSpecification>;
 		using Eigen::Vector3d;
 		using simobj::shapes::Shape;
@@ -54,10 +55,11 @@ namespace simobj {
 			const string& getType() const;
 			const ShapePtr getShape() const;
 			void addSiteSpecification(const SiteSpecification& siteSpec);
-			const SiteSpecsArray& getSiteSpecifications() const;
+			const SiteSpecsArray getSiteSpecifications() const;
+			const bool isSiteInSpecs(const unsigned int& id) const;
 		private:
 			string type;
-			SiteSpecsArray siteSpecs;
+			SiteSpecsMap siteSpecs;
 			ShapePtr shape;
 		};
 

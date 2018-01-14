@@ -1,9 +1,5 @@
 #include "../include/CLibCollisionController.h"
 
-#include <memory>
-#include <Eigen\Core>
-#include <Eigen\Dense>
-#include <Shape.h>
 #include <Agent.h>
 #include <Site.h>
 #include <AgentCluster.h>
@@ -28,13 +24,13 @@ namespace clib {
 	}
 
 	template<typename... Args>
-	CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const unsigned int shapeType, Args... args) {
-		return ShapeFactory::create(static_cast<ShapeType>(shapeType), args...);
+	CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const ShapeType& shapeType, Args... args) {
+		return ShapeFactory::create(shapeType, args...);
 	}
 
-	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const unsigned int, double);
-	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const unsigned int, double, double);
-	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const unsigned int, double, double, double);
+	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const ShapeType&, double);
+	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const ShapeType&, double, double);
+	template CLIB_COLLISION_DETECTION_API ShapePtr CLibCollisionController::createShape(const ShapeType&, double, double, double);
 
 	CLIB_COLLISION_DETECTION_API AgentSpecification CLibCollisionController::createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs) {
 		AgentSpecification agent(type, shape);
@@ -76,6 +72,7 @@ namespace clib {
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2) {
 		shared_ptr<Agent> agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt1));
 		shared_ptr<Agent> agent2 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt2));
+		if (agent1->getId() == agent2->getId()) throw std::runtime_error("Error, cannot connect identical agents!");
 		shared_ptr<Site> site1 = std::static_pointer_cast<Site>(agent1->getSite(st1));
 		shared_ptr<Site> site2 = std::static_pointer_cast<Site>(agent2->getSite(st2));
 

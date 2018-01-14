@@ -23,11 +23,19 @@ namespace simobj {
 		}
 
 		AgentSpecification::AgentSpecification(const string& type, ShapePtr shape) : type(type), shape(shape) {
-			siteSpecs = SiteSpecsArray();
+			siteSpecs = SiteSpecsMap();
 		}
 
-		const SiteSpecsArray& AgentSpecification::getSiteSpecifications() const {
-			return siteSpecs;
+		const SiteSpecsArray AgentSpecification::getSiteSpecifications() const {
+			SiteSpecsArray out;
+			for (auto siteSpec : siteSpecs) {
+				out.push_back(siteSpec.second);
+			}
+			return out;
+		}
+
+		const bool AgentSpecification::isSiteInSpecs(const unsigned int& id) const {
+			return siteSpecs.find(id) != siteSpecs.end();
 		}
 
 		const string& AgentSpecification::getType() const {
@@ -39,7 +47,8 @@ namespace simobj {
 		}
 
 		void AgentSpecification::addSiteSpecification(const SiteSpecification& siteSpec) {
-			siteSpecs.push_back(siteSpec);
+			if (isSiteInSpecs(siteSpec.getId())) throw std::runtime_error("SiteSpec with given id already present withing Map of SiteSpecs!");
+			siteSpecs.insert(std::make_pair(siteSpec.getId(), siteSpec));
 		}
 
 		SiteSpecification::SiteSpecification(const unsigned long& id, const string& type, const Vector3d& coordinates, const CoordinateType& cType) : 

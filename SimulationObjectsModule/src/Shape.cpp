@@ -29,6 +29,7 @@ namespace simobj {
 		}
 
 		Sphere* Sphere::create(const double& radius) {
+			if (radius <= 0.0 ) throw std::runtime_error("Sphere shape type does not support radius value less or equal to zero!");
 			return new Sphere(radius);
 		}
 
@@ -80,6 +81,7 @@ namespace simobj {
 		}
 
 		Cylinder* Cylinder::create(const double& radius, const double& length) {
+			if (radius <= 0.0 || length <= 0.0 ) throw std::runtime_error("Cylinder shape type does not support radius or length params with values less or equal to zero!");
 			return new Cylinder(radius, length);
 		}
 
@@ -147,6 +149,7 @@ namespace simobj {
 		}
 
 		Ellipsoid* Ellipsoid::create(const double& rx, const double& ry, const double& rz) {
+			if (rx <= 0.0 || ry <= 0.0 || rz <= 0.0) throw std::runtime_error("Ellipsoid shape type does not support radius params with values less or equal to zero!");
 			return new Ellipsoid(rx, ry, rz);
 		}
 

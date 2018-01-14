@@ -44,7 +44,7 @@ namespace simobj {
 					break;
 				}
 				default: {
-					throw std::runtime_error("Given coordinate type does not exist or ist not supported!");
+					throw std::runtime_error("Given coordinate type does not exist or is not supported!");
 				}
 			}
 			agent->addSite(site);

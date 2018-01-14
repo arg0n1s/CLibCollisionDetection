@@ -4,6 +4,7 @@
 #include <MetaSpecification.h>
 #include <string>
 #include <vector>
+#include <Shape.h>
 #include <VTKVisualization.h>
 
 #ifdef CLIBCOLLISIONDETECTION_EXPORTS
@@ -11,12 +12,6 @@
 #else
 #define CLIB_COLLISION_DETECTION_API __declspec(dllimport) 
 #endif
-
-namespace simobj {
-	namespace shapes {
-		class Shape;
-	}
-}
 
 namespace clib
 {
@@ -32,6 +27,7 @@ namespace clib
 	using AgentSpecArray = std::vector<AgentSpecification>;
 	using std::string;
 	using ShapePtr = std::shared_ptr<simobj::shapes::Shape>;
+	using simobj::shapes::ShapeType;
 
 	class CLibCollisionController
 	{
@@ -40,7 +36,7 @@ namespace clib
 		static CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType);
 
 		template<typename... Args>
-		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const unsigned int shapeType, Args... args);
+		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const ShapeType& shapeType, Args... args);
 
 		static CLIB_COLLISION_DETECTION_API AgentSpecification createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs);
 
