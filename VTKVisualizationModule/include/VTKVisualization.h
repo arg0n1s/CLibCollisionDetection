@@ -51,11 +51,6 @@ namespace vis {
 		VTK_VISUALIZATION_API void renderAgent(SimObjPtr agent);
 		VTK_VISUALIZATION_API void renderAgentCluster(SimObjPtr cluster);
 	private:
-		/*
-		vtkSmartPointer<vtkRenderer> renderer;
-		vtkSmartPointer<vtkRenderWindow> renderWindow;
-		vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
-		*/
 		RenderPtr renderer;
 		RenderWindowPtr renderWindow;
 		RenderWindowInteractorPtr renderWindowInteractor;
@@ -64,14 +59,10 @@ namespace vis {
 		void createRenderWindow();
 		void createRenderWindowInteractor();
 
-		void renderAgent(SimObjPtr cluster, SimObjPtr agent);
-		void renderSite(SimObjPtr cluster, SimObjPtr agent, SimObjPtr site);
-		void renderSite(SimObjPtr agent, SimObjPtr site);
+		void renderSite(SimObjPtr site);
 
 		void renderClusterAxis(SimObjPtr cluster);
-		void renderAgentAxis(SimObjPtr cluster, SimObjPtr agent);
 		void renderAgentAxis(SimObjPtr agent);
-		void renderAgentBBox(SimObjPtr cluster, SimObjPtr agent);
 		void renderAgentBBox(SimObjPtr agent);
 
 		void renderShape(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);

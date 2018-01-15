@@ -45,6 +45,8 @@ namespace simobj {
 
 	void AgentCluster::insertAgent(SimObjPtr agent) {
 		if (isAgentInCluster(agent->getId())) throw std::runtime_error("Agent with given ID already exist within this cluster.");
+		//shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(agent);
+		//agnt->setAgentCluster(SimObjPtr(this));
 		agents.insert(std::make_pair(agent->getId(), std::static_pointer_cast<Agent>(agent)));
 	}
 

@@ -31,7 +31,7 @@ namespace simobj {
 		if (connected) {
 			shared_ptr<Site> other = std::static_pointer_cast<Site>(otherSite.lock());
 			ss << "\t connected to site-id: " << other->getId() << ", site-type: " << other->getType() << ", \n";
-			ss << "\t connected to agent-id: " << other->getOwner().lock()->getId() << " agent-type: " << other->getOwner().lock()->getId() << ", \n";
+			ss << "\t connected to agent-id: " << other->getOwner()->getId() << " agent-type: " << other->getOwner()->getId() << ", \n";
 		}
 		ss << "] \n";
 		return ss.str();
@@ -79,9 +79,9 @@ namespace simobj {
 		hasOwner = true;
 	}
 
-	SimObjWeakPtr Site::getOwner() {
+	SimObjPtr Site::getOwner() {
 		if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent!");
-		return ownerAgent;
+		return ownerAgent.lock();
 	}
 
 	bool Site::isConnected() const {

@@ -54,6 +54,17 @@ namespace clib {
 		clusterCounter = 0;
 	}
 
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::createAgentCluster(const unsigned long& id, const string& type) {
+		try {
+			simContainer.addAgentCluster(id, type);
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::createAgent(const unsigned long& id, const string& type) {
 		try {
 			simContainer.addAgent(id, type);
@@ -68,6 +79,20 @@ namespace clib {
 	CLIB_COLLISION_DETECTION_API SimObjPtr CLibCollisionController::getAgent(const unsigned long& id) {
 		return simContainer.getAgent(id);
 	}
+	CLIB_COLLISION_DETECTION_API SimObjPtr CLibCollisionController::getAgentCluster(const unsigned long& id) {
+		return simContainer.getAgentCluster(id);
+	}
+
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId) {
+		try {
+			simContainer.addAgentToCluster(agentId, clusterId);
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
 
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2) {
 		shared_ptr<Agent> agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt1));
@@ -79,8 +104,6 @@ namespace clib {
 		Vector3d agentOrigin1, agentOrigin2, siteOrigin1, siteOrigin2, s1ToO1, s2ToO2, O1ToS1, O2toS2;
 		agentOrigin1 = agent1->getPosition(ReferenceFrame::Global);
 		agentOrigin2 = agent2->getPosition(ReferenceFrame::Global);
-		//siteOrigin1 = agent1->getConvertedPosition(site1->getPosition());
-		//siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
 		siteOrigin1 = site1->getPosition(ReferenceFrame::Global);
 		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
 
@@ -95,7 +118,6 @@ namespace clib {
 
 		Quaternion rot = Quaternion::FromTwoVectors(O2toS2, s1ToO1);
 		agent2->rotateAgent(rot);
-		//siteOrigin2 = agent2->getConvertedPosition(site2->getPosition());
 		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
 		std::cout << "Site2: " << siteOrigin2 << std::endl;
 
@@ -105,14 +127,20 @@ namespace clib {
 
 		std::cout << "Agent2: " << agent2->getPosition(ReferenceFrame::Global) << std::endl;
 
-		simContainer.addAgentCluster(clusterCounter, "default");
+		if (!agent1->isInAnyCluster()) {
+			std::cout << "Agent1: " << agent1->getId() << " not in Cluster!" << std::endl;
+			simContainer.addAgentCluster(clusterCounter, "default");
+			simContainer.addAgentToCluster(agent1->getId(), clusterCounter);
+			simContainer.addAgentToCluster(agent2->getId(), clusterCounter);
+			site1->connect(site2);
+			clusterCounter++;
+		}
+		else {
+			std::cout << "Agent1: " << agent1->getId() << " in Cluster!" << std::endl;
+			simContainer.addAgentToCluster(agent2->getId(), agent1->getAgentCluster()->getId());
+			site1->connect(site2);
+		}
 		
-		shared_ptr<AgentCluster> cluster = std::static_pointer_cast<AgentCluster>(simContainer.getAgentCluster(clusterCounter));
-		cluster->insertAgent(agent1);
-		cluster->insertAgent(agent2);
-		site1->connect(site2);
-
-		clusterCounter++;
 	}
 
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgent(const unsigned long& id) {
@@ -128,9 +156,16 @@ namespace clib {
 		
 	}
 
-	CLIB_COLLISION_DETECTION_API void CLibCollisionController::displayAgentCluster(const unsigned long& id) {
-		vtkVis.renderAgentCluster(simContainer.getAgentCluster(id));
-		vtkVis.display();
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgentCluster(const unsigned long& id) {
+		try {
+			vtkVis.renderAgentCluster(simContainer.getAgentCluster(id));
+			vtkVis.display();
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
 	}
 
 	CLIB_COLLISION_DETECTION_API string CLibCollisionController::toString() {

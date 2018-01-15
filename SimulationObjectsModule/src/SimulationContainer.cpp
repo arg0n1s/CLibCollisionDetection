@@ -23,6 +23,13 @@ namespace simobj {
 		agents.insert(std::make_pair(id, Agent::create(id, metaSpecs.getAgentSpecification(type))));
 	}
 
+	void SimulationContainer::addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId) {
+		shared_ptr<Agent> agent = std::static_pointer_cast<Agent>(getAgent(agentId));
+		shared_ptr<AgentCluster> cluster = std::static_pointer_cast<AgentCluster>(getAgentCluster(clusterId));
+		cluster->insertAgent(agent);
+		agent->setAgentCluster(cluster);
+	}
+
 	void SimulationContainer::addAgentCluster(const unsigned long& id, const string& type) {
 		if (isAgentClusterInContainer(id)) throw std::runtime_error("AgentCluster with given ID already present within SimulationContainer!");
 		clusters.insert(std::make_pair(id, AgentCluster::create(id, type)));

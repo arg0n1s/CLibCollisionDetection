@@ -52,7 +52,7 @@ namespace vis {
 	VTK_VISUALIZATION_API void VTKVisualization::display() {
 		(*renderWindow)->Render();
 		(*renderWindowInteractor)->Start();
-		//(*renderer)->Clear();
+
 		createRenderer();
 		createRenderWindow();
 		createRenderWindowInteractor();
@@ -63,7 +63,7 @@ namespace vis {
 		renderShape(agtPtr->getPosition(simobj::ReferenceFrame::Global), agtPtr->getOrientation(simobj::ReferenceFrame::Global), agtPtr->getShape());
 		for (auto site : agtPtr->getAllSites()) {
 			shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site.second);
-			renderSite(agent, stPtr);
+			renderSite(stPtr);
 		}
 		renderAgentBBox(agtPtr);
 		renderAgentAxis(agtPtr);
@@ -74,55 +74,10 @@ namespace vis {
 		renderClusterAxis(clsPtr);
 		for (auto agent : clsPtr->getAllAgents()) {
 			shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent.second);
-			renderAgent(clsPtr, agtPtr);
+			renderAgent(agtPtr);
 		}
 	}
-
-	void VTKVisualization::renderAgent(SimObjPtr cluster, SimObjPtr agent) {
-		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
-		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
-
-		renderShape(agtPtr->getPosition(simobj::ReferenceFrame::Global), agtPtr->getOrientation(simobj::ReferenceFrame::Global), agtPtr->getShape());
-		for (auto site : agtPtr->getAllSites()) {
-			shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site.second);
-			renderSite(clsPtr, agtPtr, stPtr);
-		}
-		renderAgentBBox(clsPtr, agtPtr);
-		renderAgentAxis(clsPtr, agtPtr);
-	}
-
-	void VTKVisualization::renderAgentBBox(SimObjPtr cluster, SimObjPtr agent) {
-		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
-		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
-		const Quaternion& orientation = agtPtr->getOrientation(simobj::ReferenceFrame::Global);
-		const Vector3d& position = agtPtr->getPosition(simobj::ReferenceFrame::Global);
-		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
-		vtkSmartPointer<vtkCubeSource> box = vtkSmartPointer<vtkCubeSource>::New();
-		box->SetXLength(bbx.width);
-		box->SetYLength(bbx.height);
-		box->SetZLength(bbx.length);
-
-		vtkSmartPointer<vtkPolyDataMapper> boxMapper =
-			vtkSmartPointer<vtkPolyDataMapper>::New();
-		boxMapper->SetInputConnection(box->GetOutputPort());
-
-		vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
-		boxActor->SetMapper(boxMapper);
-		// color is for now hard coded, this can be changed in the future 
-		boxActor->GetProperty()->SetColor(0.2, 0.0, 0.2);
-		vtkSmartPointer<vtkTransform> transform =
-			vtkSmartPointer<vtkTransform>::New();
-		transform->Translate(position.x(), position.y(), position.z());
-		double r, p, y;
-		fromQuatToEuler(orientation, r, p, y);
-		transform->RotateX(r);
-		transform->RotateY(p);
-		transform->RotateZ(y);
-		boxActor->SetUserTransform(transform);
-		boxActor->GetProperty()->SetRepresentationToWireframe();
-		(*renderer)->AddActor(boxActor);
-	}
-
+	
 	void VTKVisualization::renderAgentBBox(SimObjPtr agent) {
 		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
 		const Quaternion& orientation = agtPtr->getOrientation(simobj::ReferenceFrame::Global);
@@ -132,11 +87,9 @@ namespace vis {
 		box->SetXLength(bbx.width);
 		box->SetYLength(bbx.height);
 		box->SetZLength(bbx.length);
-
 		vtkSmartPointer<vtkPolyDataMapper> boxMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		boxMapper->SetInputConnection(box->GetOutputPort());
-
 		vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
 		boxActor->SetMapper(boxMapper);
 		// color is for now hard coded, this can be changed in the future 
@@ -153,35 +106,11 @@ namespace vis {
 		boxActor->GetProperty()->SetRepresentationToWireframe();
 		(*renderer)->AddActor(boxActor);
 	}
-
-	void VTKVisualization::renderSite(SimObjPtr cluster, SimObjPtr agent, SimObjPtr site) {
-		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
-		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+	
+	void VTKVisualization::renderSite(SimObjPtr site) {
 		shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site);
-		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
-		// for now scaling is hard coded, can be changed in the future
-		double radius = std::max(std::max(bbx.width, bbx.height), bbx.length) / 10.0;
-
-		vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
-		sphere->SetRadius(radius);
-
-		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
-			vtkSmartPointer<vtkPolyDataMapper>::New();
-		sphereMapper->SetInputConnection(sphere->GetOutputPort());
-
-		vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
-		sphereActor->SetMapper(sphereMapper);
-		// color is for now hard coded, this can be changed in the future 
-		sphereActor->GetProperty()->SetColor(0.0, 1.0, 0.0);
-		Vector3d position = stPtr->getPosition(simobj::ReferenceFrame::Global);
-		sphereActor->SetPosition(position.x(), position.y(), position.z());
-		(*renderer)->AddActor(sphereActor);
-
-	}
-
-	void VTKVisualization::renderSite(SimObjPtr agent, SimObjPtr site) {
-		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
-		shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site);
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(stPtr->getOwner());
+		
 		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
 		// for now scaling is hard coded, can be changed in the future
 		double radius = std::max(std::max(bbx.width, bbx.height), bbx.length)/10.0;
@@ -224,35 +153,7 @@ namespace vis {
 		axes->SetUserTransform(transform);
 		(*renderer)->AddActor(axes);
 	}
-
-	void VTKVisualization::renderAgentAxis(SimObjPtr cluster, SimObjPtr agent)
-	{
-		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
-		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
-
-		const Quaternion& orientation = agtPtr->getOrientation(simobj::ReferenceFrame::Global);
-		const Vector3d& origin = agtPtr->getPosition(simobj::ReferenceFrame::Global);
-
-		const simobj::shapes::BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
-		// for now scaling is hard coded, can be changed in the future
-		double radius = std::max(std::max(bbx.width, bbx.height), bbx.length) * 3;
-
-		vtkSmartPointer<vtkAxesActor> axes =
-			vtkSmartPointer<vtkAxesActor>::New();
-		axes->SetDragable(0);
-		axes->SetTotalLength(radius, radius, radius);
-		vtkSmartPointer<vtkTransform> transform =
-			vtkSmartPointer<vtkTransform>::New();
-		transform->Translate(origin.x(), origin.y(), origin.z());
-		double r, p, y;
-		fromQuatToEuler(orientation, r, p, y);
-		transform->RotateX(r);
-		transform->RotateY(p);
-		transform->RotateZ(y);
-		axes->SetUserTransform(transform);
-		(*renderer)->AddActor(axes);
-	}
-
+	
 	void VTKVisualization::renderAgentAxis(SimObjPtr agent)
 	{
 		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
@@ -267,6 +168,9 @@ namespace vis {
 			vtkSmartPointer<vtkAxesActor>::New();
 		axes->SetDragable(0);
 		axes->SetTotalLength(radius, radius, radius);
+		if (agtPtr->isInAnyCluster()) {
+			axes->AxisLabelsOff();
+		}
 		vtkSmartPointer<vtkTransform> transform =
 			vtkSmartPointer<vtkTransform>::New();
 		transform->Translate(origin.x(), origin.y(), origin.z());

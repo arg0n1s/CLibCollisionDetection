@@ -1,6 +1,7 @@
 #include "..\include\Agent.h"
 #include "..\include\Shape.h"
 #include "..\include\Site.h"
+#include "..\include\AgentCluster.h"
 #include <sstream>
 
 namespace simobj {
@@ -90,7 +91,8 @@ namespace simobj {
 		sites.insert(std::make_pair(s->getId(), s));
 	}
 
-	void Agent::setAgentCluster(SimObjWeakPtr cluster) {
+	void Agent::setAgentCluster(SimObjPtr cluster) {
+		SimObjPtr clstr = std::static_pointer_cast<AgentCluster>(cluster);
 		this->cluster = cluster;
 		belongsToCluster = true;
 	}
@@ -114,12 +116,16 @@ namespace simobj {
 		return shape;
 	}
 
-	SimObjWeakPtr Agent::getAgentCluster() {
-		return cluster;
+	SimObjPtr Agent::getAgentCluster() {
+		return cluster.lock();
 	}
 
 	void Agent::rotateAgent(const Quaternion& rotation) {
 		orientation = orientation*rotation;
+	}
+
+	void Agent::moveAgent(const Vector3d& translation) {
+		position = position + translation;
 	}
 
 	bool Agent::isInAnyCluster() const {

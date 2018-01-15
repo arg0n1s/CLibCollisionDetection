@@ -19,6 +19,7 @@ namespace simobj {
 		SimulationContainer();
 		SimulationContainer(const MetaSpecification& metaSpecs);
 		void addAgent(const unsigned long& id, const string& type);
+		void addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 		void addAgentCluster(const unsigned long& id, const string& type);
 
 		SimObjPtr getAgent(const unsigned long& id);

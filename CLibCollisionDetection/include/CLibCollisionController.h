@@ -44,15 +44,21 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs);
 
+		CLIB_COLLISION_DETECTION_API bool createAgentCluster(const unsigned long& id, const string& type);
+
 		CLIB_COLLISION_DETECTION_API bool createAgent(const unsigned long& id, const string& type);
 
 		CLIB_COLLISION_DETECTION_API SimObjPtr getAgent(const unsigned long& id);
+
+		CLIB_COLLISION_DETECTION_API SimObjPtr getAgentCluster(const unsigned long& id);
+
+		CLIB_COLLISION_DETECTION_API bool addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 
 		CLIB_COLLISION_DETECTION_API void connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2);
 
 		CLIB_COLLISION_DETECTION_API bool displayAgent(const unsigned long& id);
 
-		CLIB_COLLISION_DETECTION_API void displayAgentCluster(const unsigned long& id);
+		CLIB_COLLISION_DETECTION_API bool displayAgentCluster(const unsigned long& id);
 
 		CLIB_COLLISION_DETECTION_API string toString();
 
