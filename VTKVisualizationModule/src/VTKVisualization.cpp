@@ -90,6 +90,7 @@ namespace vis {
 		vtkSmartPointer<vtkPolyDataMapper> boxMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		boxMapper->SetInputConnection(box->GetOutputPort());
+		boxMapper->SetImmediateModeRendering(true);
 		vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
 		boxActor->SetMapper(boxMapper);
 		// color is for now hard coded, this can be changed in the future 
@@ -121,6 +122,7 @@ namespace vis {
 		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		sphereMapper->SetInputConnection(sphere->GetOutputPort());
+		sphereMapper->SetImmediateModeRendering(true);
 
 		vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
 		sphereActor->SetMapper(sphereMapper);
@@ -211,6 +213,7 @@ namespace vis {
 		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		sphereMapper->SetInputConnection(sphere->GetOutputPort());
+		sphereMapper->SetImmediateModeRendering(true);
 
 		vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
 		sphereActor->SetMapper(sphereMapper);
@@ -240,6 +243,7 @@ namespace vis {
 		vtkSmartPointer<vtkPolyDataMapper> cylinderMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		cylinderMapper->SetInputConnection(cylinder->GetOutputPort());
+		cylinderMapper->SetImmediateModeRendering(true);
 
 		vtkSmartPointer<vtkActor> cylinderActor = vtkSmartPointer<vtkActor>::New();
 		cylinderActor->SetMapper(cylinderMapper);
@@ -287,6 +291,7 @@ namespace vis {
 		vtkSmartPointer<vtkPolyDataMapper> ellipsoidMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		ellipsoidMapper->SetInputConnection(ellipsoidSource->GetOutputPort());
+		ellipsoidMapper->SetImmediateModeRendering(true);
 
 		vtkSmartPointer<vtkActor> ellipsoidActor = vtkSmartPointer<vtkActor>::New();
 		ellipsoidActor->SetMapper(ellipsoidMapper);

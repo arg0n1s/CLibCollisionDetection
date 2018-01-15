@@ -98,6 +98,7 @@ namespace clib {
 		shared_ptr<Agent> agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt1));
 		shared_ptr<Agent> agent2 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt2));
 		if (agent1->getId() == agent2->getId()) throw std::runtime_error("Error, cannot connect identical agents!");
+		
 		shared_ptr<Site> site1 = std::static_pointer_cast<Site>(agent1->getSite(st1));
 		shared_ptr<Site> site2 = std::static_pointer_cast<Site>(agent2->getSite(st2));
 
@@ -107,38 +108,38 @@ namespace clib {
 		siteOrigin1 = site1->getPosition(ReferenceFrame::Global);
 		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
 
-		std::cout << "Site1: " << siteOrigin1 << std::endl;
-		std::cout << "Site2: " << siteOrigin2 << std::endl;
-
 		s1ToO1 = (agentOrigin1 - siteOrigin1).normalized();
 		O2toS2 = (siteOrigin2 - agentOrigin2).normalized();
-
-		std::cout << "Site1 to Origin1: " << s1ToO1 << std::endl;
-		std::cout << "Origin2 to Site2: " << O2toS2 << std::endl;
 
 		Quaternion rot = Quaternion::FromTwoVectors(O2toS2, s1ToO1);
 		agent2->rotateAgent(rot);
 		siteOrigin2 = site2->getPosition(ReferenceFrame::Global);
-		std::cout << "Site2: " << siteOrigin2 << std::endl;
 
 		s2ToO2 = agentOrigin2 - siteOrigin2;
 		O1ToS1 = siteOrigin1 - agentOrigin1;
 		agent2->setPosition(agentOrigin1 + O1ToS1 + s2ToO2);
 
-		std::cout << "Agent2: " << agent2->getPosition(ReferenceFrame::Global) << std::endl;
-
-		if (!agent1->isInAnyCluster()) {
-			std::cout << "Agent1: " << agent1->getId() << " not in Cluster!" << std::endl;
+		if (!agent1->isInAnyCluster() && !agent2->isInAnyCluster()) {
 			simContainer.addAgentCluster(clusterCounter, "default");
 			simContainer.addAgentToCluster(agent1->getId(), clusterCounter);
 			simContainer.addAgentToCluster(agent2->getId(), clusterCounter);
-			site1->connect(site2);
+			simContainer.connectSites(site1, site2);
+			//site1->connect(site2);
 			clusterCounter++;
 		}
-		else {
-			std::cout << "Agent1: " << agent1->getId() << " in Cluster!" << std::endl;
+		else if(agent1->isInAnyCluster() && !agent2->isInAnyCluster()){
 			simContainer.addAgentToCluster(agent2->getId(), agent1->getAgentCluster()->getId());
-			site1->connect(site2);
+			//site1->connect(site2);
+			simContainer.connectSites(site1, site2);
+		}
+		else if (!agent1->isInAnyCluster() && agent2->isInAnyCluster()) {
+			simContainer.addAgentToCluster(agent1->getId(), agent2->getAgentCluster()->getId());
+			simContainer.connectSites(site1, site2);
+			//site1->connect(site2);
+		}
+		else {
+			simContainer.addAgentToCluster(agent2->getId(), agent1->getAgentCluster()->getId());
+			simContainer.connectSites(site1, site2);
 		}
 		
 	}

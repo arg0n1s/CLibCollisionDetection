@@ -21,6 +21,9 @@ namespace simobj {
 		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
 		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
+		void rotateCluster(const Quaternion& rotation);
+		void moveCluster(const Vector3d& translation);
+
 		void insertAgent(SimObjPtr agent);
 		SimObjPtr getAgent(const unsigned long& id);
 		const unordered_map& getAllAgents() const;

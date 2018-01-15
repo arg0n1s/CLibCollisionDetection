@@ -1,6 +1,7 @@
 #include "..\include\SimulationContainer.h"
 #include "..\include\SimulationObject.h"
 #include "..\include\Agent.h"
+#include "..\include\Site.h"
 #include "..\include\AgentCluster.h"
 
 namespace simobj {
@@ -33,6 +34,13 @@ namespace simobj {
 	void SimulationContainer::addAgentCluster(const unsigned long& id, const string& type) {
 		if (isAgentClusterInContainer(id)) throw std::runtime_error("AgentCluster with given ID already present within SimulationContainer!");
 		clusters.insert(std::make_pair(id, AgentCluster::create(id, type)));
+	}
+
+	void SimulationContainer::connectSites(SimObjPtr site1, SimObjPtr site2) {
+		shared_ptr<Site> st1 = std::static_pointer_cast<Site>(site1);
+		shared_ptr<Site> st2 = std::static_pointer_cast<Site>(site2);
+		st1->connect(st2);
+		st2->connect(st1);
 	}
 
 	SimObjPtr SimulationContainer::getAgent(const unsigned long& id) {

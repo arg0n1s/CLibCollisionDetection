@@ -21,7 +21,7 @@ namespace simobj {
 		void addAgent(const unsigned long& id, const string& type);
 		void addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 		void addAgentCluster(const unsigned long& id, const string& type);
-
+		void connectSites(SimObjPtr site1, SimObjPtr site2);
 		SimObjPtr getAgent(const unsigned long& id);
 		SimObjPtr getAgentCluster(const unsigned long& id);
 

@@ -43,6 +43,13 @@ namespace simobj {
 		return SimObjPtr(new AgentCluster(id, type));
 	}
 
+	void AgentCluster::rotateCluster(const Quaternion& rotation) {
+		orientation = orientation*rotation;
+	}
+	void AgentCluster::moveCluster(const Vector3d& translation) {
+		position = position + translation;
+	}
+
 	void AgentCluster::insertAgent(SimObjPtr agent) {
 		if (isAgentInCluster(agent->getId())) throw std::runtime_error("Agent with given ID already exist within this cluster.");
 		//shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(agent);
