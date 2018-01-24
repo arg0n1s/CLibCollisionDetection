@@ -2,6 +2,7 @@
 
 #include <SimulationContainer.h>
 #include <MetaSpecification.h>
+#include <CollisionDetection.h>
 #include <string>
 #include <vector>
 #include <Shape.h>
@@ -28,6 +29,7 @@ namespace clib
 	using std::string;
 	using ShapePtr = std::shared_ptr<simobj::shapes::Shape>;
 	using simobj::shapes::ShapeType;
+	using collision::CollisionDetection;
 
 	class CLibCollisionController
 	{
@@ -54,11 +56,15 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API bool addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 
+		CLIB_COLLISION_DETECTION_API bool addAgentClusterToCollisionDetector(const unsigned long& clusterId);
+
 		CLIB_COLLISION_DETECTION_API void connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2);
 
 		CLIB_COLLISION_DETECTION_API bool displayAgent(const unsigned long& id);
 
 		CLIB_COLLISION_DETECTION_API bool displayAgentCluster(const unsigned long& id);
+
+		CLIB_COLLISION_DETECTION_API bool displayClusterCollisionTree(const unsigned long& clusterId);
 
 		CLIB_COLLISION_DETECTION_API string toString();
 
@@ -66,6 +72,7 @@ namespace clib
 	private:
 		MetaSpecification metaSpecs;
 		SimulationContainer simContainer;
+		CollisionDetection collisionDetector;
 		VTKVisualization vtkVis;
 		unsigned long clusterCounter;
 	};

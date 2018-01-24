@@ -25,6 +25,14 @@ namespace simobj {
 	}
 }
 
+namespace collision {
+	namespace octtree {
+		template <typename T>
+		class OctTree;
+
+	}
+}
+
 namespace vis {
 
 	// For compatibility with new VTK generic data arrays
@@ -37,6 +45,8 @@ namespace vis {
 	using std::shared_ptr;
 	using SimObjPtr = shared_ptr<SimulationObject>;
 	using ShapePtr = shared_ptr<Shape>;
+	using collision::octtree::OctTree;
+	using TreePtr = shared_ptr<OctTree<unsigned int>>;
 	using RenderPtr = shared_ptr<vtkSmartPointer<vtkRenderer> >;
 	using RenderWindowPtr = shared_ptr<vtkSmartPointer<vtkRenderWindow> >;
 	using RenderWindowInteractorPtr = shared_ptr<vtkSmartPointer<vtkRenderWindowInteractor> >;
@@ -50,6 +60,7 @@ namespace vis {
 		VTK_VISUALIZATION_API void display();
 		VTK_VISUALIZATION_API void renderAgent(SimObjPtr agent);
 		VTK_VISUALIZATION_API void renderAgentCluster(SimObjPtr cluster);
+		VTK_VISUALIZATION_API void renderCollisionTree(SimObjPtr cluster, TreePtr tree);
 	private:
 		RenderPtr renderer;
 		RenderWindowPtr renderWindow;
@@ -64,6 +75,7 @@ namespace vis {
 		void renderClusterAxis(SimObjPtr cluster);
 		void renderAgentAxis(SimObjPtr agent);
 		void renderAgentBBox(SimObjPtr agent);
+		void renderTree(TreePtr tree);
 
 		void renderShape(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);
 		void renderSphere(const Vector3d& position, const Quaternion& orientation, ShapePtr shape);

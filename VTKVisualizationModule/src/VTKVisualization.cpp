@@ -26,6 +26,8 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2); VTK_MODULE_INIT(vtkInteractionStyle); VTK_
 #include <AgentCluster.h>
 #include <Shape.h>
 
+#include <OctTree.h>
+
 namespace vis {
 
 	// For compatibility with new VTK generic data arrays
@@ -42,6 +44,9 @@ namespace vis {
 	using simobj::shapes::Sphere;
 	using simobj::shapes::Cylinder;
 	using simobj::shapes::Ellipsoid;
+	using collision::octtree::OctTree;
+	using collision::octtree::Bounds;
+	using NodePtr = collision::octtree::NodePtr<unsigned int>;
 
 	VTK_VISUALIZATION_API VTKVisualization::VTKVisualization() {
 		createRenderer();
@@ -77,6 +82,11 @@ namespace vis {
 			renderAgent(agtPtr);
 		}
 	}
+
+	VTK_VISUALIZATION_API void VTKVisualization::renderCollisionTree(SimObjPtr cluster, TreePtr tree) {
+		renderAgentCluster(cluster);
+		renderTree(tree);
+	}
 	
 	void VTKVisualization::renderAgentBBox(SimObjPtr agent) {
 		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
@@ -106,6 +116,32 @@ namespace vis {
 		boxActor->SetUserTransform(transform);
 		boxActor->GetProperty()->SetRepresentationToWireframe();
 		(*renderer)->AddActor(boxActor);
+	}
+
+	void VTKVisualization::renderTree(TreePtr tree) {
+		std::vector<NodePtr> nodes = tree->getNodes();
+		for (auto node : nodes) {
+			//if (node->isEmpty()) continue;
+			vtkSmartPointer<vtkCubeSource> box = vtkSmartPointer<vtkCubeSource>::New();
+			Bounds diameter = node->getDiameter();
+			box->SetXLength(diameter.x);
+			box->SetYLength(diameter.y);
+			box->SetZLength(diameter.z);
+			vtkSmartPointer<vtkPolyDataMapper> boxMapper =
+				vtkSmartPointer<vtkPolyDataMapper>::New();
+			boxMapper->SetInputConnection(box->GetOutputPort());
+			boxMapper->SetImmediateModeRendering(true);
+			vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
+			boxActor->SetMapper(boxMapper);
+			// color is for now hard coded, this can be changed in the future 
+			boxActor->GetProperty()->SetColor(0.0, 0.8, 0.8);
+			vtkSmartPointer<vtkTransform> transform =
+				vtkSmartPointer<vtkTransform>::New();
+			transform->Translate(node->getX(), node->getY(), node->getZ());
+			boxActor->SetUserTransform(transform);
+			boxActor->GetProperty()->SetRepresentationToWireframe();
+			(*renderer)->AddActor(boxActor);
+		}
 	}
 	
 	void VTKVisualization::renderSite(SimObjPtr site) {

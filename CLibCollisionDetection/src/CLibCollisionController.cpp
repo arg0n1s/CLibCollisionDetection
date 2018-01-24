@@ -3,6 +3,7 @@
 #include <Agent.h>
 #include <Site.h>
 #include <AgentCluster.h>
+#include <OctTree.h>
 
 #include <iostream>
 
@@ -50,6 +51,7 @@ namespace clib {
 
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController(const MetaSpecification& metaSpecs) : metaSpecs(metaSpecs) {
 		simContainer = SimulationContainer(metaSpecs);
+		collisionDetector = CollisionDetection();
 		vtkVis = VTKVisualization();
 		clusterCounter = 0;
 	}
@@ -86,6 +88,18 @@ namespace clib {
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId) {
 		try {
 			simContainer.addAgentToCluster(agentId, clusterId);
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentClusterToCollisionDetector(const unsigned long& clusterId) {
+		try {
+			SimObjPtr clstr = getAgentCluster(clusterId);
+			collisionDetector.makeTreeFromCluster(clstr);
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
@@ -160,6 +174,18 @@ namespace clib {
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgentCluster(const unsigned long& id) {
 		try {
 			vtkVis.renderAgentCluster(simContainer.getAgentCluster(id));
+			vtkVis.display();
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayClusterCollisionTree(const unsigned long& clusterId) {
+		try {
+			vtkVis.renderCollisionTree(getAgentCluster(clusterId), collisionDetector.getTree(clusterId));
 			vtkVis.display();
 		}
 		catch (std::exception& e) {

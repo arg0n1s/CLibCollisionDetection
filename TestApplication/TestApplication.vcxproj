@@ -113,13 +113,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;CollisionDetectionModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -152,7 +152,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,7 +160,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;CollisionDetectionModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
