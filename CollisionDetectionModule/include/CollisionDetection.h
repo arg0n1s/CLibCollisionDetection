@@ -24,10 +24,16 @@ namespace collision {
 	class CollisionDetection {
 	public:
 		CollisionDetection();
+		void setInitialTreeDiameter(const double& initialTreeDiameter);
+		void setMinimalCellDiameter(const double& minimalCellDiameter);
+		void setAllowRescaling(const bool rescalingOn);
+
 		void makeTreeFromCluster(SimObjPtr cluster);
 		TreePtr getTree(const unsigned int& id);
 	private:
 		TreeMap trees;
-
+		double initialTreeDiameter;
+		double minimalCellDiameter;
+		bool allowRescaling;
 	};
 }

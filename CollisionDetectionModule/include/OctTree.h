@@ -2,7 +2,6 @@
 #undef max
 #include <memory>
 #include <vector>
-#include <unordered_map>
 #include <unordered_set>
 #include <limits>
 #include <string>
@@ -20,6 +19,7 @@ namespace collision {
 		};
 		static const double POS_INF = std::numeric_limits<double>::max();
 		static const double NEG_INF = -std::numeric_limits<double>::max();
+		static const unsigned int MAX_RESIZE_STEPS = 10;
 
 		namespace octant {
 			enum Octant {
@@ -109,14 +109,16 @@ namespace collision {
 		template <typename T>
 		using NodeArray = std::vector <NodePtr<T>>;
 		template <typename T>
-		using NodeMap = std::unordered_map <T, NodePtr<T>>;
-		template <typename T>
 		using TreePtr = shared_ptr<OctTree<T>>;
 
 		template <typename T>
 		class OctTree {
 		public:
 			static TreePtr<T> create(const Bounds& lower, const Bounds& upper, const Bounds& minDiameter);
+			static TreePtr<T> create(const Bounds& diameter, const Bounds& minDiameter);
+			static TreePtr<T> create(const double& treeDiameter, const double& minCellDiameter);
+
+			void setAllowResize(const bool resizeOn);
 
 			void insertNode(const T& id, const Bounds& lowerBound, const Bounds& upperBound);
 			double getNearestDistance(const double& x, const double& y, const double& z);
@@ -124,16 +126,18 @@ namespace collision {
 
 			const NodeArray<T>& getNodes() const;
 
-		protected:
+		private:
 			NodeArray<T> nodes;
-			NodeMap<T> mappedNodes;
 			NodePtr<T> root;
 			Bounds minDiameter;
+			bool allowResize;
 
+			OctTree(const double& treeDiameter, const double& minCellDiameter);
+			OctTree(const Bounds& diameter, const Bounds& minDiameter);
 			OctTree(const Bounds& lower, const Bounds& upper, const Bounds& minDiameter);
 
 			void makeNewOctant(NodePtr<T> parent, const Bounds& lowerBound, const Bounds& upperBound, const Octant& octant);
-			
+			void resize(const Bounds& lowerBound, const Bounds& upperBound);
 			bool insertNode(NodePtr<T> node, const T& id, const Bounds& lowerBound, const Bounds& upperBound);
 		};
 	}

@@ -21,6 +21,12 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2); VTK_MODULE_INIT(vtkInteractionStyle); VTK_
 #include <vtk-8.0\vtkProperty.h>
 #include <vtk-8.0\vtkTransform.h>
 
+#include <vtk-8.0\vtkCallbackCommand.h>
+#include <vtk-8.0\vtkInteractorObserver.h>
+#include <vtk-8.0\vtkGlyph3D.h>
+#include <vtk-8.0\vtkFloatArray.h>
+#include <vtk-8.0\vtkPointData.h>
+
 #include <Agent.h>
 #include <Site.h>
 #include <AgentCluster.h>
@@ -52,6 +58,7 @@ namespace vis {
 		createRenderer();
 		createRenderWindow();
 		createRenderWindowInteractor();
+		renderAxisOfClusterOn = renderAxisOfAgentOn = renderEmptyNodesOn = renderBoundingBoxesOn = showFPSOn = false;
 	}
 
 	VTK_VISUALIZATION_API void VTKVisualization::display() {
@@ -70,13 +77,19 @@ namespace vis {
 			shared_ptr<Site> stPtr = std::static_pointer_cast<Site>(site.second);
 			renderSite(stPtr);
 		}
-		renderAgentBBox(agtPtr);
-		renderAgentAxis(agtPtr);
+		if (renderBoundingBoxesOn) {
+			renderAgentBBox(agtPtr);
+		}
+		if (renderAxisOfAgentOn) {
+			renderAgentAxis(agtPtr);
+		}
 	}
 
 	VTK_VISUALIZATION_API void VTKVisualization::renderAgentCluster(SimObjPtr cluster) {
 		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
-		renderClusterAxis(clsPtr);
+		if (renderAxisOfClusterOn) {
+			renderClusterAxis(clsPtr);
+		}
 		for (auto agent : clsPtr->getAllAgents()) {
 			shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent.second);
 			renderAgent(agtPtr);
@@ -97,14 +110,20 @@ namespace vis {
 		box->SetXLength(bbx.width);
 		box->SetYLength(bbx.height);
 		box->SetZLength(bbx.length);
+
 		vtkSmartPointer<vtkPolyDataMapper> boxMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
+
+		boxMapper->GlobalImmediateModeRenderingOn();
 		boxMapper->SetInputConnection(box->GetOutputPort());
+		
 		boxMapper->SetImmediateModeRendering(true);
 		vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
 		boxActor->SetMapper(boxMapper);
 		// color is for now hard coded, this can be changed in the future 
 		boxActor->GetProperty()->SetColor(0.2, 0.0, 0.2);
+		
+
 		vtkSmartPointer<vtkTransform> transform =
 			vtkSmartPointer<vtkTransform>::New();
 		transform->Translate(position.x(), position.y(), position.z());
@@ -113,35 +132,48 @@ namespace vis {
 		transform->RotateX(r);
 		transform->RotateY(p);
 		transform->RotateZ(y);
+		
 		boxActor->SetUserTransform(transform);
 		boxActor->GetProperty()->SetRepresentationToWireframe();
 		(*renderer)->AddActor(boxActor);
+
 	}
 
 	void VTKVisualization::renderTree(TreePtr tree) {
 		std::vector<NodePtr> nodes = tree->getNodes();
+
+		vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+		vtkSmartPointer<vtkFloatArray> scales =
+			vtkSmartPointer<vtkFloatArray>::New();
+		scales->SetName("scales");
+
+		vtkSmartPointer<vtkCubeSource> cubeSource = vtkSmartPointer<vtkCubeSource>::New();
+
 		for (auto node : nodes) {
-			//if (node->isEmpty()) continue;
-			vtkSmartPointer<vtkCubeSource> box = vtkSmartPointer<vtkCubeSource>::New();
+			if (node->isEmpty() && !renderEmptyNodesOn) continue;
 			Bounds diameter = node->getDiameter();
-			box->SetXLength(diameter.x);
-			box->SetYLength(diameter.y);
-			box->SetZLength(diameter.z);
-			vtkSmartPointer<vtkPolyDataMapper> boxMapper =
-				vtkSmartPointer<vtkPolyDataMapper>::New();
-			boxMapper->SetInputConnection(box->GetOutputPort());
-			boxMapper->SetImmediateModeRendering(true);
-			vtkSmartPointer<vtkActor> boxActor = vtkSmartPointer<vtkActor>::New();
-			boxActor->SetMapper(boxMapper);
-			// color is for now hard coded, this can be changed in the future 
-			boxActor->GetProperty()->SetColor(0.0, 0.8, 0.8);
-			vtkSmartPointer<vtkTransform> transform =
-				vtkSmartPointer<vtkTransform>::New();
-			transform->Translate(node->getX(), node->getY(), node->getZ());
-			boxActor->SetUserTransform(transform);
-			boxActor->GetProperty()->SetRepresentationToWireframe();
-			(*renderer)->AddActor(boxActor);
+			points->InsertNextPoint(node->getX(), node->getY(), node->getZ());
+			scales->InsertNextValue(diameter.x);
 		}
+
+		vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
+		polydata->SetPoints(points);
+		polydata->GetPointData()->SetScalars(scales);
+		vtkSmartPointer<vtkGlyph3D> glyph3D = vtkSmartPointer<vtkGlyph3D>::New();
+		glyph3D->SetSourceConnection(cubeSource->GetOutputPort());
+		glyph3D->SetInputData(polydata);
+		glyph3D->SetScaleModeToScaleByScalar();
+		glyph3D->Update();
+
+		vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+		mapper->SetInputConnection(glyph3D->GetOutputPort());
+
+		vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+		actor->SetMapper(mapper);
+		actor->GetProperty()->SetRepresentationToWireframe();
+		actor->GetProperty()->SetColor(0.0, 0.8, 0.8);
+
+		(*renderer)->AddActor(actor);
 	}
 	
 	void VTKVisualization::renderSite(SimObjPtr site) {
@@ -154,9 +186,11 @@ namespace vis {
 
 		vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
 		sphere->SetRadius(radius);
-
+		
 		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
+		
+		sphereMapper->GlobalImmediateModeRenderingOn();
 		sphereMapper->SetInputConnection(sphere->GetOutputPort());
 		sphereMapper->SetImmediateModeRendering(true);
 
@@ -245,9 +279,11 @@ namespace vis {
 
 		vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
 		sphere->SetRadius(sphPtr->getRadius());
-
+		
 		vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
+
+		sphereMapper->GlobalImmediateModeRenderingOn();
 		sphereMapper->SetInputConnection(sphere->GetOutputPort());
 		sphereMapper->SetImmediateModeRendering(true);
 
@@ -275,9 +311,11 @@ namespace vis {
 		cylinder->SetResolution(51);
 		cylinder->SetHeight(cylPtr->getLength());
 		cylinder->SetRadius(cylPtr->getRadius());
-
+		
 		vtkSmartPointer<vtkPolyDataMapper> cylinderMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
+
+		cylinderMapper->GlobalImmediateModeRenderingOn();
 		cylinderMapper->SetInputConnection(cylinder->GetOutputPort());
 		cylinderMapper->SetImmediateModeRendering(true);
 
@@ -323,9 +361,11 @@ namespace vis {
 		ellipsoidSource->SetVResolution(51);
 		ellipsoidSource->SetWResolution(51);
 		ellipsoidSource->Update();
-
+		
 		vtkSmartPointer<vtkPolyDataMapper> ellipsoidMapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
+
+		ellipsoidMapper->GlobalImmediateModeRenderingOn();
 		ellipsoidMapper->SetInputConnection(ellipsoidSource->GetOutputPort());
 		ellipsoidMapper->SetImmediateModeRendering(true);
 
@@ -346,11 +386,30 @@ namespace vis {
 		(*renderer)->AddActor(ellipsoidActor);
 	}
 
+	void CallbackFunction(vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData))
+	{
+		vtkRenderer* renderer = static_cast<vtkRenderer*>(caller);
+
+		double timeInSeconds = renderer->GetLastRenderTimeInSeconds();
+		double fps = 1.0 / timeInSeconds;
+		std::cout << "FPS: " << fps << std::endl;
+
+		std::cout << "Callback" << std::endl;
+	}
+
 	void VTKVisualization::createRenderer()
 	{
 		renderer = std::make_shared<vtkSmartPointer<vtkRenderer> >(vtkSmartPointer<vtkRenderer>::New());
 		// background color is for now hard coded, this can be changed in the future 
 		(*renderer)->SetBackground(0.2, 0.2, 0.2);
+
+		if (showFPSOn) {
+		vtkSmartPointer<vtkCallbackCommand> callback =
+			vtkSmartPointer<vtkCallbackCommand>::New();
+
+		callback->SetCallback(CallbackFunction);
+		(*renderer)->AddObserver(vtkCommand::EndEvent, callback);
+		}
 	}
 
 	void VTKVisualization::createRenderWindow()
