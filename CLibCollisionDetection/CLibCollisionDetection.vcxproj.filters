@@ -21,9 +21,15 @@
     <ClCompile Include="src\CLibCollisionController.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\CLibErrorLogger.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CLibCollisionController.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLibErrorLogger.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

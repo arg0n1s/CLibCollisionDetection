@@ -1,4 +1,5 @@
 #include "../include/CLibCollisionController.h"
+#include "../include/CLibErrorLogger.h"
 
 #include <Agent.h>
 #include <Site.h>
@@ -6,6 +7,7 @@
 #include <OctTree.h>
 
 #include <iostream>
+
 
 namespace clib {
 
@@ -50,10 +52,22 @@ namespace clib {
 	}
 
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController(const MetaSpecification& metaSpecs) : metaSpecs(metaSpecs) {
+		ErrorLogger::instance();
 		simContainer = SimulationContainer(metaSpecs);
 		collisionDetector = CollisionDetection();
 		vtkVis = VTKVisualization();
 		clusterCounter = 0;
+	}
+
+	CLIB_COLLISION_DETECTION_API CLibCollisionController::~CLibCollisionController() {
+		
+		try {
+			ErrorLogger::instance().saveToLogToFile();
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+		}
+
 	}
 
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::createAgentCluster(const unsigned long& id, const string& type) {
@@ -62,6 +76,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -73,6 +88,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -91,6 +107,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -100,12 +117,13 @@ namespace clib {
 		try {
 			SimObjPtr clstr = getAgentCluster(clusterId);
 			collisionDetector.setAllowRescaling(true);
-			collisionDetector.setMinimalCellDiameter(2.0);
+			collisionDetector.setMinimalCellDiameter(0.25);
 			collisionDetector.setInitialTreeDiameter(1.0);
 			collisionDetector.makeTreeFromCluster(clstr);
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -168,6 +186,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -181,6 +200,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;
@@ -196,6 +216,7 @@ namespace clib {
 		}
 		catch (std::exception& e) {
 			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
 			return false;
 		}
 		return true;

@@ -167,9 +167,11 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\CLibCollisionController.cpp" />
+    <ClCompile Include="src\CLibErrorLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CLibCollisionController.h" />
+    <ClInclude Include="include\CLibErrorLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

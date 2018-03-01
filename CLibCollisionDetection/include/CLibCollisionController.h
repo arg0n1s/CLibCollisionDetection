@@ -46,6 +46,8 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs);
 
+		CLIB_COLLISION_DETECTION_API ~CLibCollisionController();
+
 		CLIB_COLLISION_DETECTION_API bool createAgentCluster(const unsigned long& id, const string& type);
 
 		CLIB_COLLISION_DETECTION_API bool createAgent(const unsigned long& id, const string& type);
