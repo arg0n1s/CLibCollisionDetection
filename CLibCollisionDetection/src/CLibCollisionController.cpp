@@ -181,6 +181,7 @@ namespace clib {
 
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgent(const unsigned long& id) {
 		try {
+			vtkVis.renderAxisOfAgentOn = true;
 			vtkVis.renderAgent(simContainer.getAgent(id));
 			vtkVis.display();
 		}
@@ -195,6 +196,8 @@ namespace clib {
 
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgentCluster(const unsigned long& id) {
 		try {
+			vtkVis.renderAxisOfAgentOn = true;
+			vtkVis.renderAxisOfClusterOn = true;
 			vtkVis.renderAgentCluster(simContainer.getAgentCluster(id));
 			vtkVis.display();
 		}

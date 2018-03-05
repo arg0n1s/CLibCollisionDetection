@@ -554,11 +554,14 @@ namespace collision {
 			{
 				reverse = revparam;
 			}
+
 			template <typename T>
 			bool operator() (const NodePtr<T> lhs, const NodePtr<T> rhs) const
 			{
-				double lhsDist = lhs->calcMinDistance(x, y, z);
-				double rhsDist = rhs->calcMinDistance(x, y, z);
+			
+				double	lhsDist = lhs->calcMinDistance(x, y, z);
+				double	rhsDist = rhs->calcMinDistance(x, y, z);
+				
 				if (reverse) {
 					return (lhsDist>rhsDist);
 				}
@@ -576,6 +579,29 @@ namespace collision {
 				NodePtr<T> current = queue.top();
 				queue.pop();
 				if (current->isLeaf()) return current;
+				for (unsigned int oct = Octant::first; oct <= Octant::eighth; oct++) {
+					if (current->isOctantNull(static_cast<Octant>(oct))) continue;
+					queue.push(current->getChild(static_cast<Octant>(oct)));
+				}
+			}
+			return root;
+		}
+
+		template <typename T>
+		NodePtr<T> OctTree<T>::getNearest(const double& x, const double& y, const double& z, const IdSet<T>& ignoreIDs) {
+			std::priority_queue<NodePtr<T>, std::vector<NodePtr<T>>, mycomparison> queue(mycomparison(x, y, z, true));
+			queue.push(root);
+			while (!queue.empty()) {
+				NodePtr<T> current = queue.top();
+				queue.pop();
+				bool ignore = false;
+				for (auto id : ignoreIDs) {
+					if (current->getIds().find(id) != current->getIds().end()) {
+						ignore = true;
+						break;
+					}
+				}
+				if (current->isLeaf() && !ignore) return current;
 				for (unsigned int oct = Octant::first; oct <= Octant::eighth; oct++) {
 					if (current->isOctantNull(static_cast<Octant>(oct))) continue;
 					queue.push(current->getChild(static_cast<Octant>(oct)));

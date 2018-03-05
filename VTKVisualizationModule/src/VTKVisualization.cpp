@@ -329,19 +329,19 @@ namespace vis {
 
 		Vector3d v1(0, 1, 0);
 		Vector3d v2(0, 0, 1);
-		Quaternion correction = Quaternion::FromTwoVectors(v1, v2);
+		Quaternion correction = orientation*Quaternion::FromTwoVectors(v1, v2);
 
 		double r, p, y;
 		fromQuatToEuler(correction, r, p, y);
 		transform->RotateX(r);
 		transform->RotateY(p);
 		transform->RotateZ(y);
-
+		/*
 		fromQuatToEuler(orientation, r, p, y);
 		transform->RotateX(r);
 		transform->RotateY(p);
 		transform->RotateZ(y);
-
+		*/
 		cylinderActor->SetUserTransform(transform);
 		
 		(*renderer)->AddActor(cylinderActor);

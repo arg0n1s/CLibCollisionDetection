@@ -123,6 +123,7 @@ namespace collision {
 			void insertNode(const T& id, const Bounds& lowerBound, const Bounds& upperBound);
 			double getNearestDistance(const double& x, const double& y, const double& z);
 			NodePtr<T> getNearest(const double& x, const double& y, const double& z);
+			NodePtr<T> getNearest(const double& x, const double& y, const double& z, const IdSet<T>& ignoreIDs);
 
 			const NodeArray<T>& getNodes() const;
 
