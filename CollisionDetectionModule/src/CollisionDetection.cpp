@@ -63,48 +63,39 @@ namespace collision {
 		return trees.at(id);
 	}
 
-	bool CollisionDetection::checkForCollision(SimObjPtr cluster, const unsigned int ignoreID, SimObjPtr candidate, SimObjPtr nearest, double& nearestDistance) {
+	bool CollisionDetection::checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance) {
 		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
 		shared_ptr<Agent> candidatePtr = std::static_pointer_cast<Agent>(candidate);
-		ShapePtr candidateShape = candidatePtr->getShape();
-		ShapeType candidateType = candidateShape->getType();
+
 		TreePtr tree = trees.at(clsPtr->getId());
-		IdSet<unsigned int> idSet;
-		idSet.insert(ignoreID);
+
 		const Vector3d& position = candidatePtr->getPosition(ReferenceFrame::Global);
-		NodePtr<unsigned int> octant = tree->getNearest(position.x(), position.y(), position.z(), idSet);
+		NodePtr<unsigned int> octant = tree->getNearest(position.x(), position.y(), position.z(), ignoreIDs);
 		IdSet<unsigned int> candidates = octant->getIds();
+
 		nearest = nullptr;
 		nearestDistance = octtree::POS_INF;
 		bool collision = false;
+
 		if (candidates.size() == 0) {
+			std::cout << "Beep!" << std::endl;
 			return collision;
 		}
 		for (auto id : candidates) {
 			shared_ptr<Agent> candidatePtr2 = std::static_pointer_cast<Agent>(clsPtr->getAgent(id));
-			if (candidatePtr2->getId() == ignoreID) continue;
-			double tempDistance = 0.0;
-			bool tempCollision = false;
-			ShapePtr candidateShape2 = candidatePtr2->getShape();
-			ShapeType candidateType2 = candidateShape2->getType();
-			if (candidateType == ShapeType::Sphere && candidateType2 == ShapeType::Sphere) {
-				tempCollision = checkSphereOnSphereCollision(candidatePtr, candidatePtr2, tempDistance);
-			}
-			else if (candidateType == ShapeType::Sphere && candidateType2 == ShapeType::Cylinder) {
-				tempCollision = checkSphereOnCylinderCollision(candidatePtr, candidatePtr2, tempDistance);
-			}
-			else if (candidateType == ShapeType::Cylinder && candidateType2 == ShapeType::Sphere) {
-				tempCollision = checkSphereOnCylinderCollision(candidatePtr2, candidatePtr, tempDistance);
-			}
-			// for the moment ellipsoids are not supported
-			else if (candidateType == ShapeType::Ellipsoid || candidateType2 == ShapeType::Ellipsoid) {
-				continue;
-			}
-			else {
-				tempCollision = checkCylinderOnCylinderCollision(candidatePtr, candidatePtr2, tempDistance);
-			}
-			if (tempCollision && tempDistance < nearestDistance) {
+			if (ignoreIDs.find(candidatePtr2->getId()) != ignoreIDs.end()) continue;
+			double tempDistance = calcBodyToBodyDistance(candidatePtr, candidatePtr2);
+			if (tempDistance < 0) {
+				std::cout << "Boop!" << std::endl;
 				collision = true;
+				nearestDistance = tempDistance;
+				nearest = candidatePtr2;
+				std::cout << nearest->getId()<<std::endl;
+				return collision;
+			}
+			
+			if (tempDistance < nearestDistance) {
+				std::cout << "Baap!" << std::endl;
 				nearestDistance = tempDistance;
 				nearest = candidatePtr2;
 			}
@@ -112,45 +103,77 @@ namespace collision {
 		return collision;
 	}
 
-	bool CollisionDetection::checkSphereOnSphereCollision(SimObjPtr sphere1, SimObjPtr sphere2, double& distance) {
-		bool collision = false;
-		distance = octtree::POS_INF;
+	const double CollisionDetection::calcBodyToBodyDistance(SimObjPtr body1, SimObjPtr body2) const {
+		shared_ptr<Agent> bodyPtr1 = std::static_pointer_cast<Agent>(body1);
+		shared_ptr<Agent> bodyPtr2 = std::static_pointer_cast<Agent>(body2);
+		ShapePtr shape1 = bodyPtr1->getShape();
+		ShapeType shapeType1 = shape1->getType();
+		ShapePtr shape2 = bodyPtr2->getShape();
+		ShapeType shapeType2 = shape2->getType();
+		if (shapeType1 == ShapeType::Sphere && shapeType2 == ShapeType::Sphere) {
+			return calcSphereToSphereDistance(bodyPtr1, bodyPtr2);
+		}
+		else if (shapeType1 == ShapeType::Sphere && shapeType2 == ShapeType::Cylinder) {
+			return calcSphereToCylinderDistance(bodyPtr1, bodyPtr2);
+		}
+		else if (shapeType1 == ShapeType::Cylinder && shapeType2 == ShapeType::Sphere) {
+			return calcSphereToCylinderDistance(bodyPtr2, bodyPtr1);
+		}
+		// for the moment ellipsoids are not supported
+		else if (shapeType1 == ShapeType::Ellipsoid || shapeType2 == ShapeType::Ellipsoid) {
+			return NAN;
+		}
+		else {
+			return calcCylinderToCylinderDistance(bodyPtr1, bodyPtr2);
+		}
+	}
+
+	const double CollisionDetection::calcSphereToSphereDistance(SimObjPtr sphere1, SimObjPtr sphere2) const {
+		std::cout << "Sphere2Sphere action!" << std::endl;
+		double distance = octtree::POS_INF;
 		shared_ptr<Agent> agnt1 = std::static_pointer_cast<Agent>(sphere1);
 		shared_ptr<Agent> agnt2 = std::static_pointer_cast<Agent>(sphere2);
 		shared_ptr<Sphere> shape1 = std::static_pointer_cast<Sphere>(agnt1->getShape());
 		shared_ptr<Sphere> shape2 = std::static_pointer_cast<Sphere>(agnt2->getShape());
 		distance = (agnt1->getPosition(ReferenceFrame::Global) - agnt2->getPosition(ReferenceFrame::Global)).norm();
 		distance = distance - (shape1->getRadius() + shape2->getRadius());
-		if (distance <= 0) collision = true;
-		return collision;
-
+		return distance;
 	}
-	bool CollisionDetection::checkSphereOnCylinderCollision(SimObjPtr sphere, SimObjPtr cylinder, double& distance) {
-		bool collision = false;
-		distance = octtree::POS_INF;
+
+	const double CollisionDetection::calcSphereToCylinderDistance(SimObjPtr sphere, SimObjPtr cylinder) const {
+		std::cout << "Sphere2Cylinder action!" << std::endl;
+		double distance = octtree::POS_INF;
 		shared_ptr<Agent> agnt1 = std::static_pointer_cast<Agent>(sphere);
 		shared_ptr<Agent> agnt2 = std::static_pointer_cast<Agent>(cylinder);
 		shared_ptr<Sphere> shape1 = std::static_pointer_cast<Sphere>(agnt1->getShape());
 		shared_ptr<Cylinder> shape2 = std::static_pointer_cast<Cylinder>(agnt2->getShape());
-		Vector3d ZK = agnt1->getPosition(ReferenceFrame::Global) - agnt2->getPosition(ReferenceFrame::Global);
-		Vector3d Z = agnt2->getOrientation(ReferenceFrame::Global)*Vector3d(0, 0, 1);
-		double alpha = ZK.dot(Z);
-		double a = std::sin(alpha)*ZK.norm();
-		Vector3d A = Z.normalized()*a;
+		Vector3d cylinderToSphere = agnt1->getPosition(ReferenceFrame::Global) - agnt2->getPosition(ReferenceFrame::Global);
+		Vector3d cylinderRotationalAxis = agnt2->getOrientation(ReferenceFrame::Global)*Vector3d(0, 0, 1);
+		std::cout << "sphere origin: " << agnt1->getPosition(ReferenceFrame::Global) << std::endl;
+		std::cout << "cylinder origin: " << agnt2->getPosition(ReferenceFrame::Global) << std::endl;
+		double alpha = cylinderToSphere.dot(cylinderRotationalAxis);
+		double a = std::sin(alpha)*cylinderToSphere.norm();
+		std::cout << "angle: " << alpha << std::endl;
+		std::cout << "a: " << a << std::endl;
+		Vector3d A = cylinderRotationalAxis.normalized()*a;
 		Vector3d S = agnt2->getPosition(ReferenceFrame::Global) + A;
-		Vector3d ZK90 = agnt1->getPosition(ReferenceFrame::Global) - S;
-		double zk90 = ZK90.norm();
-		distance = zk90 - (shape1->getRadius() + shape2->getRadius());
+		Vector3d cylinderRotAxisToSphere = agnt1->getPosition(ReferenceFrame::Global) - S;
+		double verticalDistance = cylinderRotAxisToSphere.norm();
+		std::cout << "Vertical Distance: "<< verticalDistance << std::endl;
+		distance = verticalDistance - (shape1->getRadius() + shape2->getRadius());
+		std::cout << "distance: " << distance << std::endl;
 		if (distance > 0) {
-			return collision;
+			return distance;
 		}
+		if (a <= shape2->getLength() / 2) return distance;
+		std::cout << "a: " << a << std::endl;
 		distance = a - (shape2->getLength() / 2 + shape1->getRadius());
-		if (distance <= 0) collision = true;
-		return collision;
+		return distance;
 	}
-	bool CollisionDetection::checkCylinderOnCylinderCollision(SimObjPtr cylinder1, SimObjPtr cylinder2, double& distance) {
-		bool collision = false;
-		distance = octtree::POS_INF;
-		return collision;
+
+	const double CollisionDetection::calcCylinderToCylinderDistance(SimObjPtr cylinder1, SimObjPtr cylinder2) const {
+		std::cout << "Cylinder2Cylinder action!" << std::endl;
+		double distance = octtree::POS_INF;
+		return distance;
 	}
 }

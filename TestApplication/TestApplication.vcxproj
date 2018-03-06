@@ -114,6 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\boost\boost_1_65_1;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

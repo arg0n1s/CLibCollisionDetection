@@ -52,6 +52,8 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API bool createAgent(const unsigned long& id, const string& type);
 
+		CLIB_COLLISION_DETECTION_API CollisionDetection& getCollisionDetector();
+
 		CLIB_COLLISION_DETECTION_API SimObjPtr getAgent(const unsigned long& id);
 
 		CLIB_COLLISION_DETECTION_API SimObjPtr getAgentCluster(const unsigned long& id);

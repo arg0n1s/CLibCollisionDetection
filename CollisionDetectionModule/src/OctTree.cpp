@@ -1,7 +1,7 @@
 #include "..\include\OctTree.h"
 #include <sstream>
-#include <iostream>
 #include <queue>
+#include <iostream>
 
 namespace collision {
 	namespace octtree {
@@ -422,7 +422,6 @@ namespace collision {
 			xNearest = (lower.x > x || x > upper.x) ? xNearest : 0.0;
 			yNearest = (lower.y > y || y > upper.y) ? yNearest : 0.0;
 			zNearest = (lower.z > z || z > upper.z) ? zNearest : 0.0;
-			//std::cout << "min dist: " << std::sqrt(xNearest*xNearest + yNearest*yNearest + zNearest*zNearest) << " for node: \n" << toString() << std::endl;
 			return std::sqrt(xNearest*xNearest + yNearest*yNearest + zNearest*zNearest);
 		}
 
@@ -531,7 +530,6 @@ namespace collision {
 				//resize
 				resize(lowerBound, upperBound);
 			}
-			std::cout << root->toString() << std::endl;
 			
 			insertNode(root, id, lowerBound, upperBound);
 		}
@@ -589,24 +587,27 @@ namespace collision {
 
 		template <typename T>
 		NodePtr<T> OctTree<T>::getNearest(const double& x, const double& y, const double& z, const IdSet<T>& ignoreIDs) {
+			if (ignoreIDs.size() < 1) return getNearest(x, y, z);
+			std::cout << "id size greater 1" << std::endl;
 			std::priority_queue<NodePtr<T>, std::vector<NodePtr<T>>, mycomparison> queue(mycomparison(x, y, z, true));
 			queue.push(root);
 			while (!queue.empty()) {
 				NodePtr<T> current = queue.top();
 				queue.pop();
 				bool ignore = false;
+				unsigned int found = 0;
 				for (auto id : ignoreIDs) {
-					if (current->getIds().find(id) != current->getIds().end()) {
-						ignore = true;
-						break;
-					}
+					if (current->getIds().find(id) != current->getIds().end()) found++;
 				}
+				std::cout << "found matches: "<< found <<"current size: "<< current->getIds().size() << std::endl;
+				if (found == current->getIds().size()) ignore = true;
 				if (current->isLeaf() && !ignore) return current;
 				for (unsigned int oct = Octant::first; oct <= Octant::eighth; oct++) {
 					if (current->isOctantNull(static_cast<Octant>(oct))) continue;
 					queue.push(current->getChild(static_cast<Octant>(oct)));
 				}
 			}
+			std::cout << "return root" << std::endl;
 			return root;
 		}
 
@@ -616,7 +617,6 @@ namespace collision {
 			// recursion anchor
 			if ( (diameter.x <= minDiameter.x) || (diameter.y <= minDiameter.y) || (diameter.z <= minDiameter.z) ) {
 				node->addId(id);
-				//std::cout << node->toString() << std::endl;
 				return true;
 			} else {
 				// -> doesn't fit in children -> split up !
@@ -665,7 +665,6 @@ namespace collision {
 		void OctTree<T>::resize(const Bounds& lowerBound, const Bounds& upperBound) {
 			unsigned int steps = 0;
 			while (!root->isInBounds(lowerBound, upperBound) && steps < MAX_RESIZE_STEPS) {
-				std::cout << "Resize Step: " << steps << std::endl;
 				steps++;
 				NodePtr<T> first = root->getChild(Octant::first);
 				NodePtr<T> second = root->getChild(Octant::second);
@@ -684,8 +683,6 @@ namespace collision {
 					Bounds lb = root->calcChildLowerBounds(static_cast<Octant>(i));
 					Bounds ub = root->calcChildUpperBounds(static_cast<Octant>(i));
 					makeNewOctant(root, lb, ub, static_cast<Octant>(i));
-					std::cout << "New Octant: " << i << " : \n";
-					std::cout << root->getChild(static_cast<Octant>(i))->toString() << std::endl;
 				}
 				root->getChild(Octant::first)->setChild(first, Octant::seventh);
 				root->getChild(Octant::second)->setChild(second, Octant::eighth);

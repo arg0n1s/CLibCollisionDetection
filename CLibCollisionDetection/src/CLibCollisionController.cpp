@@ -101,6 +101,10 @@ namespace clib {
 		return simContainer.getAgentCluster(id);
 	}
 
+	CLIB_COLLISION_DETECTION_API CollisionDetection& CLibCollisionController::getCollisionDetector() {
+		return collisionDetector;
+	}
+
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId) {
 		try {
 			simContainer.addAgentToCluster(agentId, clusterId);
@@ -117,8 +121,8 @@ namespace clib {
 		try {
 			SimObjPtr clstr = getAgentCluster(clusterId);
 			collisionDetector.setAllowRescaling(true);
-			collisionDetector.setMinimalCellDiameter(0.25);
-			collisionDetector.setInitialTreeDiameter(1.0);
+			collisionDetector.setMinimalCellDiameter(2.0);
+			collisionDetector.setInitialTreeDiameter(4.0);
 			collisionDetector.makeTreeFromCluster(clstr);
 		}
 		catch (std::exception& e) {
@@ -213,7 +217,7 @@ namespace clib {
 		try {
 			vtkVis.renderAxisOfAgentOn = false;
 			vtkVis.renderAxisOfClusterOn = true;
-			vtkVis.renderEmptyNodesOn = true;
+			vtkVis.renderEmptyNodesOn = false;
 			vtkVis.renderCollisionTree(getAgentCluster(clusterId), collisionDetector.getTree(clusterId));
 			vtkVis.display();
 		}
