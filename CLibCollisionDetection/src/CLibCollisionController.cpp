@@ -51,6 +51,14 @@ namespace clib {
 		return meta;
 	}
 
+	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController() {
+		ErrorLogger::instance();
+		simContainer = SimulationContainer();
+		collisionDetector = CollisionDetection();
+		vtkVis = VTKVisualization();
+		clusterCounter = 0;
+	}
+
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController(const MetaSpecification& metaSpecs) : metaSpecs(metaSpecs) {
 		ErrorLogger::instance();
 		simContainer = SimulationContainer(metaSpecs);
@@ -121,8 +129,8 @@ namespace clib {
 		try {
 			SimObjPtr clstr = getAgentCluster(clusterId);
 			collisionDetector.setAllowRescaling(true);
-			collisionDetector.setMinimalCellDiameter(8.0);
-			collisionDetector.setInitialTreeDiameter(16.0);
+			collisionDetector.setMinimalCellDiameter(2.0);
+			collisionDetector.setInitialTreeDiameter(2.0);
 			collisionDetector.makeTreeFromCluster(clstr);
 		}
 		catch (std::exception& e) {
@@ -187,6 +195,7 @@ namespace clib {
 		try {
 			vtkVis.renderAxisOfAgentOn = true;
 			vtkVis.showFPSOn = false;
+			vtkVis.renderGlobalAxisOn = false;
 			vtkVis.renderAgent(simContainer.getAgent(id));
 			vtkVis.display();
 		}
@@ -202,7 +211,7 @@ namespace clib {
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::displayAgentCluster(const unsigned long& id) {
 		try {
 			vtkVis.renderAxisOfAgentOn = false;
-			vtkVis.renderGlobalAxisOn = true;
+			vtkVis.renderGlobalAxisOn = false;
 			vtkVis.renderAxisOfClusterOn = true;
 			vtkVis.showFPSOn = false;
 			vtkVis.renderAgentCluster(simContainer.getAgentCluster(id));
@@ -220,8 +229,9 @@ namespace clib {
 		try {
 			vtkVis.renderAxisOfAgentOn = false;
 			vtkVis.renderAxisOfClusterOn = true;
-			vtkVis.renderEmptyNodesOn = false;
+			vtkVis.renderEmptyNodesOn = true;
 			vtkVis.showFPSOn = false;
+			vtkVis.renderGlobalAxisOn = false;
 			vtkVis.renderCollisionTree(getAgentCluster(clusterId), collisionDetector.getTree(clusterId));
 			vtkVis.display();
 		}

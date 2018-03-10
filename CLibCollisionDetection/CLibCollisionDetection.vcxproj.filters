@@ -24,12 +24,18 @@
     <ClCompile Include="src\CLibErrorLogger.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\wrapper_CLibJavaWrapper.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CLibCollisionController.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\CLibErrorLogger.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wrapper_CLibJavaWrapper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

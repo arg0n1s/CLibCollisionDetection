@@ -43,6 +43,8 @@ namespace clib
 		static CLIB_COLLISION_DETECTION_API AgentSpecification createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs);
 
 		static CLIB_COLLISION_DETECTION_API MetaSpecification createMetaSpecification(AgentSpecArray agentSpecs);
+		
+		CLIB_COLLISION_DETECTION_API CLibCollisionController();
 
 		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs);
 
