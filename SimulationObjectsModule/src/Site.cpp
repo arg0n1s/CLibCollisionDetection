@@ -45,7 +45,7 @@ namespace simobj {
 		}
 		case ReferenceFrame::Global: {
 			if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent! \n No known reference frame found.");
-			return ownerAgent.lock()->getPosition(frame) + ownerAgent.lock()->getOrientation()*position;
+			return ownerAgent.lock()->getPosition(frame) + ownerAgent.lock()->getOrientation(frame)*position;
 			break;
 		}
 		default: {

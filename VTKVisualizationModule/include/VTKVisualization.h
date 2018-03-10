@@ -62,7 +62,7 @@ namespace vis {
 		VTK_VISUALIZATION_API void renderAgentCluster(SimObjPtr cluster);
 		VTK_VISUALIZATION_API void renderCollisionTree(SimObjPtr cluster, TreePtr tree);
 
-		bool renderAxisOfClusterOn, renderAxisOfAgentOn, renderEmptyNodesOn, renderBoundingBoxesOn, showFPSOn;
+		bool renderAxisOfClusterOn, renderAxisOfAgentOn, renderEmptyNodesOn, renderBoundingBoxesOn, showFPSOn, renderGlobalAxisOn;
 	private:
 		RenderPtr renderer;
 		RenderWindowPtr renderWindow;
@@ -74,6 +74,7 @@ namespace vis {
 
 		void renderSite(SimObjPtr site);
 
+		void renderGlobalAxis();
 		void renderClusterAxis(SimObjPtr cluster);
 		void renderAgentAxis(SimObjPtr agent);
 		void renderAgentBBox(SimObjPtr agent);

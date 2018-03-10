@@ -58,7 +58,7 @@ namespace vis {
 		createRenderer();
 		createRenderWindow();
 		createRenderWindowInteractor();
-		renderAxisOfClusterOn = renderAxisOfAgentOn = renderEmptyNodesOn = renderBoundingBoxesOn = showFPSOn = false;
+		renderAxisOfClusterOn = renderAxisOfAgentOn = renderEmptyNodesOn = renderBoundingBoxesOn = showFPSOn = renderGlobalAxisOn = false;
 	}
 
 	VTK_VISUALIZATION_API void VTKVisualization::display() {
@@ -83,6 +83,9 @@ namespace vis {
 		if (renderAxisOfAgentOn) {
 			renderAgentAxis(agtPtr);
 		}
+		if (renderGlobalAxisOn) {
+			renderGlobalAxis();
+		}
 	}
 
 	VTK_VISUALIZATION_API void VTKVisualization::renderAgentCluster(SimObjPtr cluster) {
@@ -93,6 +96,9 @@ namespace vis {
 		for (auto agent : clsPtr->getAllAgents()) {
 			shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent.second);
 			renderAgent(agtPtr);
+		}
+		if (renderGlobalAxisOn) {
+			renderGlobalAxis();
 		}
 	}
 
@@ -202,6 +208,19 @@ namespace vis {
 		sphereActor->SetPosition(position.x(), position.y(), position.z());
 		(*renderer)->AddActor(sphereActor);
 
+	}
+
+	void VTKVisualization::renderGlobalAxis()
+	{
+		vtkSmartPointer<vtkAxesActor> axes =
+			vtkSmartPointer<vtkAxesActor>::New();
+		axes->SetDragable(0);
+		axes->SetTotalLength(80, 80, 80);
+		vtkSmartPointer<vtkTransform> transform =
+			vtkSmartPointer<vtkTransform>::New();
+		transform->Translate(0, 0, 0);
+		axes->SetUserTransform(transform);
+		(*renderer)->AddActor(axes);
 	}
 
 	void VTKVisualization::renderClusterAxis(SimObjPtr cluster)
