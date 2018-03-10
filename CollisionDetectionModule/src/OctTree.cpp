@@ -588,7 +588,6 @@ namespace collision {
 		template <typename T>
 		NodePtr<T> OctTree<T>::getNearest(const double& x, const double& y, const double& z, const IdSet<T>& ignoreIDs) {
 			if (ignoreIDs.size() < 1) return getNearest(x, y, z);
-			std::cout << "id size greater 1" << std::endl;
 			std::priority_queue<NodePtr<T>, std::vector<NodePtr<T>>, mycomparison> queue(mycomparison(x, y, z, true));
 			queue.push(root);
 			while (!queue.empty()) {
@@ -599,7 +598,6 @@ namespace collision {
 				for (auto id : ignoreIDs) {
 					if (current->getIds().find(id) != current->getIds().end()) found++;
 				}
-				std::cout << "found matches: "<< found <<"current size: "<< current->getIds().size() << std::endl;
 				if (found == current->getIds().size()) ignore = true;
 				if (current->isLeaf() && !ignore) return current;
 				for (unsigned int oct = Octant::first; oct <= Octant::eighth; oct++) {
@@ -607,7 +605,6 @@ namespace collision {
 					queue.push(current->getChild(static_cast<Octant>(oct)));
 				}
 			}
-			std::cout << "return root" << std::endl;
 			return root;
 		}
 

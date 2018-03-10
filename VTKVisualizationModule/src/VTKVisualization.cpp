@@ -403,7 +403,7 @@ namespace vis {
 		// background color is for now hard coded, this can be changed in the future 
 		(*renderer)->SetBackground(0.2, 0.2, 0.2);
 
-		if (showFPSOn) {
+		if (false) {
 		vtkSmartPointer<vtkCallbackCommand> callback =
 			vtkSmartPointer<vtkCallbackCommand>::New();
 

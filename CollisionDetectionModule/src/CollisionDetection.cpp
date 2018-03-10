@@ -49,7 +49,6 @@ namespace collision {
 		TreePtr tree = OctTree<unsigned int>::create(Bounds(initialTreeDiameter, initialTreeDiameter, initialTreeDiameter), Bounds(minimalCellDiameter, minimalCellDiameter, minimalCellDiameter));
 		tree->setAllowResize(allowRescaling);
 		trees.insert(std::make_pair(clsPtr->getId(), tree));
-
 		for (auto agent : clsPtr->getAllAgents()) {
 			shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent.second);
 			const BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
@@ -68,19 +67,15 @@ namespace collision {
 	bool CollisionDetection::checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance) {
 		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
 		shared_ptr<Agent> candidatePtr = std::static_pointer_cast<Agent>(candidate);
-
 		TreePtr tree = trees.at(clsPtr->getId());
-
 		const Vector3d& position = candidatePtr->getPosition(ReferenceFrame::Global);
 		NodePtr<unsigned int> octant = tree->getNearest(position.x(), position.y(), position.z(), ignoreIDs);
 		IdSet<unsigned int> candidates = octant->getIds();
-
 		nearest = nullptr;
 		nearestDistance = octtree::POS_INF;
 		bool collision = false;
 
 		if (candidates.size() == 0) {
-			std::cout << "Beep!" << std::endl;
 			return collision;
 		}
 		for (auto id : candidates) {
@@ -88,16 +83,13 @@ namespace collision {
 			if (ignoreIDs.find(candidatePtr2->getId()) != ignoreIDs.end()) continue;
 			double tempDistance = calcBodyToBodyDistance(candidatePtr, candidatePtr2);
 			if (tempDistance < 0) {
-				std::cout << "Boop!" << std::endl;
 				collision = true;
 				nearestDistance = tempDistance;
 				nearest = candidatePtr2;
-				std::cout << nearest->getId()<<std::endl;
 				return collision;
 			}
 			
 			if (tempDistance < nearestDistance) {
-				std::cout << "Baap!" << std::endl;
 				nearestDistance = tempDistance;
 				nearest = candidatePtr2;
 			}
@@ -131,7 +123,6 @@ namespace collision {
 	}
 
 	const double CollisionDetection::calcSphereToSphereDistance(SimObjPtr sphere1, SimObjPtr sphere2) const {
-		std::cout << "Sphere2Sphere action!" << std::endl;
 		double distance = octtree::POS_INF;
 		shared_ptr<Agent> agnt1 = std::static_pointer_cast<Agent>(sphere1);
 		shared_ptr<Agent> agnt2 = std::static_pointer_cast<Agent>(sphere2);
@@ -143,7 +134,6 @@ namespace collision {
 	}
 
 	const double CollisionDetection::calcSphereToCylinderDistance(SimObjPtr sphere, SimObjPtr cylinder) const {
-		std::cout << "Sphere2Cylinder action!" << std::endl;
 		double distance = octtree::POS_INF;
 		shared_ptr<Agent> agnt1 = std::static_pointer_cast<Agent>(sphere);
 		shared_ptr<Agent> agnt2 = std::static_pointer_cast<Agent>(cylinder);
@@ -154,11 +144,9 @@ namespace collision {
 		Vector3d sphereOrigin = agnt1->getPosition(ReferenceFrame::Global);
 		ParametrizedLine<double, 3> cylinderLine(cylinderOrigin, cylinderOrientation);
 		double distSphereToLine = cylinderLine.distance(sphereOrigin);
-		std::cout << "dist sphere to line: \n" << distSphereToLine << std::endl;
 		Vector3d pointSphereOnLine = cylinderLine.projection(sphereOrigin);
 		Vector3d originToPoint = pointSphereOnLine - cylinderOrigin;
 		double distOriginToPoint = originToPoint.norm();
-		std::cout << "dist origin to point: \n" << distOriginToPoint << std::endl;
 		if (distOriginToPoint <= shape2->getLength() / 2) {
 			distance = distSphereToLine - (shape1->getRadius() + shape2->getRadius());
 			return distance;
@@ -167,14 +155,11 @@ namespace collision {
 		Vector3d pointToSphere = sphereOrigin - pointSphereOnLine;
 		Vector3d topCornerCylinder = topOfCylinder + shape2->getRadius()*pointToSphere.normalized();
 		double distSphereToCorner = (topCornerCylinder - sphereOrigin).norm();
-		std::cout << "dist sphere to corner: \n" << distSphereToCorner << std::endl;
 		distance = distSphereToCorner - shape1->getRadius();
-		std::cout << "distance: \n" << distance << std::endl;
 		return distance;
 	}
 
 	const double CollisionDetection::calcCylinderToCylinderDistance(SimObjPtr cylinder1, SimObjPtr cylinder2) const {
-		std::cout << "Cylinder2Cylinder action!" << std::endl;
 		double distance = octtree::POS_INF;
 		double eps = 0.00001;
 		shared_ptr<Agent> agnt1 = std::static_pointer_cast<Agent>(cylinder1);
@@ -197,16 +182,11 @@ namespace collision {
 			double distOriginToLine = cylinderLine2.distance(cylinderOrigin1);
 			if (distOriginToPoint <= (shape2->getLength() + shape1->getLength()) / 2) {
 				distance = distOriginToLine - (shape1->getRadius() + shape2->getRadius());
-				return distance;
 			}
-			Vector3d pointOrigin2OnLine1 = cylinderLine1.projection(cylinderOrigin2);
-			Vector3d origin1ToPoint2 = pointOrigin2OnLine1 - cylinderOrigin1;
-			Vector3d cylinderTop1 = cylinderOrigin1 + (shape1->getLength() / 2)*origin1ToPoint2.normalized();
-			Vector3d cylinderTop2 = cylinderOrigin2 + (shape2->getLength() / 2)*origin2ToPoint1.normalized();
-			Vector3d from1To2Perpendicular = pointOrigin1OnLine2 - cylinderOrigin1;
-			Vector3d cylinderCorner1 = cylinderTop1 + from1To2Perpendicular.normalized()*shape1->getRadius();
-			Vector3d cylinderCorner2 = cylinderTop2 - from1To2Perpendicular.normalized()*shape2->getRadius();
-			distance = (cylinderCorner1 - cylinderCorner2).norm();
+			else {
+				Vector3d pointOrigin2OnLine1 = cylinderLine1.projection(cylinderOrigin2);
+				distance = (cylinderOrigin1 - pointOrigin2OnLine1).norm() - (shape1->getLength() / 2 + shape2->getLength() / 2);
+			}
 			return distance;
 		}
 
@@ -231,38 +211,115 @@ namespace collision {
 			Vector3d origin2ToIntersect = intersect - cylinderOrigin2;
 			Vector3d cylinderTop2 = cylinderOrigin2 + (shape2->getLength() / 2)*origin2ToIntersect.normalized();
 			// calc corner of cylinder 1
-			Vector3d top1ToLine2 = cylinderLine2.projection(cylinderTop1);
-			Vector3d cylinderCorner1 = cylinderTop1 + shape1->getRadius()*top1ToLine2.normalized();
+			ParametrizedLine<double, 3> parallelTo1(cylinderOrigin2, cylinderOrientation1);
+			Vector3d top1ToParallelLine = parallelTo1.projection(cylinderTop1)-cylinderTop1;
+			Vector3d cylinderCorner1 = cylinderTop1 + shape1->getRadius()*top1ToParallelLine.normalized();
 			// calc corner of cylinder 2
-			Vector3d top2ToLine1 = cylinderLine1.projection(cylinderTop2);
-			Vector3d cylinderCorner2 = cylinderTop2 + shape2->getRadius()*top2ToLine1.normalized();
+			ParametrizedLine<double, 3> parallelTo2(cylinderOrigin1, cylinderOrientation2);
+			Vector3d top2ToParallelLine = parallelTo2.projection(cylinderTop2) - cylinderTop2;
+			Vector3d cylinderCorner2 = cylinderTop2 + shape2->getRadius()*top2ToParallelLine.normalized();
 			// calc distances
-			Vector3d corner1ToLine2 = cylinderLine2.projection(cylinderCorner1);
-			Vector3d corner2ToLine1 = cylinderLine1.projection(cylinderCorner2);
-			double distOrigin1ToProjectionOnLine1 = (cylinderOrigin1 - corner2ToLine1).norm();
-			double distOrigin2ToProjectionOnLine2 = (cylinderOrigin2 - corner1ToLine2).norm();
+			Vector3d corner1ProjectedToLine2 = cylinderLine2.projection(cylinderCorner1);
+			Vector3d corner2ProjectedToLine1 = cylinderLine1.projection(cylinderCorner2);
+			Vector3d corner1ToProjectionOnLine2 = corner1ProjectedToLine2 - cylinderCorner1;
+			Vector3d corner2ToProjectionOnLine1 = corner2ProjectedToLine1 - cylinderCorner2;
+			double distOrigin1ToProjectionOnLine1 = (cylinderOrigin1 - corner2ProjectedToLine1).norm();
+			double distOrigin2ToProjectionOnLine2 = (cylinderOrigin2 - corner1ProjectedToLine2).norm();
 			bool projection2InCylinder1 = distOrigin1ToProjectionOnLine1 <= (shape1->getLength() / 2);
 			bool projection1InCylinder2 = distOrigin2ToProjectionOnLine2 <= (shape2->getLength() / 2);
 			// corner of cylinder2 could touch hull of cylinder 1
 			if (projection2InCylinder1 && !projection1InCylinder2) {
-
+				distance = corner2ToProjectionOnLine1.norm() - shape1->getRadius();
 			}
 			// corner of cylinder1 could touch hull of cylinder 2
 			else if (!projection2InCylinder1 && projection1InCylinder2) {
-
+				distance = corner1ToProjectionOnLine2.norm() - shape2->getRadius();
 			}
 			// corner of cylinder1 could touch corner of cylinder 2
 			else if (projection2InCylinder1 && projection1InCylinder2) {
-
+				double corner2Corner = (cylinderCorner1 - cylinderCorner2).norm();
+				double cornerToHull1 = corner2ToProjectionOnLine1.norm() - shape1->getRadius();
+				double cornerToHull2 = corner1ToProjectionOnLine2.norm() - shape2->getRadius();
+				distance = std::min(corner2Corner, std::min(cornerToHull1, cornerToHull2));
 			}
 			else {
-
+				distance = (cylinderCorner1 - cylinderCorner2).norm();
 			}
-
+			return distance;
 		}
-
 		//3. Skewed Case
-
+		// find the shortest distance connecting the two disjoint rotational cylinder axis
+		Vector3d pN = cylinderOrientation1.cross(cylinderOrientation2);
+		pN.normalize();
+		Vector3d pN2 = cylinderOrientation1.cross(pN);
+		pN2.normalize();
+		Vector3d pN3 = cylinderOrientation2.cross(pN);
+		pN3.normalize();
+		Hyperplane<double, 3> pCross2(pN2, cylinderOrigin1);
+		Vector3d cylinder2Intersect = cylinderLine2.intersectionPoint(pCross2);
+		Hyperplane<double, 3> pCross3(pN3, cylinderOrigin2);
+		Vector3d cylinder1Intersect = cylinderLine1.intersectionPoint(pCross3);
+		// Find out if intersect points are in the cylinders
+		Vector3d origin1ToIntersect1 = cylinder1Intersect - cylinderOrigin1;
+		Vector3d origin2ToIntersect2 = cylinder2Intersect - cylinderOrigin2;
+		//Case 3.1: If intersect points are both in cylinders -> distance between hulls
+		if ((origin1ToIntersect1.norm() <= shape1->getLength() / 2) && (origin2ToIntersect2.norm() <= shape2->getLength() / 2)) {
+			Vector3d intersect2ProjectedToLine1 = cylinderLine1.projection(cylinder2Intersect);
+			Vector3d intersect1ProjectedToLine2 = cylinderLine2.projection(cylinder1Intersect);
+			Vector3d verticalOnLine2 = (cylinder1Intersect - intersect1ProjectedToLine2).normalized();
+			Vector3d verticalOnLine1 = (cylinder2Intersect - intersect2ProjectedToLine1).normalized();
+			Vector3d intersect1ToIntersect2 = cylinder2Intersect - cylinder1Intersect;
+			double angleOn1 = std::acos(verticalOnLine1.dot(intersect1ToIntersect2.normalized()));
+			double angleOn2 = std::acos(verticalOnLine2.dot(-intersect1ToIntersect2.normalized()));
+			double distanceToHull1 = shape1->getRadius() / std::cos(angleOn1);
+			double distanceToHull2 = shape2->getRadius() / std::cos(angleOn2);
+			distance = intersect1ToIntersect2.norm() - (distanceToHull1 + distanceToHull2);
+		}
+		//Case 3.2: If intersect points outside of either cylinder -> distance between hull and corner
+		else {
+			// calc top of cylinder 1
+			Vector3d origin1ToIntersect = cylinder1Intersect - cylinderOrigin1;
+			Vector3d cylinderTop1 = cylinderOrigin1 + (shape1->getLength() / 2)*origin1ToIntersect.normalized();
+			// calc top of cylinder 2
+			Vector3d origin2ToIntersect = cylinder2Intersect - cylinderOrigin2;
+			Vector3d cylinderTop2 = cylinderOrigin2 + (shape2->getLength() / 2)*origin2ToIntersect.normalized();
+			// calc corner of cylinder 1
+			ParametrizedLine<double, 3> parallelTo1(cylinderOrigin2, cylinderOrientation1);
+			Vector3d top1ToParallelLine = parallelTo1.projection(cylinderTop1) - cylinderTop1;
+			Vector3d cylinderCorner1 = cylinderTop1 + shape1->getRadius()*top1ToParallelLine.normalized();
+			// calc corner of cylinder 2
+			ParametrizedLine<double, 3> parallelTo2(cylinderOrigin1, cylinderOrientation2);
+			Vector3d top2ToParallelLine = parallelTo2.projection(cylinderTop2) - cylinderTop2;
+			Vector3d cylinderCorner2 = cylinderTop2 + shape2->getRadius()*top2ToParallelLine.normalized();
+			// calc distances
+			Vector3d corner1ProjectedToLine2 = cylinderLine2.projection(cylinderCorner1);
+			Vector3d corner2ProjectedToLine1 = cylinderLine1.projection(cylinderCorner2);
+			Vector3d corner1ToProjectionOnLine2 = corner1ProjectedToLine2 - cylinderCorner1;
+			Vector3d corner2ToProjectionOnLine1 = corner2ProjectedToLine1 - cylinderCorner2;
+			double distOrigin1ToProjectionOnLine1 = (cylinderOrigin1 - corner2ProjectedToLine1).norm();
+			double distOrigin2ToProjectionOnLine2 = (cylinderOrigin2 - corner1ProjectedToLine2).norm();
+			bool projection2InCylinder1 = distOrigin1ToProjectionOnLine1 <= (shape1->getLength() / 2);
+			bool projection1InCylinder2 = distOrigin2ToProjectionOnLine2 <= (shape2->getLength() / 2);
+			// corner of cylinder2 could touch hull of cylinder 1
+			if (projection2InCylinder1 && !projection1InCylinder2) {
+				distance = corner2ToProjectionOnLine1.norm() - shape1->getRadius();
+			}
+			// corner of cylinder1 could touch hull of cylinder 2
+			else if (!projection2InCylinder1 && projection1InCylinder2) {
+				distance = corner1ToProjectionOnLine2.norm() - shape2->getRadius();
+			}
+			// corner of cylinder1 could touch corner of cylinder 2
+			else if (projection2InCylinder1 && projection1InCylinder2) {
+				double corner2Corner = (cylinderCorner1 - cylinderCorner2).norm();
+				double cornerToHull1 = corner2ToProjectionOnLine1.norm() - shape1->getRadius();
+				double cornerToHull2 = corner1ToProjectionOnLine2.norm() - shape2->getRadius();
+				distance = std::min(corner2Corner, std::min(cornerToHull1, cornerToHull2));
+			}
+			else {
+				distance = (cylinderCorner1 - cylinderCorner2).norm();
+			}
+		}
+		
 		return distance;
 	}
 }
