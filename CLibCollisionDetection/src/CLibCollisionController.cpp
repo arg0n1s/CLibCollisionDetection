@@ -57,6 +57,8 @@ namespace clib {
 		collisionDetector = CollisionDetection();
 		vtkVis = VTKVisualization();
 		clusterCounter = 0;
+		collisionDetector.setMinimalCellDiameter(2.0);
+		collisionDetector.setInitialTreeDiameter(4.0);
 	}
 
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::CLibCollisionController(const MetaSpecification& metaSpecs) : metaSpecs(metaSpecs) {
@@ -65,6 +67,8 @@ namespace clib {
 		collisionDetector = CollisionDetection();
 		vtkVis = VTKVisualization();
 		clusterCounter = 0;
+		collisionDetector.setMinimalCellDiameter(2.0);
+		collisionDetector.setInitialTreeDiameter(4.0);
 	}
 
 	CLIB_COLLISION_DETECTION_API CLibCollisionController::~CLibCollisionController() {
@@ -125,12 +129,18 @@ namespace clib {
 		return true;
 	}
 
+	CLIB_COLLISION_DETECTION_API void CLibCollisionController::setMinimalLeafDiameter(const double& leafDiameter) {
+		collisionDetector.setMinimalCellDiameter(leafDiameter);
+	}
+
+	CLIB_COLLISION_DETECTION_API void CLibCollisionController::setInitialRootDiameter(const double& rootDiameter) {
+		collisionDetector.setInitialTreeDiameter(rootDiameter);
+	}
+
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentClusterToCollisionDetector(const unsigned long& clusterId) {
 		try {
 			SimObjPtr clstr = getAgentCluster(clusterId);
 			collisionDetector.setAllowRescaling(true);
-			collisionDetector.setMinimalCellDiameter(2.0);
-			collisionDetector.setInitialTreeDiameter(2.0);
 			collisionDetector.makeTreeFromCluster(clstr);
 		}
 		catch (std::exception& e) {

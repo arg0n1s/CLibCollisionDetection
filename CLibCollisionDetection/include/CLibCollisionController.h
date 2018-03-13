@@ -56,6 +56,10 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API CollisionDetection& getCollisionDetector();
 
+		CLIB_COLLISION_DETECTION_API void setMinimalLeafDiameter(const double& leafDiameter);
+
+		CLIB_COLLISION_DETECTION_API void setInitialRootDiameter(const double& rootDiameter);
+
 		CLIB_COLLISION_DETECTION_API SimObjPtr getAgent(const unsigned long& id);
 
 		CLIB_COLLISION_DETECTION_API SimObjPtr getAgentCluster(const unsigned long& id);

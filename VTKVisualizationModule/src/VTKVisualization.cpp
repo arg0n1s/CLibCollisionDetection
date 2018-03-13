@@ -8,6 +8,7 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2); VTK_MODULE_INIT(vtkInteractionStyle); VTK_
 #include <vtk-8.0\vtkRenderer.h>
 #include <vtk-8.0\vtkRenderWindow.h>
 #include <vtk-8.0\vtkRenderWindowInteractor.h>
+#include <vtk-8.0\vtkCamera.h>
 
 #include <vtk-8.0\vtkCubeSource.h>
 #include <vtk-8.0\vtkSphereSource.h>
@@ -420,7 +421,11 @@ namespace vis {
 	{
 		renderer = std::make_shared<vtkSmartPointer<vtkRenderer> >(vtkSmartPointer<vtkRenderer>::New());
 		// background color is for now hard coded, this can be changed in the future 
-		(*renderer)->SetBackground(0.2, 0.2, 0.2);
+		(*renderer)->SetBackground(0.8, 0.8, 0.8);
+		vtkSmartPointer<vtkCamera> camera = vtkSmartPointer<vtkCamera>::New();
+		camera->SetPosition(100, 100, 100);
+		(*renderer)->SetActiveCamera(camera);
+		
 
 		if (false) {
 		vtkSmartPointer<vtkCallbackCommand> callback =
@@ -435,6 +440,7 @@ namespace vis {
 	{
 		renderWindow = std::make_shared<vtkSmartPointer<vtkRenderWindow> >(vtkSmartPointer<vtkRenderWindow>::New());
 		(*renderWindow)->AddRenderer(*renderer);
+		(*renderWindow)->SetSize(1200, 900);
 	}
 
 	void VTKVisualization::createRenderWindowInteractor()
