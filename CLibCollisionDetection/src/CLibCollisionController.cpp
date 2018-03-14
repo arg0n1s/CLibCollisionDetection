@@ -137,6 +137,44 @@ namespace clib {
 		collisionDetector.setInitialTreeDiameter(rootDiameter);
 	}
 
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentToCollisionDetector(const unsigned long& agentId) {
+		shared_ptr<Agent> agent1;
+		SimObjPtr clstr;
+		try {
+			agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agentId));
+			clstr = agent1->getAgentCluster();
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
+			return false;
+		}
+		if (!collisionDetector.isClusterInTree(clstr->getId())) {
+			collisionDetector.makeTreeFromCluster(clstr);
+		}
+		else {
+			collisionDetector.addAgentToTree(agent1);
+		}
+
+		return true;
+	}
+
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentToCollisionDetector(const unsigned long& agentId, const unsigned long& clusterId) {
+		shared_ptr<Agent> agent1;
+		shared_ptr<AgentCluster> clstr;
+		try {
+			agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agentId));
+			clstr = std::static_pointer_cast<AgentCluster>(simContainer.getAgentCluster(clusterId));
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
+			return false;
+		}
+		if (agent1->getAgentCluster()->getId() != clstr->getId()) return false;
+		return addAgentToCollisionDetector(agentId);
+	}
+
 	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::addAgentClusterToCollisionDetector(const unsigned long& clusterId) {
 		try {
 			SimObjPtr clstr = getAgentCluster(clusterId);
@@ -149,6 +187,50 @@ namespace clib {
 			return false;
 		}
 		return true;
+	}
+
+	CLIB_COLLISION_DETECTION_API const bool CLibCollisionController::findNearestToAgent(const unsigned long& agentId, const unsigned long& clusterId, SimObjPtr nearest) {
+		shared_ptr<Agent> agent1;
+		shared_ptr<AgentCluster> clstr;
+		try {
+			agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agentId));
+			clstr = std::static_pointer_cast<AgentCluster>(simContainer.getAgentCluster(clusterId));
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
+			return false;
+		}
+		collision::IDSet ignore;
+		double distance = 0;
+		collisionDetector.checkForCollision(clstr, ignore, agent1, nearest, distance);
+		if (nullptr == nearest) {
+			nearest = agent1;
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	CLIB_COLLISION_DETECTION_API bool CLibCollisionController::checkCollisionBetweenAgents(const unsigned long& agt1, const unsigned long& agt2) {
+		if (distanceBetweenAgents(agt1, agt2) < 0) return true;
+		return false;
+	}
+
+	CLIB_COLLISION_DETECTION_API double CLibCollisionController::distanceBetweenAgents(const unsigned long& agt1, const unsigned long& agt2) {
+		shared_ptr<Agent> agent1, agent2;
+		try {
+			agent1 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt1));
+			agent2 = std::static_pointer_cast<Agent>(simContainer.getAgent(agt2));
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			LOG_ERROR(e.what());
+			return 0;
+		}
+
+		return collisionDetector.calcBodyToBodyDistance(agent1, agent2);
 	}
 
 	CLIB_COLLISION_DETECTION_API void CLibCollisionController::connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2) {

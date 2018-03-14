@@ -44,6 +44,10 @@ namespace collision {
 		this->allowRescaling = rescalingOn;
 	}
 
+	const bool CollisionDetection::isClusterInTree(const unsigned int& id) const {
+		return trees.find(id) != trees.end();
+	}
+
 	void CollisionDetection::makeTreeFromCluster(SimObjPtr cluster) {
 		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
 		TreePtr tree = OctTree<unsigned int>::create(Bounds(initialTreeDiameter, initialTreeDiameter, initialTreeDiameter), Bounds(minimalCellDiameter, minimalCellDiameter, minimalCellDiameter));
@@ -60,11 +64,22 @@ namespace collision {
 		}
 	}
 
+	void CollisionDetection::addAgentToTree(SimObjPtr agent) {
+		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		TreePtr tree = trees[(agtPtr->getAgentCluster()->getId())];
+		const BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
+		const Vector3d& position = agtPtr->getPosition(ReferenceFrame::Global);
+		double halfMaxDim = std::max(bbx.width, std::max(bbx.height, bbx.length)) / 2.0;
+		Bounds lb(position.x() - halfMaxDim, position.y() - halfMaxDim, position.z() - halfMaxDim);
+		Bounds ub(position.x() + halfMaxDim, position.y() + halfMaxDim, position.z() + halfMaxDim);
+		tree->insertNode(agtPtr->getId(), lb, ub);
+	}
+
 	TreePtr CollisionDetection::getTree(const unsigned int& id) {
 		return trees.at(id);
 	}
 
-	bool CollisionDetection::checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance) {
+	const bool CollisionDetection::checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance) {
 		shared_ptr<AgentCluster> clsPtr = std::static_pointer_cast<AgentCluster>(cluster);
 		shared_ptr<Agent> candidatePtr = std::static_pointer_cast<Agent>(candidate);
 		TreePtr tree = trees.at(clsPtr->getId());

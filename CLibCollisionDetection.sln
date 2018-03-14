@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLibCollisionDetection", "CLibCollisionDetection\CLibCollisionDetection.vcxproj", "{ACE545FC-717F-4D06-BA38-B63B4746CD25}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3} = {56058152-5039-49CA-A53E-1D1B0A3E2AD3}
+		{7BA12987-AF77-4AC6-83FE-975409427872} = {7BA12987-AF77-4AC6-83FE-975409427872}
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983} = {B4EFAFA5-0D7D-482F-94B8-946BB963B983}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollisionDetectionModule", "CollisionDetectionModule\CollisionDetectionModule.vcxproj", "{56058152-5039-49CA-A53E-1D1B0A3E2AD3}"
 EndProject
@@ -12,6 +17,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimulationObjectsModule", "SimulationObjectsModule\SimulationObjectsModule.vcxproj", "{B4EFAFA5-0D7D-482F-94B8-946BB963B983}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VTKVisualizationModule", "VTKVisualizationModule\VTKVisualizationModule.vcxproj", "{7BA12987-AF77-4AC6-83FE-975409427872}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3} = {56058152-5039-49CA-A53E-1D1B0A3E2AD3}
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983} = {B4EFAFA5-0D7D-482F-94B8-946BB963B983}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

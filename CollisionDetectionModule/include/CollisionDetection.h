@@ -30,9 +30,11 @@ namespace collision {
 		void setMinimalCellDiameter(const double& minimalCellDiameter);
 		void setAllowRescaling(const bool rescalingOn);
 
+		const bool isClusterInTree(const unsigned int& id) const;
 		void makeTreeFromCluster(SimObjPtr cluster);
+		void addAgentToTree(SimObjPtr agent);
 		TreePtr getTree(const unsigned int& id);
-		bool checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance);
+		const bool checkForCollision(SimObjPtr cluster, const IDSet& ignoreIDs, SimObjPtr candidate, SimObjPtr& nearest, double& nearestDistance);
 		const double calcBodyToBodyDistance(SimObjPtr body1, SimObjPtr body2) const;
 	private:
 		TreeMap trees;

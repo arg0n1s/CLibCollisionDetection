@@ -65,11 +65,67 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionControllerCLib
 
 /*
  * Class:     wrapper_CLibJavaWrapper
+ * Method:    setMinimalLeafSizeCLib
+ * Signature: (D)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_setMinimalLeafSizeCLib
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    setMaxInitialRootSizeCLib
+ * Signature: (D)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_setMaxInitialRootSizeCLib
+  (JNIEnv *, jobject, jdouble);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
  * Method:    createAgentCLib
  * Signature: (Ljava/lang/String;I)V
  */
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_createAgentCLib
   (JNIEnv *, jobject, jstring, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    insertAgentIntoClusterCLib
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_insertAgentIntoClusterCLib
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    moveAgentCLib
+ * Signature: (IDDD)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_moveAgentCLib
+  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    rotateAgentCLib
+ * Signature: (IDDDD)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_rotateAgentCLib
+  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble, jdouble);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    getAgentPositionCLib
+ * Signature: (IDDD)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib
+  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    getAgentRotationCLib
+ * Signature: (IDDDD)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib
+  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble, jdouble);
 
 /*
  * Class:     wrapper_CLibJavaWrapper
@@ -86,6 +142,38 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_connectAgentsCLib
  */
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_octTreeFromClusterCLib
   (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    insertAgentIntoOctTreeCLib
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_insertAgentIntoOctTreeCLib
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    findNearestToAgentCLib
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_wrapper_CLibJavaWrapper_findNearestToAgentCLib
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    checkCollisionBetweenAgentsCLib
+ * Signature: (II)Z
+ */
+JNIEXPORT jboolean JNICALL Java_wrapper_CLibJavaWrapper_checkCollisionBetweenAgentsCLib
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    calculateDistanceCLib
+ * Signature: (II)D
+ */
+JNIEXPORT jdouble JNICALL Java_wrapper_CLibJavaWrapper_calculateDistanceCLib
+  (JNIEnv *, jobject, jint, jint);
 
 /*
  * Class:     wrapper_CLibJavaWrapper

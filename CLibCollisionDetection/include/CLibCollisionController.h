@@ -66,7 +66,17 @@ namespace clib
 
 		CLIB_COLLISION_DETECTION_API bool addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 
+		CLIB_COLLISION_DETECTION_API bool addAgentToCollisionDetector(const unsigned long& agentId);
+
+		CLIB_COLLISION_DETECTION_API bool addAgentToCollisionDetector(const unsigned long& agentId, const unsigned long& clusterId);
+
 		CLIB_COLLISION_DETECTION_API bool addAgentClusterToCollisionDetector(const unsigned long& clusterId);
+
+		CLIB_COLLISION_DETECTION_API const bool findNearestToAgent(const unsigned long& agentId, const unsigned long& clusterId, SimObjPtr nearest);
+
+		CLIB_COLLISION_DETECTION_API bool checkCollisionBetweenAgents(const unsigned long& agt1, const unsigned long& agt2);
+
+		CLIB_COLLISION_DETECTION_API double distanceBetweenAgents(const unsigned long& agt1, const unsigned long& agt2);
 
 		CLIB_COLLISION_DETECTION_API void connectAgents(const unsigned long& agt1, const unsigned long& agt2, const unsigned long& st1, const unsigned long& st2);
 

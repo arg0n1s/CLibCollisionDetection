@@ -18,6 +18,8 @@ namespace wrapper {
 		using simobj::specs::SiteSpecification;
 		using SiteSpecArray = std::vector<SiteSpecification>;
 		using ShapePtr = std::shared_ptr<simobj::shapes::Shape>;
+		using simobj::Agent;
+		using simobj::ReferenceFrame;
 
 		using std::string;
 		using SiteSpecMap = std::unordered_map<string, SiteSpecArray>;
@@ -116,10 +118,76 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionControllerCLib(
 	wrapperData.collisionControl = CLibCollisionController(wrapperData.metaSpecs);
 }
 
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_setMinimalLeafSizeCLib(JNIEnv * env, jobject jObj, jdouble minimalLeafSize) {
+	wrapperData.collisionControl.setMinimalLeafDiameter(minimalLeafSize);
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_setMaxInitialRootSizeCLib(JNIEnv * env, jobject jObj, jdouble initialRootSize) {
+	wrapperData.collisionControl.setInitialRootDiameter(initialRootSize);
+}
+
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_createAgentCLib(JNIEnv * env, jobject jObj, jstring agentSpecID, jint agentID) {
 	string agentSpecId = "";
 	javaStringToCString(env, &agentSpecID, &agentSpecId);
 	wrapperData.collisionControl.createAgent((unsigned long)agentID, agentSpecId);
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_insertAgentIntoClusterCLib(JNIEnv * env, jobject jObj, jint agentID, jint clusterID) {
+	wrapperData.collisionControl.addAgentToCluster((unsigned long)agentID, (unsigned long)clusterID);
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_moveAgentCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble x, jdouble y, jdouble z) {
+	Eigen::Vector3d translation((double)x, (double)y, (double)z);
+	try {
+		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
+		agnt->moveAgent(translation);
+	}
+	catch (std::exception& e) {
+		ErrorLogger::instance().appendErrorMsg(e.what());
+	}
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_rotateAgentCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble w, jdouble x, jdouble y, jdouble z) {
+	Eigen::Quaternion<double> rotation((double)w, (double)x, (double)y, (double)z);
+	try {
+		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
+		agnt->rotateAgent(rotation);
+	}
+	catch (std::exception& e) {
+		ErrorLogger::instance().appendErrorMsg(e.what());
+	}
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble x, jdouble y, jdouble z) {
+	try {
+		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
+		x = (jdouble)agnt->getPosition(ReferenceFrame::Global).x();
+		y = (jdouble)agnt->getPosition(ReferenceFrame::Global).y();
+		z = (jdouble)agnt->getPosition(ReferenceFrame::Global).z();
+	}
+	catch (std::exception& e) {
+		ErrorLogger::instance().appendErrorMsg(e.what());
+		x = 0;
+		y = 0;
+		z = 0;
+	}
+}
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble w, jdouble x, jdouble y, jdouble z) {
+	try {
+		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
+		w = (jdouble)agnt->getOrientation(ReferenceFrame::Global).w();
+		x = (jdouble)agnt->getOrientation(ReferenceFrame::Global).x();
+		y = (jdouble)agnt->getOrientation(ReferenceFrame::Global).y();
+		z = (jdouble)agnt->getOrientation(ReferenceFrame::Global).z();
+	}
+	catch (std::exception& e) {
+		ErrorLogger::instance().appendErrorMsg(e.what());
+		w = 1;
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 }
 
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_connectAgentsCLib(JNIEnv * env, jobject jObj, jint agent1, jint agent2, jint site1, jint site2) {
@@ -134,6 +202,29 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_connectAgentsCLib(JNIEnv * e
 
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_octTreeFromClusterCLib(JNIEnv * env, jobject jObj, jint clusterID) {
 	wrapperData.collisionControl.addAgentClusterToCollisionDetector((unsigned long)clusterID);
+}
+
+
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_insertAgentIntoOctTreeCLib(JNIEnv * env, jobject jObj, jint agentID, jint clusterID) {
+	wrapperData.collisionControl.addAgentToCollisionDetector((unsigned long)agentID, (unsigned long)clusterID);
+}
+
+JNIEXPORT jint JNICALL Java_wrapper_CLibJavaWrapper_findNearestToAgentCLib(JNIEnv * env, jobject jObj, jint agentID, jint clusterID) {
+	SimObjPtr nearest;
+	if (wrapperData.collisionControl.findNearestToAgent((unsigned long)agentID, (unsigned long)clusterID, nearest)) {
+		return (jint)nearest->getId();
+	}
+	else {
+		return agentID;
+	}
+}
+
+JNIEXPORT jboolean JNICALL Java_wrapper_CLibJavaWrapper_checkCollisionBetweenAgentsCLib(JNIEnv * env, jobject jObj, jint agentID1, jint agentID2) {
+	return (jboolean)wrapperData.collisionControl.checkCollisionBetweenAgents((unsigned long)agentID1, (unsigned long)agentID2);
+}
+
+JNIEXPORT jdouble JNICALL Java_wrapper_CLibJavaWrapper_calculateDistanceCLib(JNIEnv * env, jobject jObj, jint agentID1, jint agentID2) {
+	return (jdouble)wrapperData.collisionControl.distanceBetweenAgents((unsigned long)agentID1, (unsigned long)agentID2);
 }
 
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_showAgentCLib(JNIEnv * env, jobject jObj, jint agentID) {
