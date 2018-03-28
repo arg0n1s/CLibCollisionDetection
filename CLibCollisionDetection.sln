@@ -11,8 +11,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLibCollisionDetection", "C
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CollisionDetectionModule", "CollisionDetectionModule\CollisionDetectionModule.vcxproj", "{56058152-5039-49CA-A53E-1D1B0A3E2AD3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983} = {B4EFAFA5-0D7D-482F-94B8-946BB963B983}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{F2A55777-2BC9-4149-A9F3-6BB566F57DF1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56058152-5039-49CA-A53E-1D1B0A3E2AD3} = {56058152-5039-49CA-A53E-1D1B0A3E2AD3}
+		{7BA12987-AF77-4AC6-83FE-975409427872} = {7BA12987-AF77-4AC6-83FE-975409427872}
+		{B4EFAFA5-0D7D-482F-94B8-946BB963B983} = {B4EFAFA5-0D7D-482F-94B8-946BB963B983}
+		{ACE545FC-717F-4D06-BA38-B63B4746CD25} = {ACE545FC-717F-4D06-BA38-B63B4746CD25}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimulationObjectsModule", "SimulationObjectsModule\SimulationObjectsModule.vcxproj", "{B4EFAFA5-0D7D-482F-94B8-946BB963B983}"
 EndProject
