@@ -445,6 +445,10 @@ namespace simobj {
 			/**
 				\brief Internal wrapper function for shapes that require 3 parameters, which calls
 				the appropriate internal shape creation function, specified through the given enumerator.
+				\param[in] shapeType Shape type enumerator defining the required shape.
+				\param[in] a First param.
+				\param[in] b Second param.
+				\param[in] c Third param.
 				\throws Exception if the given enumerator is unknown.
 				\throws Exception if the given enumerator does no fit the amount of given parameters.
 				\returns Smart pointer to the newly produced object.
@@ -454,6 +458,9 @@ namespace simobj {
 			/**
 				\brief Internal wrapper function for shapes that require 2 parameters, which calls
 				the appropriate internal shape creation function, specified through the given enumerator.
+				\param[in] shapeType Shape type enumerator defining the required shape.
+				\param[in] a First param.
+				\param[in] b Second param.
 				\throws Exception if the given enumerator is unknown.
 				\throws Exception if the given enumerator does no fit the amount of given parameters.
 				\returns Smart pointer to the newly produced object.
@@ -463,6 +470,8 @@ namespace simobj {
 			/**
 				\brief Internal wrapper function for shapes that require 1 parameter, which calls
 				the appropriate internal shape creation function, specified through the given enumerator.
+				\param[in] shapeType Shape type enumerator defining the required shape.
+				\param[in] a First param.
 				\throws Exception if the given enumerator is unknown.
 				\throws Exception if the given enumerator does no fit the amount of given parameters.
 				\returns Smart pointer to the newly produced object.
@@ -474,6 +483,8 @@ namespace simobj {
 			/**
 				\brief Public template function that calls the appropriate internal wrapper function
 				to create a new shape object, depending on the number of given arguments.
+				\param[in] shapeType Shape type enumerator defining the required shape.
+				\param[in] Args... Any number of parameters of the type double.
 				\throws Exception if the given enumerator is unknown.
 				\throws Exception if the given enumerator does no fit the amount of given parameters.
 				\returns Smart pointer to the newly produced object.

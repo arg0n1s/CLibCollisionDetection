@@ -107,7 +107,7 @@ namespace simobj {
 			/**
 				\brief Constructs an agent specification object with the given
 				type and shape.
-				\param[in] type Unique identifier of this agent type, later used by the factory to produce Agent-object with the specified properties.
+				\param[in] type Unique identifier of this agent type, later used by the factory to produce Agent-objects with the specified properties.
 				\param[in] shape Smart pointer to the shape object defining this agent types geometric properties.
 			*/
 			AgentSpecification(const string& type, ShapePtr shape);
