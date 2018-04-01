@@ -54,6 +54,15 @@ namespace simobj {
 		void addAgentToCluster(const unsigned long& agentId, const unsigned long& clusterId);
 
 		/**
+			\brief Add an existing agent to an existing cluster.
+			\param[in] agent Smart pointer to the agent.
+			\param[in] cluster Smart pointer to the cluster.
+			\throws Exception if either of the given id is not present with this container.
+			\throws Exception if given agent id is already present with the to be assgined cluster.
+		*/
+		void addAgentToCluster(SimObjPtr agent, SimObjPtr cluster);
+
+		/**
 			\brief Construct and add a new cluster with a specified template type and a given unique id.
 			\note Cluster types are currently unused, user may set any type.
 			\param[in] id Unique identifier of a new cluster (used to reference cluster in the simulation)
@@ -63,10 +72,34 @@ namespace simobj {
 		void addAgentCluster(const unsigned long& id, const string& type);
 
 		/**
+			\brief Connect two agents via sites with each other.
+			\note Agents that are connected through sites are not automatically added into the same cluster.
+			\throws Exception if either of the given id is not present with this container.
+			\throw Exception when a pair of given sites belongs to the same agent.
+			\param[in] agent1 Unique identifier of the first agent
+			\param[in] agent2 Unique identifier of the second agent
+			\param[in] site1 Unique identifier of the first site
+			\param[in] site2 Unique identifier of the second site
+		*/
+		void connectAgents(const unsigned long& agent1, const unsigned long& agent2, const unsigned long& site1, const unsigned long& site2);
+
+		/**
+			\brief Connect two agents via sites with each other.
+			\note Agents that are connected through sites are not automatically added into the same cluster.
+			\throw Exception when a pair of given sites belongs to the same agent.
+			\param[in] agent1 Smart pointer to the first agent
+			\param[in] agent2 Smart pointer to the second agent
+			\param[in] site1 Unique identifier of the first site
+			\param[in] site2 Unique identifier of the second site
+		*/
+		void connectAgents(SimObjPtr agent1, SimObjPtr agent2, const unsigned long& site1, const unsigned long& site2);
+
+		/**
 			\brief Connect two sites from different agents with each other.
 			\note Agents that are connected through sites are not automatically added into the same cluster.
-			\param[in] id Unique identifier of the first site
-			\param[in] id Unique identifier of the second site
+			\throw Exception when a pair of given sites belongs to the same agent.
+			\param[in] site1 Smart pointer to the first site
+			\param[in] site2 Smart pointer to the second site
 		*/
 		void connectSites(SimObjPtr site1, SimObjPtr site2);
 

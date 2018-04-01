@@ -63,8 +63,15 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionLibraryCLib(JNI
 	wrapperData = JavaWrapperData();
 }
 
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionLibraryCLib__Ljava_lang_String_2(JNIEnv * env, jobject jObj, jstring jFolder) {
+	wrapperData = JavaWrapperData();
+	string folder = "";
+	javaStringToCString(env, &jFolder, &folder);
+	ErrorLogger::instance().changeLogFileFolder(folder);
+}
+
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_addSiteSpecificationCLib(JNIEnv * env, jobject jObj, jstring agentSpecID, jint siteSpecID, jint coordinateType, jdouble c1, jdouble c2, jdouble c3) {
-	SiteSpecification siteSpec = CLibCollisionController::createSiteSpecification((unsigned long)siteSpecID, (double)c1, (double)c2, (double)c3, static_cast<CoordinateType>(coordinateType));
+	SiteSpecification siteSpec = createSiteSpecification((unsigned long)siteSpecID, (double)c1, (double)c2, (double)c3, static_cast<CoordinateType>(coordinateType));
 	string agentId = "";
 	javaStringToCString(env, &agentSpecID, &agentId);
 	//wrapperData.siteSpecs.insert(std::make_pair(agentId, siteSpec));
@@ -105,7 +112,7 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_addAgentSpecificationCLib(JN
 	javaStringToCString(env, &shapeSpecID, &shapeId);
 	string agentId = "";
 	javaStringToCString(env, &agentSpecID, &agentId);
-	AgentSpecification agentSpec = CLibCollisionController::createAgentSpecification(agentId, wrapperData.shapes.at(shapeId), wrapperData.siteSpecs.at(agentId));
+	AgentSpecification agentSpec = createAgentSpecification(agentId, wrapperData.shapes.at(shapeId), wrapperData.siteSpecs.at(agentId));
 	wrapperData.agentSpecs.insert(std::make_pair(agentId, agentSpec));
 }
 
@@ -114,7 +121,7 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionControllerCLib(
 	for (auto agentSpec : wrapperData.agentSpecs) {
 		agents.push_back(agentSpec.second);
 	}
-	wrapperData.metaSpecs = CLibCollisionController::createMetaSpecification(agents);
+	wrapperData.metaSpecs = createMetaSpecification(agents);
 	wrapperData.collisionControl = CLibCollisionController(wrapperData.metaSpecs);
 }
 
@@ -140,7 +147,7 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_moveAgentCLib(JNIEnv * env, 
 	Eigen::Vector3d translation((double)x, (double)y, (double)z);
 	try {
 		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
-		agnt->moveAgent(translation);
+		agnt->move(translation);
 	}
 	catch (std::exception& e) {
 		ErrorLogger::instance().appendErrorMsg(e.what());
@@ -151,7 +158,7 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_rotateAgentCLib(JNIEnv * env
 	Eigen::Quaternion<double> rotation((double)w, (double)x, (double)y, (double)z);
 	try {
 		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
-		agnt->rotateAgent(rotation);
+		agnt->rotate(rotation);
 	}
 	catch (std::exception& e) {
 		ErrorLogger::instance().appendErrorMsg(e.what());

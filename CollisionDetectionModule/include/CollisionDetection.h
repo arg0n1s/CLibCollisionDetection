@@ -47,7 +47,7 @@ namespace collision {
 			\brief Constructs a CollisionDetection-object with default values for inital tree width (16.0),
 			minimal leaf size (2.0) and allowRescaling flag (false).
 		*/
-		CollisionDetection();
+		CollisionDetection(const double& initialTreeDiameter = 16.0, const double& minimalCellDiameter = 2.0, const bool rescalingOn = false);
 
 		/**
 			\brief Set the initial tree diameter of internally constructed OctTrees, i.e.

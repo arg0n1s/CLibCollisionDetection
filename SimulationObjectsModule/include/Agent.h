@@ -39,10 +39,31 @@ namespace simobj {
 		*/
 		~Agent();
 
+		/**
+			\brief Call to instantiate a new Agent-object.
+			\returns Returns a smart pointer to the new object on the heap.
+			\note This is the only way to "make" an Agent-object, i.e. Constructor is private!
+			\param[in] id Globally unique identifier of this object (used to reference agent in the simulation)
+			\param[in] type Defines the type of this agent (used to generate agents from a template)
+		*/
+		static SimObjPtr New(const unsigned long& id, const string& type);
+
 		/** 
 			\brief Packs the agent's internal information into a formatted readable string.
 		*/
 		virtual string toString() const;
+
+		/**
+		\brief Get the local position of this agent.
+		\returns The agents local position as a 3x1 vector in real space.
+		*/
+		virtual const Vector3d& getPosition() const;
+
+		/**
+		\brief Get the local orientation of this agent.
+		\returns The agents local orientation as quaternion.
+		*/
+		virtual const Quaternion& getOrientation() const;
 
 		/** 
 			\brief Get the karthesian coordinates of this agent object in global or local coordinates.
@@ -59,15 +80,6 @@ namespace simobj {
 			\param[in] frame reference frame enumerator (i.e.: Return global or local orientation?)
 		*/
 		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
-
-		/** 
-			\brief Call to instantiate a new Agent-object.
-			\returns Returns a smart pointer to the new object on the heap.
-			\note This is the only way to "make" an Agent-object, i.e. Constructor is private!
-			\param[in] id Globally unique identifier of this object (used to reference agent in the simulation)
-			\param[in] type Defines the type of this agent (used to generate agents from a template)
-		*/
-		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		/** 
 			\brief Adds a Site-object to this agent.
@@ -120,18 +132,6 @@ namespace simobj {
 			and provides a global frame of reference for coordinate transformations.
 		*/
 		SimObjPtr getAgentCluster();
-
-		/**
-			\brief Rotates this agent locally.
-			\param[in] rotation Quaternion with wich this agent should be rotated.
-		*/
-		void rotateAgent(const Quaternion& rotation);
-
-		/**
-			\brief Moves (translation) this agent locally.
-			\param[in] translation Vector that points from this agent to the destination.
-		*/
-		void moveAgent(const Vector3d& translation);
 
 		/**
 			\brief Check to see if a site with the given id is part of this agent.

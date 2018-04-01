@@ -12,8 +12,16 @@ extern "C" {
  * Method:    initCollisionLibraryCLib
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionLibraryCLib
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionLibraryCLib__
   (JNIEnv *, jobject);
+
+/*
+ * Class:     wrapper_CLibJavaWrapper
+ * Method:    initCollisionLibraryCLib
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_initCollisionLibraryCLib__Ljava_lang_String_2
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     wrapper_CLibJavaWrapper

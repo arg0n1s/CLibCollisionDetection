@@ -22,31 +22,41 @@ namespace simobj {
 
 	string Site::toString() const {
 		std::stringstream ss;
-		ss << "Site: [" << " Type: " << type << ", ID: " << id << ",\n";
-		ss << "\t x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
-		ss << "\t connected: " << ((connected) ? "true" : "false") << ", \n";
+		ss << "*** \nSite: [" << " Type: " << type << ", ID: " << id << ",\n";
+		ss << "\tPosition: x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ",\n";
+		ss << "\tconnected: " << ((connected) ? "true" : "false") << ",\n";
 		if (hasOwner) {
-			ss << "\t owner-id: " << ownerAgent.lock()->getId() << ", owner-type: " << ownerAgent.lock()->getType() << ", \n";
+			ss << "\towner-id: " << ownerAgent.lock()->getId() << ", owner-type: " << ownerAgent.lock()->getType();
 		}
 		if (connected) {
 			shared_ptr<Site> other = std::static_pointer_cast<Site>(otherSite.lock());
-			ss << "\t connected to site-id: " << other->getId() << ", site-type: " << other->getType() << ", \n";
-			ss << "\t connected to agent-id: " << other->getOwner()->getId() << " agent-type: " << other->getOwner()->getId() << ", \n";
+			ss << "\n\tconnected to site-id: " << other->getId() << ", site-type: " << other->getType() << ",\n";
+			ss << "\tconnected to agent-id: " << other->getOwner()->getId() << " agent-type: " << other->getOwner()->getId();
 		}
-		ss << "] \n";
+		ss << " ] \n***";
 		return ss.str();
+	}
+
+	const Vector3d& Site::getPosition() const {
+		return position;
+	}
+
+	const Quaternion& Site::getOrientation() const {
+		return orientation;
 	}
 
 	const Vector3d Site::getPosition(const ReferenceFrame& frame) const {
 		switch (frame) {
 		case ReferenceFrame::Local: {
 			return position;
-			break;
 		}
 		case ReferenceFrame::Global: {
-			if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent! \n No known reference frame found.");
-			return ownerAgent.lock()->getPosition(frame) + ownerAgent.lock()->getOrientation(frame)*position;
-			break;
+			if (hasOwner) {
+				return ownerAgent.lock()->getPosition(frame) + ownerAgent.lock()->getOrientation(frame)*position;
+			}
+			else {
+				return position;
+			}
 		}
 		default: {
 			throw std::runtime_error("Given reference frame does not exist or is unsupported!");
@@ -57,12 +67,14 @@ namespace simobj {
 		switch (frame) {
 		case ReferenceFrame::Local: {
 			return orientation;
-			break;
 		}
 		case ReferenceFrame::Global: {
-			if (!hasOwner) throw std::runtime_error("This Site does not seem to belong to any known agent! \n No known reference frame found.");
-			return ownerAgent.lock()->getOrientation(frame) * orientation;
-			break;
+			if (hasOwner) {
+				return ownerAgent.lock()->getOrientation(frame) * orientation;
+			}
+			else {
+				return orientation;
+			}
 		}
 		default: {
 			throw std::runtime_error("Given reference frame does not exist or is unsupported!");
@@ -70,7 +82,7 @@ namespace simobj {
 		}
 	}
 
-	SimObjPtr Site::createInternal(const unsigned long& id, const string& type) {
+	SimObjPtr Site::New(const unsigned long& id, const string& type) {
 		return SimObjPtr(new Site(id, type));
 	}
 

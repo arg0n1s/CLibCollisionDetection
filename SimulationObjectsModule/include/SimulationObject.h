@@ -54,6 +54,18 @@ namespace simobj {
 		virtual string toString() const = 0;
 
 		/**
+			\brief Get the local orientation of this object.
+			\returns The objects local orientation as quaternion.
+		*/
+		virtual const Quaternion& getOrientation() const = 0;
+
+		/**
+			\brief Get the local position of this object.
+			\returns The objects local position as a 3x1 vector in real space.
+		*/
+		virtual const Vector3d& getPosition() const = 0;
+
+		/**
 			\brief Get the karthesian coordinates of this object in global or local coordinates.
 			\param[in] frame reference frame enumerator (i.e.: Return global or local coordinates?)
 		*/
@@ -78,16 +90,16 @@ namespace simobj {
 		const unsigned long& getId() const;
 
 		/**
-			\brief Get the local orientation of this object.
-			\returns The objects local orientation as quaternion.
+		\brief Rotates this object locally.
+		\param[in] rotation Quaternion with which this object should be rotated.
 		*/
-		const Quaternion& getOrientation() const;
+		void rotate(const Quaternion& rotation);
 
 		/**
-			\brief Get the local position of this object.
-			\returns The objects local position as a 3x1 vector in real space.
+		\brief Moves (translation) this object locally.
+		\param[in] translation Vector that points from this object to the destination.
 		*/
-		const Vector3d& getPosition() const;
+		void move(const Vector3d& translation);
 
 		/**
 			\brief Set the local orientation of this object.

@@ -1,6 +1,7 @@
 #undef max
 #include "..\include\CollisionDetection.h"
 #include "..\include\OctTree.h"
+#include "..\include\OctTreeNode.h"
 #include <AgentCluster.h>
 #include <Agent.h>
 #include <Shape.h>
@@ -25,11 +26,9 @@ namespace collision {
 	using Eigen::ParametrizedLine;
 	using Eigen::Hyperplane;
 
-	CollisionDetection::CollisionDetection() {
+	CollisionDetection::CollisionDetection(const double& initialTreeDiameter, const double& minimalCellDiameter, const bool rescalingOn) :
+	initialTreeDiameter(initialTreeDiameter), minimalCellDiameter(minimalCellDiameter), allowRescaling(rescalingOn) {
 		trees = TreeMap();
-		initialTreeDiameter = 16;
-		minimalCellDiameter = 2;
-		allowRescaling = false;
 	}
 
 	void CollisionDetection::setInitialTreeDiameter(const double& initialTreeDiameter) {
@@ -60,19 +59,20 @@ namespace collision {
 			double halfMaxDim = std::max(bbx.width, std::max(bbx.height, bbx.length)) / 2.0;
 			Bounds lb(position.x() - halfMaxDim, position.y() - halfMaxDim, position.z() - halfMaxDim);
 			Bounds ub(position.x() + halfMaxDim, position.y() + halfMaxDim, position.z() + halfMaxDim);
-			tree->insertNode(agtPtr->getId(), lb, ub);
+			tree->insertObject(agtPtr->getId(), lb, ub);
 		}
 	}
 
 	void CollisionDetection::addAgentToTree(SimObjPtr agent) {
 		shared_ptr<Agent> agtPtr = std::static_pointer_cast<Agent>(agent);
+		if(trees.find(agtPtr->getAgentCluster()->getId()) == trees.end()) throw std::runtime_error("Given agent cannot be inserted into an OctTree because its Cluster is not registerd with the collision detector or does not exist.");
 		TreePtr tree = trees[(agtPtr->getAgentCluster()->getId())];
 		const BoundingBox& bbx = agtPtr->getShape()->getBoundingBox();
 		const Vector3d& position = agtPtr->getPosition(ReferenceFrame::Global);
 		double halfMaxDim = std::max(bbx.width, std::max(bbx.height, bbx.length)) / 2.0;
 		Bounds lb(position.x() - halfMaxDim, position.y() - halfMaxDim, position.z() - halfMaxDim);
 		Bounds ub(position.x() + halfMaxDim, position.y() + halfMaxDim, position.z() + halfMaxDim);
-		tree->insertNode(agtPtr->getId(), lb, ub);
+		tree->insertObject(agtPtr->getId(), lb, ub);
 	}
 
 	TreePtr CollisionDetection::getTree(const unsigned int& id) {
@@ -130,7 +130,7 @@ namespace collision {
 		}
 		// for the moment ellipsoids are not supported
 		else if (shapeType1 == ShapeType::Ellipsoid || shapeType2 == ShapeType::Ellipsoid) {
-			return NAN;
+			throw std::runtime_error("Only distances between spheres and spheres or cylinders and spheres can be calculated. Given: Ellipsoid");
 		}
 		else {
 			return calcCylinderToCylinderDistance(bodyPtr1, bodyPtr2);

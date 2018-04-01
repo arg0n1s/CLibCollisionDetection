@@ -11,17 +11,18 @@ namespace simobj {
 	using specs::CoordinateType;
 
 	template <typename TClass, typename TInterface>
-	shared_ptr<TInterface> SimulationObjectFactory<TClass, TInterface>::create(const unsigned long& id, const string& type) { 
-		return TClass::createInternal(id, type); 
+	shared_ptr<TInterface> SimulationObjectFactory<TClass, TInterface>::New(const unsigned long& id, const string& type) { 
+		return TClass::New(id, type); 
 	}
+
 	template <typename TClass, typename TInterface>
-	shared_ptr<TInterface> SimulationObjectFactory<TClass, TInterface>::create(const unsigned long& id, const AgentSpecification& agentSpec) {
+	shared_ptr<TInterface> SimulationObjectFactory<TClass, TInterface>::NewAgentFromSpecification(const unsigned long& id, const AgentSpecification& agentSpec) {
 		ShapePtr shape = agentSpec.getShape();
-		shared_ptr<Agent> agent = std::static_pointer_cast<Agent>(Agent::createInternal(id, agentSpec.getType()));
+		shared_ptr<Agent> agent = std::static_pointer_cast<Agent>(Agent::New(id, agentSpec.getType()));
 		agent->setShape(shape);
 
 		for (SiteSpecification siteSpec : agentSpec.getSiteSpecifications()) {
-			shared_ptr<Site> site = std::static_pointer_cast<Site>(Site::createInternal(siteSpec.getId(), siteSpec.getType()));
+			shared_ptr<Site> site = std::static_pointer_cast<Site>(Site::New(siteSpec.getId(), siteSpec.getType()));
 			site->setOwner(agent);
 			switch (siteSpec.getCoordinateType()) {
 				case CoordinateType::KarthesianAbsolute : {

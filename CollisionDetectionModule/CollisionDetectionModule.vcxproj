@@ -154,12 +154,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\Bounds.cpp" />
     <ClCompile Include="src\CollisionDetection.cpp" />
     <ClCompile Include="src\OctTree.cpp" />
+    <ClCompile Include="src\OctTreeNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Bounds.h" />
     <ClInclude Include="include\CollisionDetection.h" />
     <ClInclude Include="include\OctTree.h" />
+    <ClInclude Include="include\OctTreeNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

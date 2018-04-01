@@ -24,6 +24,14 @@ namespace simobj {
 		return position;
 	}
 
+	void SimulationObject::rotate(const Quaternion& rotation) {
+		orientation = orientation * rotation;
+	}
+
+	void SimulationObject::move(const Vector3d& translation) {
+		position = position + translation;
+	}
+
 	void SimulationObject::setOrientation(const Quaternion& orientation) {
 		this->orientation = orientation;
 	}

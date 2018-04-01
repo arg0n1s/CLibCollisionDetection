@@ -44,6 +44,40 @@ namespace clib
 	using collision::CollisionDetection;
 
 	/**
+		\brief Helper function to create a site specification with a locally unique (i.e. within an agent) id,
+		at parametrized or unparametrized coordinates depending on the given coordinate type enumerator.
+		\note For more information on coordinate types see simobj::specs::CoordinateType. Coordinate components depend
+		heavly on the shape of the intended agents this site should be attached to
+		for more information on coordinate components see simobj::shapes::Shape.
+		\param[in] id Locally unique (i.e. within an agent) id of the site.
+		\param[in] c1 First coordinate component of the site on the hull of a possible owning agent.
+		\param[in] c2 Second coordinate component of the site on the hull of a possible owning agent.
+		\param[in] c3 Third coordinate component of the site on the hull of a possible owning agent.
+		\param[in] cType Coordinate type enumerator used to correctly interpret the location coordinates.
+		\returns New SiteSpecification-object created according to the given parameters.
+	*/
+	CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType);
+
+	/**
+		\brief Helper function to create a new agent specification template, from which new agents of this type
+		may be instantiated during or at the beginning of the simulation.
+		\param[in] type Unique identifier of this agent type, used by the factory to produce Agent-objects with the specified properties.
+		\param[in] shape Smart pointer to the shape object defining this agent types geometric properties.
+		\param[in] siteSpecs Array of siteSpecs defining the sites an agent of this type should have.
+		\returns New AgentSpecification-object created according to the given parameters.
+	*/
+	CLIB_COLLISION_DETECTION_API AgentSpecification createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs);
+
+	/**
+		\brief Helper function to create a new MetaSpecification-object which contains the given collection
+		of AgentSpecification-objects and SiteSpecification-objects used to produce new agents of a given type
+		during or at the beginning of the simulation.
+		\param[in] siteSpecs Array of agentSpecs defining the agents of a particular type.
+		\returns New MetaSpecification-object created according to the given parameters.
+	*/
+	CLIB_COLLISION_DETECTION_API MetaSpecification createMetaSpecification(AgentSpecArray agentSpecs);
+
+	/**
 		\brief Main class for the CLibCollisionDetection library. Objects of this class provide access to functionality
 		that may be used for collision detection of molecules in pattern based simulation of biochemical reactions. 
 		This library can also be used for other purposes where collision checking might be useful, since its representation of objects
@@ -60,57 +94,13 @@ namespace clib
 	class CLibCollisionController
 	{
 	public:
-
-		/**
-			\brief Helper function to create a site specification with a locally unique (i.e. within an agent) id,
-			at parametrized or unparametrized coordinates depending on the given coordinate type enumerator.
-			\note For more information on coordinate types see simobj::specs::CoordinateType. Coordinate components depend 
-			heavly on the shape of the intended agents this site should be attached to
-			for more information on coordinate components see simobj::shapes::Shape.
-			\param[in] id Locally unique (i.e. within an agent) id of the site.
-			\param[in] c1 First coordinate component of the site on the hull of a possible owning agent.
-			\param[in] c2 Second coordinate component of the site on the hull of a possible owning agent.
-			\param[in] c3 Third coordinate component of the site on the hull of a possible owning agent.
-			\param[in] cType Coordinate type enumerator used to correctly interpret the location coordinates.
-			\returns New SiteSpecification-object created according to the given parameters.
-		*/
-		static CLIB_COLLISION_DETECTION_API SiteSpecification createSiteSpecification(const unsigned long& id, const double& c1, const double& c2, const double& c3, const CoordinateType& cType);
-
-		/**
-			\brief Helper function to create a shape object with a given shape type and the corresponding parameters.
-			\note For more information on coordinate components and available shape types see simobj::shapes::Shape.
-			\param[in] shapeType Shape type enumerator defining the required shape.
-			\param[in] Args... Any number of parameters of the type double.
-			\returns Smart pointer to the new shape created according to the given parameters.
-		*/
-		template<typename... Args>
-		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const ShapeType& shapeType, Args... args);
-
-		/**
-			\brief Helper function to create a new agent specification template, from which new agents of this type
-			may be instantiated during or at the beginning of the simulation.
-			\param[in] type Unique identifier of this agent type, used by the factory to produce Agent-objects with the specified properties.
-			\param[in] shape Smart pointer to the shape object defining this agent types geometric properties.
-			\param[in] siteSpecs Array of siteSpecs defining the sites an agent of this type should have.
-			\returns New AgentSpecification-object created according to the given parameters.
-		*/
-		static CLIB_COLLISION_DETECTION_API AgentSpecification createAgentSpecification(const string& type, ShapePtr shape, SiteSpecArray siteSpecs);
-
-		/**
-			\brief Helper function to create a new MetaSpecification-object which contains the given collection
-			of AgentSpecification-objects and SiteSpecification-objects used to produce new agents of a given type
-			during or at the beginning of the simulation.
-			\param[in] siteSpecs Array of agentSpecs defining the agents of a particular type.
-			\returns New MetaSpecification-object created according to the given parameters.
-		*/
-		static CLIB_COLLISION_DETECTION_API MetaSpecification createMetaSpecification(AgentSpecArray agentSpecs);
 		
 		/**
 			\brief Construct a new collision controller object. 
 			Starts error logging, initializes visualization and sets collision detector 
 			minimal cell diameter to 2.0, aswell as initial tree diameter to 4.0.
 		*/
-		CLIB_COLLISION_DETECTION_API CLibCollisionController();
+		CLIB_COLLISION_DETECTION_API CLibCollisionController(const double& initialTreeDiameter = 4.0, const double& minimalCellDiameter = 2.0, const bool rescalingOn = true);
 
 		/**
 			\brief Construct a new collision controller object with meta specifications.
@@ -118,12 +108,22 @@ namespace clib
 			minimal cell diameter to 2.0, aswell as initial tree diameter to 4.0.
 			\param[in] metaSpecs Templates from which agents can be produced for the simulation container.
 		*/
-		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs);
+		CLIB_COLLISION_DETECTION_API CLibCollisionController(const MetaSpecification& metaSpecs, const double& initialTreeDiameter = 4.0, const double& minimalCellDiameter = 2.0, const bool rescalingOn = true);
 
 		/**
 			\brief Destructor, ends logging on shut-down.
 		*/
 		CLIB_COLLISION_DETECTION_API ~CLibCollisionController();
+
+		/**
+		\brief Helper function to create a shape object with a given shape type and the corresponding parameters.
+		\note For more information on coordinate components and available shape types see simobj::shapes::Shape.
+		\param[in] shapeType Shape type enumerator defining the required shape.
+		\param[in] Args... Any number of parameters of the type double.
+		\returns Smart pointer to the new shape created according to the given parameters.
+		*/
+		template<typename... Args>
+		static CLIB_COLLISION_DETECTION_API ShapePtr createShape(const ShapeType& shapeType, Args... args);
 
 		/**
 			\brief Create a new empty agent cluster with the given unique id and some type.
@@ -275,7 +275,6 @@ namespace clib
 		*/
 		CLIB_COLLISION_DETECTION_API string toString();
 
-
 	private:
 
 		/* Collection of meta specifications to produce new agents from. */
@@ -291,6 +290,11 @@ namespace clib
 		VTKVisualization vtkVis;
 
 		/* Used for tracking last created agent cluster id. */
-		unsigned long clusterCounter;
+		unsigned long nextClusterID;
+
+		/**
+			\brief Generates the next unused agent cluster id.
+		*/
+		CLIB_COLLISION_DETECTION_API const unsigned long generateNextClusterID();
 	};
 }

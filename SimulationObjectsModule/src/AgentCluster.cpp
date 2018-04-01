@@ -19,16 +19,25 @@ namespace simobj {
 
 	string AgentCluster::toString() const {
 		std::stringstream ss;
-		ss << "Agent Cluster: [" << " Type: " << type << ", ID: " << id << ",\n";
-		ss << "\t x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
-		ss << "\t qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
+		ss << "*** \nAgent Cluster: [" << " Type: " << type << ", ID: " << id << ",\n";
+		ss << "\t\t Position x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
+		ss << "\t\t Orientation qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
 
-		ss << "\t attached agents: \n";
+		ss << "\t\t Contained agents {" << agents.size() << "}: (";
 		for (auto agent : agents) {
-			ss << agent.second->toString();
+			ss << agent.second->getId() << ", ";
 		}
-		ss << "] \n";
+		ss << ")";
+		ss << " ] \n***";
 		return ss.str();
+	}
+
+	const Vector3d& AgentCluster::getPosition() const {
+		return position;
+	}
+
+	const Quaternion& AgentCluster::getOrientation() const {
+		return orientation;
 	}
 
 	const Vector3d AgentCluster::getPosition(const ReferenceFrame& frame) const {
@@ -39,15 +48,8 @@ namespace simobj {
 		return orientation;
 	}
 
-	SimObjPtr AgentCluster::createInternal(const unsigned long& id, const string& type) {
+	SimObjPtr AgentCluster::New(const unsigned long& id, const string& type) {
 		return SimObjPtr(new AgentCluster(id, type));
-	}
-
-	void AgentCluster::rotateCluster(const Quaternion& rotation) {
-		orientation = orientation*rotation;
-	}
-	void AgentCluster::moveCluster(const Vector3d& translation) {
-		position = position + translation;
 	}
 
 	void AgentCluster::insertAgent(SimObjPtr agent) {

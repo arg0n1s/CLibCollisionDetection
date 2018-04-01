@@ -34,6 +34,7 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2); VTK_MODULE_INIT(vtkInteractionStyle); VTK_
 #include <Shape.h>
 
 #include <OctTree.h>
+#include <OctTreeNode.h>
 
 namespace vis {
 
@@ -59,7 +60,7 @@ namespace vis {
 		createRenderer();
 		createRenderWindow();
 		createRenderWindowInteractor();
-		renderAxisOfClusterOn = renderAxisOfAgentOn = renderEmptyNodesOn = renderBoundingBoxesOn = showFPSOn = renderGlobalAxisOn = false;
+		renderAxisOfClusterOn = renderAxisOfAgentOn = renderEmptyNodesOn = renderBoundingBoxesOn = renderGlobalAxisOn = false;
 	}
 
 	VTK_VISUALIZATION_API void VTKVisualization::display() {
@@ -406,17 +407,6 @@ namespace vis {
 		(*renderer)->AddActor(ellipsoidActor);
 	}
 
-	void CallbackFunction(vtkObject* caller, long unsigned int vtkNotUsed(eventId), void* vtkNotUsed(clientData), void* vtkNotUsed(callData))
-	{
-		vtkRenderer* renderer = static_cast<vtkRenderer*>(caller);
-
-		double timeInSeconds = renderer->GetLastRenderTimeInSeconds();
-		double fps = 1.0 / timeInSeconds;
-		std::cout << "FPS: " << fps << std::endl;
-
-		std::cout << "Callback" << std::endl;
-	}
-
 	void VTKVisualization::createRenderer()
 	{
 		renderer = std::make_shared<vtkSmartPointer<vtkRenderer> >(vtkSmartPointer<vtkRenderer>::New());
@@ -425,15 +415,6 @@ namespace vis {
 		vtkSmartPointer<vtkCamera> camera = vtkSmartPointer<vtkCamera>::New();
 		camera->SetPosition(100, 100, 100);
 		(*renderer)->SetActiveCamera(camera);
-		
-
-		if (false) {
-		vtkSmartPointer<vtkCallbackCommand> callback =
-			vtkSmartPointer<vtkCallbackCommand>::New();
-
-		callback->SetCallback(CallbackFunction);
-		(*renderer)->AddObserver(vtkCommand::EndEvent, callback);
-		}
 	}
 
 	void VTKVisualization::createRenderWindow()

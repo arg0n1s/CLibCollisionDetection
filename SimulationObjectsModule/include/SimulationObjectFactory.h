@@ -30,7 +30,7 @@ namespace simobj {
 			\example shared_ptr<agent> agent = SimulationObjectFactory::create<Agent>(0,"default-type");
 			\returns Smart pointer to the objects location on the heap.
 		*/
-		static shared_ptr<TInterface> create(const unsigned long& id, const string& type);
+		static shared_ptr<TInterface> New(const unsigned long& id, const string& type);
 
 		/**
 			\brief Factory function to produce a new Agent-object and its attached sites from a given agent specification.
@@ -39,7 +39,7 @@ namespace simobj {
 			\throws Exception if a given site coordinate type inside the specs is unknown. 
 			\returns Smart pointer to the objects location on the heap.
 		*/
-		static shared_ptr<TInterface> create(const unsigned long& id, const AgentSpecification& agentSpec);
+		static shared_ptr<TInterface> NewAgentFromSpecification(const unsigned long& id, const AgentSpecification& agentSpec);
 		
 	};
 }

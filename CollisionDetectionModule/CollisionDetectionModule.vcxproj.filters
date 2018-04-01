@@ -24,12 +24,24 @@
     <ClCompile Include="src\CollisionDetection.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\OctTreeNode.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bounds.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CollisionDetection.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\OctTree.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OctTreeNode.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Bounds.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

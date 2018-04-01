@@ -151,6 +151,12 @@ namespace simobj {
 			inline const ShapeType& getType() const { return type; };
 
 			/**
+			\brief Get this shape's type name.
+			\returns This shape's type enumerator as string.
+			*/
+			inline const string& getTypeName() const { return typeName; };
+
+			/**
 				\brief Packs the shape's internal information into a formatted readable string.
 			*/
 			const virtual string toString() const = 0;

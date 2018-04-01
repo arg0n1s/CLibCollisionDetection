@@ -19,8 +19,10 @@ namespace clib {
 	class ErrorLogger {
 	private:
 
-		/* String stream object used to store error messages. */
-		stringstream errorLog;
+		/* Path to the current log file. */
+		string filePath;
+
+		bool errorLogged;
 
 		/**
 			\brief Initiates a new error log upon construction with the current time in µSeconds as file name.
@@ -28,12 +30,29 @@ namespace clib {
 		ErrorLogger();
 
 		/**
+			\brief Initialize logger
+		*/
+		void initLogFile();
+
+		/**
 			\brief Helper method to get the path of the executable using the CLibCollisionDetection-library.
 			\returns Directory of the executable using the CLibCollisionDetection-library.
 		*/
-		const string getLogFilePath() const;
+		void initLogFilePath();
+
+		/**
+			\brief Call to save a formatted string to file.
+		*/
+		void saveStringToFile(const string& msg);
+
+		/**
+			\brief Call to save the current log to file and mark end of logging.
+		*/
+		void finishLogging();
 
 	public:
+
+		~ErrorLogger();
 
 		/**
 			\brief Call to get the singleton of this class.
@@ -49,15 +68,12 @@ namespace clib {
 		void appendErrorMsg(const string& errorMsg);
 
 		/**
-			\brief Get the current contained error messages as string
-			\returns Current error log as a formatted string.
+			\brief Change output folder for the log file and reinit.
+			\note Default: logs-folder within the folder of the executable using the CLibCollisionDetection library
+			\param[in] folder new log file folder
 		*/
-		const string toString() const;
+		void changeLogFileFolder(const string& folder);
 
-		/**
-			\brief Call to save the current log to file and mark end of logging.
-		*/
-		void saveToLogToFile();
 	};
 
 /* Use this macro to log any string-typed output from errors, exceptions, etc.*/

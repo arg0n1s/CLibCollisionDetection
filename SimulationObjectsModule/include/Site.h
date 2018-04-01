@@ -23,9 +23,30 @@ namespace simobj {
 		~Site();
 
 		/**
+			\brief Call to instantiate a new Site-object.
+			\returns Returns a smart pointer to the new object on the heap.
+			\note This is the only way to "make" a Site-object, i.e. Constructor is private!
+			\param[in] id Locally (within an agent) unique identifier of this object (used to reference sites in the simulation)
+			\param[in] type Defines the type of this site (used to generate sites from a template)
+		*/
+		static SimObjPtr New(const unsigned long& id, const string& type);
+
+		/**
 			\brief Packs the site's internal information into a formatted readable string.
 		*/
 		virtual string toString() const;
+
+		/**
+		\brief Get the local position of this site.
+		\returns The sites local position as a 3x1 vector in real space.
+		*/
+		virtual const Vector3d& getPosition() const;
+
+		/**
+		\brief Get the local orientation of this site.
+		\returns The sites local orientation as quaternion.
+		*/
+		virtual const Quaternion& getOrientation() const;
 
 		/**
 			\brief Get the karthesian coordinates of this site object in global or local coordinates.
@@ -42,15 +63,6 @@ namespace simobj {
 			\param[in] frame reference frame enumerator (i.e.: Return global or local orientation?)
 		*/
 		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
-
-		/**
-			\brief Call to instantiate a new Site-object.
-			\returns Returns a smart pointer to the new object on the heap.
-			\note This is the only way to "make" a Site-object, i.e. Constructor is private!
-			\param[in] id Locally (within an agent) unique identifier of this object (used to reference sites in the simulation)
-			\param[in] type Defines the type of this site (used to generate sites from a template)
-		*/
-		static SimObjPtr createInternal(const unsigned long& id, const string& type);
 
 		/**
 			\brief Set the owning Agent-object of this site.

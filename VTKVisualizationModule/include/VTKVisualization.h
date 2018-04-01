@@ -111,9 +111,7 @@ namespace vis {
 			/* Flag to turn rendering of empty OctTree nodes on/off. */
 			renderEmptyNodesOn, 
 			/* Flag to turn rendering of individual agent bounding boxes on/off. */
-			renderBoundingBoxesOn, 
-			/* Flag to turn fps promts in the console on/off. */
-			showFPSOn,
+			renderBoundingBoxesOn,
 			/* Flag to turn rendering of a global coordinate system on/off. */
 			renderGlobalAxisOn;
 	private:

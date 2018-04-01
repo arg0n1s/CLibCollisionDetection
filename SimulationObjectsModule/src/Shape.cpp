@@ -15,8 +15,8 @@ namespace simobj {
 
 		const string BoundingBox::toString() const {
 			std::stringstream ss;
-			ss << "BBox: [ x: " << x << ", y: " << y << ", z: " << z << "\n";
-			ss << "Width: " << width << ", Height: " << height << ", Length: " << length << " ]\n";
+			ss << "BBox: { x: " << x << ", y: " << y << ", z: " << z << ", ";
+			ss << "Width: " << width << ", Height: " << height << ", Length: " << length << " }";
 			return ss.str();
 		}
 
@@ -64,11 +64,10 @@ namespace simobj {
 
 		const string Sphere::toString() const {
 			std::stringstream ss;
-			ss << "Shape [ Type: "<<typeName<< ", \n";
-			ss << "\t Radius: " << radius << ", \n";
-			ss << "\t BoundingBox: \n";
-			ss << boundingBox.toString();
-			ss << "] \n";
+			ss << "*** \nShape [ Type: "<<typeName<< ", \n";
+			ss << "\tRadius: " << radius << ", \n";
+			ss << "\t" << boundingBox.toString();
+			ss << " ] \n***";
 			return ss.str();
 		}
 
@@ -132,11 +131,10 @@ namespace simobj {
 
 		const string Cylinder::toString() const {
 			std::stringstream ss;
-			ss << "Shape [ Type: " << typeName << ", \n";
-			ss << "\t Length: "<< length << ", Radius: " << radius << ", \n";
-			ss << "\t BoundingBox: \n";
-			ss << boundingBox.toString();
-			ss << "] \n";
+			ss << "*** \nShape [ Type: " << typeName << ", \n";
+			ss << "\tLength: "<< length << ", Radius: " << radius << ", \n";
+			ss << "\t" << boundingBox.toString();
+			ss << " ] \n***";
 			return ss.str();
 		}
 
@@ -179,11 +177,10 @@ namespace simobj {
 
 		const string Ellipsoid::toString() const {
 			std::stringstream ss;
-			ss << "Shape [ Type: " << typeName << ", \n";
-			ss << "\t Radius along x(a): " << rx << ", Radius along y(b): " << ry << ", Radius along z(c): " << rz << ", \n";
-			ss << "\t BoundingBox: \n";
-			ss << boundingBox.toString();
-			ss << "] \n";
+			ss << "*** \nShape [ Type: " << typeName << ", \n";
+			ss << "\tRadius in x: " << rx << ", Radius in y: " << ry << ", Radius in z: " << rz << ", \n";
+			ss << "\t"<<boundingBox.toString();
+			ss << " ] \n***";
 			return ss.str();
 		}
 

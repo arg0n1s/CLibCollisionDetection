@@ -32,9 +32,31 @@ namespace simobj {
 		~AgentCluster();
 
 		/**
+			\brief Call to instantiate a new AgentCluster-object.
+			\returns Returns a smart pointer to the new object on the heap.
+			\note This is the only way to "make" an AgentCluster-object, i.e. Constructor is private!
+			Cluster types are currently unused, user may set any type.
+			\param[in] id Globally unique identifier of this object (used to reference agent cluster in the simulation)
+			\param[in] type Defines the type of this agent cluster (used to generate agent clusters from a template)
+		*/
+		static SimObjPtr New(const unsigned long& id, const string& type);
+
+		/**
 			\brief Packs the agent cluster's internal information into a formatted readable string.
 		*/
 		virtual string toString() const;
+
+		/**
+		\brief Get the local position of this agent cluster.
+		\returns The agent clusters local position as a 3x1 vector in real space.
+		*/
+		virtual const Vector3d& getPosition() const;
+
+		/**
+		\brief Get the local orientation of this agent cluster.
+		\returns The agent clusters local orientation as quaternion.
+		*/
+		virtual const Quaternion& getOrientation() const;
 
 		/**
 			\brief Get the karthesian coordinates of this agent cluster object in global or local coordinates.
@@ -49,29 +71,6 @@ namespace simobj {
 			\param[in] frame reference frame enumerator (i.e.: Return global or local orientation?)
 		*/
 		virtual const Quaternion getOrientation(const ReferenceFrame& frame) const;
-
-		/**
-			\brief Call to instantiate a new AgentCluster-object.
-			\returns Returns a smart pointer to the new object on the heap.
-			\note This is the only way to "make" an AgentCluster-object, i.e. Constructor is private!
-			Cluster types are currently unused, user may set any type.
-			\param[in] id Globally unique identifier of this object (used to reference agent cluster in the simulation)
-			\param[in] type Defines the type of this agent cluster (used to generate agent clusters from a template)
-		*/
-		static SimObjPtr createInternal(const unsigned long& id, const string& type);
-
-		/**
-			\brief Rotates this agent cluster.
-			\param[in] rotation Quaternion with wich this agent cluster should be rotated.
-		*/
-		void rotateCluster(const Quaternion& rotation);
-
-		/**
-			\brief Moves (translation) this agent cluster locally.
-			\param[in] translation Vector that points from this agent cluster to the destination.
-		*/
-		void moveCluster(const Vector3d& translation);
-
 
 		/**
 			\brief Insert a new agent into this cluster.
@@ -112,5 +111,6 @@ namespace simobj {
 
 		/*Map of contained agents in this cluster.*/
 		unordered_map agents;
+
 	};
 }

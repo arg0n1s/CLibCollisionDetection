@@ -21,29 +21,37 @@ namespace simobj {
 
 	string Agent::toString() const {
 		std::stringstream ss;
-		ss << "** Agent: [" << " Type: " << type << ", ID: " << id << ",\n";
-		ss << "\t +++ Position: x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
-		ss << "\t +++ Orienation: qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
+		ss << "*** \nAgent: [" << " Type: " << type << ", ID: " << id << ",\n";
+		ss << "\t Position: x: " << position.x() << ", y: " << position.y() << ", z: " << position.z() << ", \n";
+		ss << "\t Orienation: qw: " << orientation.w() << ", qx: " << orientation.x() << ", qy: " << orientation.y() << ", qz: " << orientation.z() << ", \n";
 		if (hasShape) {
-			ss << "\t +++ Shape: " << shape->toString() << ", \n";
+			ss << "\t Shape: " << shape->getTypeName() << ", \n";
 		}
-		ss << "\t +++ belongs to a cluster: " << ((belongsToCluster) ? "true" : "false") << ", \n";
+		ss << "\t Belongs to a cluster: " << ((belongsToCluster) ? "true" : "false") << ", \n";
 		if (belongsToCluster) {
-			ss << "\t +++ Cluster info : connected to cluster-id: " << cluster.lock()->getId() << ", cluster-type: " << cluster.lock()->getType() << ", \n";
+			ss << "\t Cluster info : connected to cluster-id: " << cluster.lock()->getId() << ", cluster-type: " << cluster.lock()->getType() << ", \n";
 		}
-		ss << "\t +++ Attached sites: \n";
+		ss << "\t Attached sites {"<< sites.size() <<"}: ( ";
 		for (auto site : sites) {
-			ss << site.second->toString();
+			ss << site.second->getId() << ", ";
 		}
-		ss << "] ** \n";
+		ss << ")";
+		ss << " ] \n***";
 		return ss.str();
+	}
+
+	const Vector3d& Agent::getPosition() const {
+		return position;
+	}
+
+	const Quaternion& Agent::getOrientation() const {
+		return orientation;
 	}
 
 	const Vector3d Agent::getPosition(const ReferenceFrame& frame) const {
 		switch (frame) {
 			case ReferenceFrame::Local : {
 				return position;
-				break;
 			}
 			case ReferenceFrame::Global: {
 				if (belongsToCluster) {
@@ -52,7 +60,6 @@ namespace simobj {
 				else {
 					return position;
 				}
-				break;
 			}
 			default: {
 				throw std::runtime_error("Given reference frame does not exist or is unsupported!");
@@ -64,7 +71,6 @@ namespace simobj {
 		switch (frame) {
 		case ReferenceFrame::Local: {
 			return orientation;
-			break;
 		}
 		case ReferenceFrame::Global: {
 			if (belongsToCluster) {
@@ -73,7 +79,6 @@ namespace simobj {
 			else {
 				return orientation;
 			}
-			break;
 		}
 		default: {
 			throw std::runtime_error("Given reference frame does not exist or is unsupported!");
@@ -81,7 +86,7 @@ namespace simobj {
 		}
 	}
 
-	SimObjPtr Agent::createInternal(const unsigned long& id, const string& type) {
+	SimObjPtr Agent::New(const unsigned long& id, const string& type) {
 		return SimObjPtr(new Agent(id, type));
 	}
 
@@ -118,14 +123,6 @@ namespace simobj {
 
 	SimObjPtr Agent::getAgentCluster() {
 		return cluster.lock();
-	}
-
-	void Agent::rotateAgent(const Quaternion& rotation) {
-		orientation = orientation*rotation;
-	}
-
-	void Agent::moveAgent(const Vector3d& translation) {
-		position = position + translation;
 	}
 
 	bool Agent::isInAnyCluster() const {
