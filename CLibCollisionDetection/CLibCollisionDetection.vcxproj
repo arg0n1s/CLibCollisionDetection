@@ -76,7 +76,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
-    <IncludePath>$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CollisionDetectionModule\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\Java\jdk-9.0.1\include\win32;$(SolutionDir)libs\Java\jdk-9.0.1\include;$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CollisionDetectionModule\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,7 +85,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
-    <IncludePath>$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CollisionDetectionModule\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\Java\jdk-9.0.1\include\win32;$(SolutionDir)libs\Java\jdk-9.0.1\include;$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CollisionDetectionModule\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;CLIBCOLLISIONDETECTION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-9.0.1\include\win32;C:\Program Files\Java\jdk-9.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;CLIBCOLLISIONDETECTION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk-9.0.1\include\win32;C:\Program Files\Java\jdk-9.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
