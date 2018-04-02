@@ -94,6 +94,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <IncludePath>$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CLibCollisionDetection\include;$(SolutionDir)CollisionDetectionModule\include;$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -102,6 +104,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <IncludePath>$(SolutionDir)libs\Eigen-3.2.7\include;$(SolutionDir)CLibCollisionDetection\include;$(SolutionDir)CollisionDetectionModule\include;$(SolutionDir)VTKVisualizationModule\include;$(SolutionDir)SimulationObjectsModule\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,13 +131,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1;C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1;C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_65_1\lib64-msvc-14.1;C:\Program Files\boost\boost_1_65_1\libs;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_65_1\lib64-msvc-14.1;C:\Program Files\boost\boost_1_65_1\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;CollisionDetectionModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -167,7 +171,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1;C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;C:\Program Files\VTK\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\VTKVisualizationModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CLibCollisionDetection\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\SimulationObjectsModule\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\libs\Eigen-3.2.7\include;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\CollisionDetectionModule\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_65_1;C:\Program Files\boost\boost_1_65_1\boost;C:\Program Files\boost\boost_1_65_1\boost\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -175,7 +179,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_65_1\lib64-msvc-14.1;C:\Program Files\boost\boost_1_65_1\libs;D:\Basti\Documents\Visual Studio Projects\CollisionLibrary\CLibCollisionDetection\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_65_1\lib64-msvc-14.1;C:\Program Files\boost\boost_1_65_1\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>CLibCollisionDetection.lib;SimulationObjectsModule.lib;CollisionDetectionModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
