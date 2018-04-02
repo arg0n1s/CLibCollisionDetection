@@ -165,36 +165,39 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_rotateAgentCLib(JNIEnv * env
 	}
 }
 
-JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble x, jdouble y, jdouble z) {
+JNIEXPORT jdoubleArray JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib(JNIEnv * env, jobject jObj, jint agentID, jint dim) {
+	Eigen::Vector3d pos;
+	jdoubleArray result = env->NewDoubleArray(dim);
 	try {
 		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
-		x = (jdouble)agnt->getPosition(ReferenceFrame::Global).x();
-		y = (jdouble)agnt->getPosition(ReferenceFrame::Global).y();
-		z = (jdouble)agnt->getPosition(ReferenceFrame::Global).z();
+		pos = agnt->getPosition(ReferenceFrame::Global);
 	}
 	catch (std::exception& e) {
 		ErrorLogger::instance().appendErrorMsg(e.what());
-		x = 0;
-		y = 0;
-		z = 0;
 	}
+	jdouble* posArray = pos.data();
+	env->SetDoubleArrayRegion(result, 0, dim, posArray);
+	return result;
 }
 
-JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib(JNIEnv * env, jobject jObj, jint agentID, jdouble w, jdouble x, jdouble y, jdouble z) {
+JNIEXPORT jdoubleArray JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib(JNIEnv * env, jobject jObj, jint agentID, jint dim) {
+	Eigen::Quaternion<double> quat;
+	jdoubleArray result = env->NewDoubleArray(dim);
 	try {
 		std::shared_ptr<Agent> agnt = std::static_pointer_cast<Agent>(wrapperData.collisionControl.getAgent((unsigned long)agentID));
-		w = (jdouble)agnt->getOrientation(ReferenceFrame::Global).w();
-		x = (jdouble)agnt->getOrientation(ReferenceFrame::Global).x();
-		y = (jdouble)agnt->getOrientation(ReferenceFrame::Global).y();
-		z = (jdouble)agnt->getOrientation(ReferenceFrame::Global).z();
+		quat = agnt->getOrientation(ReferenceFrame::Global);
 	}
 	catch (std::exception& e) {
 		ErrorLogger::instance().appendErrorMsg(e.what());
-		w = 1;
-		x = 0;
-		y = 0;
-		z = 0;
 	}
+	jdouble quatArray[4];
+	quatArray[0] = quat.w();
+	quatArray[1] = quat.x();
+	quatArray[2] = quat.y();
+	quatArray[3] = quat.z();
+
+	env->SetDoubleArrayRegion(result, 0, dim, quatArray);
+	return result;
 }
 
 JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_connectAgentsCLib(JNIEnv * env, jobject jObj, jint agent1, jint agent2, jint site1, jint site2) {

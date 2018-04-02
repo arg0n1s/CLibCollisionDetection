@@ -122,18 +122,18 @@ JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_rotateAgentCLib
 /*
  * Class:     wrapper_CLibJavaWrapper
  * Method:    getAgentPositionCLib
- * Signature: (IDDD)V
+ * Signature: (II)[D
  */
-JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib
-  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+JNIEXPORT jdoubleArray JNICALL Java_wrapper_CLibJavaWrapper_getAgentPositionCLib
+  (JNIEnv *, jobject, jint, jint);
 
 /*
  * Class:     wrapper_CLibJavaWrapper
  * Method:    getAgentRotationCLib
- * Signature: (IDDDD)V
+ * Signature: (II)[D
  */
-JNIEXPORT void JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib
-  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble, jdouble);
+JNIEXPORT jdoubleArray JNICALL Java_wrapper_CLibJavaWrapper_getAgentRotationCLib
+  (JNIEnv *, jobject, jint, jint);
 
 /*
  * Class:     wrapper_CLibJavaWrapper
