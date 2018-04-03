@@ -22,6 +22,9 @@ namespace clib {
 		/* Path to the current log file. */
 		string filePath;
 
+		/* Path to the current log file folder. */
+		string logFolder;
+
 		bool errorLogged;
 
 		/**
@@ -73,6 +76,20 @@ namespace clib {
 			\param[in] folder new log file folder
 		*/
 		void changeLogFileFolder(const string& folder);
+
+		/**
+			\brief Converts a ascii/ansi/utf8 string to a wide string (windows stuff..)
+			\param[in] s standard c++ string
+			\returns wide string
+		*/
+		static std::wstring s2ws(const string& s);
+
+		/**
+			\brief Converts a wide string (windows stuff..) to a ascii/ansi/utf8 string.
+			\param[in] ws wide string
+			\returns standard c++ string
+		*/
+		static string ws2s(const std::wstring& ws);
 
 	};
 
